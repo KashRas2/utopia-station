@@ -377,6 +377,13 @@ namespace Content.Server.Database
             );
             // Utopia-Tweak : Language
 
+            // Utopia-Tweak : Barks
+            profile.BarkProto = humanoid.Bark.Proto;
+            profile.BarkPitch = humanoid.Bark.Pitch;
+            profile.LowBarkVar = humanoid.Bark.MinVar;
+            profile.HighBarkVar = humanoid.Bark.MaxVar;
+            // Utopia-Tweak : Barks
+
             return profile;
         }
         #endregion
