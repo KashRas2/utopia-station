@@ -254,7 +254,8 @@
   # Utopia-Tweak : Language
   # Utopia-Tweak : Barks
   - type: SpeechBarks
-    sound: /Audio/_Utopia/Voice/Vocal-Barks/bloop.ogg
+    data:
+      proto: Synth3
   # Utopia-Tweak : Barks
 
 - type: entity
