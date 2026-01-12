@@ -19,7 +19,7 @@
         - !type:ReagentCondition
           reagent: BZ
           min: 0.5
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: true
         damage:
           types:
@@ -149,7 +149,7 @@
           - !type:ReagentCondition
             reagent: Nitrium
             min: 9
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: true
         damage:
           types:
@@ -181,7 +181,7 @@
         - !type:ReagentCondition
           reagent: Healium
           min: 2
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: true
         damage:
           groups:
@@ -229,7 +229,7 @@
           reagent: Zauker
           min: 0.25
           max: 8
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: true
         damage:
           types:
@@ -242,7 +242,7 @@
         - !type:ReagentCondition
           reagent: Zauker
           min: 8
-        scaleByQuantity: true
+        scaling: true
         ignoreResistances: true
         damage:
           types:
