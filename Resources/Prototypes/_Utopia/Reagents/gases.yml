@@ -13,7 +13,6 @@
         component: SeeingRainbows
         type: Add
         time: 12
-        refresh: false
       - !type:HealthChange
         conditions:
         - !type:ReagentCondition
@@ -174,7 +173,6 @@
           min: 1
         key: ForcedSleep
         component: ForcedSleeping
-        refresh: false
         type: Add
       - !type:HealthChange
         conditions:
