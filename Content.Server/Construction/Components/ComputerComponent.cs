@@ -9,4 +9,10 @@ namespace Content.Server.Construction.Components
         [DataField("board", customTypeSerializer:typeof(PrototypeIdSerializer<EntityPrototype>))]
         public string? BoardPrototype;
     }
+
+    public enum MachineUpgradeScalingType : byte
+    {
+        Linear,
+        Exponential
+    }
 }

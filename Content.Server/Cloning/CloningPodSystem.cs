@@ -30,6 +30,7 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Construction.Components;
 
 namespace Content.Server.Cloning;
 
@@ -72,6 +73,10 @@ public sealed class CloningPodSystem : EntitySystem
         SubscribeLocalEvent<CloningPodComponent, AnchorStateChangedEvent>(OnAnchor);
         SubscribeLocalEvent<CloningPodComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<CloningPodComponent, GotEmaggedEvent>(OnEmagged);
+        // Utopia-Tweak : Machine Parts
+        SubscribeLocalEvent<CloningPodComponent, RefreshPartsEvent>(OnPartsRefreshed);
+        SubscribeLocalEvent<CloningPodComponent, UpgradeExamineEvent>(OnUpgradeExamine);
+        // Utopia-Tweak : Machine Parts
     }
 
     private void OnComponentInit(Entity<CloningPodComponent> ent, ref ComponentInit args)
@@ -161,7 +166,7 @@ public sealed class CloningPodSystem : EntitySystem
         if (!TryComp<PhysicsComponent>(bodyToClone, out var physics))
             return false;
 
-        var cloningCost = (int)Math.Round(physics.FixturesMass);
+        var cloningCost = (int)Math.Round(physics.FixturesMass * clonePod.BiomassRequirementMultiplier); // Utopia-Tweak : Machine Part
 
         if (_configManager.GetCVar(CCVars.BiomassEasyMode))
             cloningCost = (int)Math.Round(cloningCost * EasyModeCloningCost);
@@ -323,4 +328,21 @@ public sealed class CloningPodSystem : EntitySystem
     {
         ClonesWaitingForMind.Clear();
     }
+
+    // Utopia-Tweak : Machine Parts
+    private void OnPartsRefreshed(EntityUid uid, CloningPodComponent component, RefreshPartsEvent args)
+    {
+        var materialTiers = args.PartTiers[component.MachinePartMaterialUse];
+        var speedTiers = args.PartTiers[component.MachinePartCloningSpeed];
+
+        component.BiomassRequirementMultiplier = component.BaseBiomassRequirementMultiplier * MathF.Pow(component.PartRatingMaterialMultiplier, materialTiers - 1);
+        component.CloningTime = component.BaseCloningTime * MathF.Pow(component.PartRatingSpeedMultiplier, speedTiers - 1);
+    }
+
+    private void OnUpgradeExamine(EntityUid uid, CloningPodComponent component, UpgradeExamineEvent args)
+    {
+        args.AddPercentageUpgrade("cloning-pod-component-upgrade-speed", component.BaseCloningTime / component.CloningTime);
+        args.AddPercentageUpgrade("cloning-pod-component-upgrade-biomass-requirement", component.BiomassRequirementMultiplier / component.BaseBiomassRequirementMultiplier);
+    }
+    // Utopia-Tweak : Machine Parts
 }

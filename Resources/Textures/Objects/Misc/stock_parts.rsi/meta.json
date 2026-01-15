@@ -5,7 +5,7 @@
     "y": 32
   },
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from https://github.com/tgstation/tgstation at 71a1fee2f13730adee5302d34bfa0f0262314d63, micro_mani by EmoGarbage404 (github)",
+  "copyright": "Taken from https://github.com/tgstation/tgstation at commit 71a1fee2f13730adee5302d34bfa0f0262314d63",
   "states": [
     {
       "name": "adv_capacitor"

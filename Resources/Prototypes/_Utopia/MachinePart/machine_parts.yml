@@ -1,0 +1,29 @@
+- type: machinePart
+  id: Capacitor
+  name: machine-part-name-capacitor
+  stockPartPrototype: CapacitorStockpartType
+
+- type: machinePart
+  id: Manipulator
+  name: machine-part-name-manipulator
+  stockPartPrototype: MicroManipulatorStockPart
+
+- type: machinePart
+  id: MatterBin
+  name: machine-part-name-matter-bin
+  stockPartPrototype: MatterBinStockpartType
+
+- type: machinePart
+  id: ScanningModule
+  name: machine-part-name-scanning-module
+  stockPartPrototype: ScanningModuleStockpartType
+
+- type: machinePart
+  id: Laser
+  name: machine-part-name-laser
+  stockPartPrototype: MicroLaserStockpartType
+
+- type: machinePart
+  id: PowerCell
+  name: machine-part-name-power-cell
+  stockPartPrototype: PowerCellSmall
