@@ -258,12 +258,12 @@
   - type: ContainerFill
     containers:
       board: [ WallmountSubstationElectronics ]
-      manipulator: [ MicroManipulatorStockPart ]
+      capacitor: [ CapacitorStockPart ] # Utopia-Tweak : Machine Part
       powercell: [ PowerCellSmall ]
   - type: ContainerContainer
     containers:
       board: !type:Container
-      manipulator: !type:Container
+      capacitor: !type:Container # Utopia-Tweak : Machine Part
       powercell: !type:Container
 
       # Construction Frame

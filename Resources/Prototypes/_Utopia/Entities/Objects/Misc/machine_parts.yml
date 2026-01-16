@@ -12,8 +12,6 @@
       tier: 1
     - type: Stack
       stackType: Capacitor
-    - type: StackPrice
-      price: 5
 
 - type: entity
   id: MatterBinStockPart
@@ -28,8 +26,6 @@
       tier: 1
     - type: Stack
       stackType: MatterBin
-    - type: StackPrice
-      price: 5
 
 - type: entity
   id: ScanningModuleStockPart
@@ -44,8 +40,6 @@
       tier: 1
     - type: Stack
       stackType: ScanningModule
-    - type: StackPrice
-      price: 5
 
 - type: entity
   id: MicroLaserStockPart
@@ -60,8 +54,6 @@
       tier: 1
     - type: Stack
       stackType: MicroLaser
-    - type: StackPrice
-      price: 5
 
 # region tier 2
 - type: entity

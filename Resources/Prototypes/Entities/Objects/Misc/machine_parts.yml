@@ -31,7 +31,3 @@
     # Utopia-Tweak : Machine Parts
     - type: Stack
       stackType: Manipulator
-    # Utopia-Tweak : Machine Parts
-    - type: StackPrice
-      price: 5
-    # Utopia-Tweak : Machine Parts
