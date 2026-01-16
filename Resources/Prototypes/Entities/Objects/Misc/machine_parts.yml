@@ -14,6 +14,11 @@
     - type: Tag
       tags:
       - ConstructionMaterial
+    # Utopia-Tweak : Machine Parts
+    - type: GuideHelp
+      guides:
+      - MachineUpgrading
+    # Utopia-Tweak : Machine Parts
 
 - type: entity
   id: MicroManipulatorStockPart

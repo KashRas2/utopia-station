@@ -19,3 +19,6 @@
     whitelist:
       components:
       - MachinePart
+  - type: GuideHelp
+    guides:
+    - MachineUpgrading
