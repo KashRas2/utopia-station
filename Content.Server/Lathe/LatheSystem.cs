@@ -14,7 +14,7 @@ using Content.Shared.Atmos;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
-using Content.Shared.Construction.Components; // Frontier
+using Content.Shared.Construction.Components;
 using Content.Shared.UserInterface;
 using Content.Shared.Database;
 using Content.Shared.Emag.Components;
@@ -223,7 +223,7 @@ namespace Content.Server.Lathe
 
             var lathe = EnsureComp<LatheProducingComponent>(uid);
             lathe.StartTime = _timing.CurTime;
-            lathe.ProductionLength = time * component.FinalTimeMultiplier;
+            lathe.ProductionLength = time * component.FinalTimeMultiplier; // Utopia-Tweak : Machine Parts
             component.CurrentRecipe = recipe;
 
             var ev = new LatheStartPrintingEvent(recipe);

@@ -287,7 +287,7 @@ namespace Content.Server.Kitchen.EntitySystems
         {
             // this really does have to be in ComponentInit
             ent.Comp.Storage = _container.EnsureContainer<Container>(ent, ent.Comp.ContainerId);
-            ent.Comp.FinalCookTimeMultiplier = ent.Comp.CookTimeMultiplier;
+            ent.Comp.FinalCookTimeMultiplier = ent.Comp.CookTimeMultiplier; // Utopia-Tweak : Machine Parts
         }
 
         private void OnMapInit(Entity<MicrowaveComponent> ent, ref MapInitEvent args)

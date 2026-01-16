@@ -1,5 +1,5 @@
 using Content.Server.Botany.Components;
-using Content.Shared.Construction.Components; // Frontier
+using Content.Shared.Construction.Components;
 using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
 using Content.Shared.Interaction;
@@ -19,6 +19,7 @@ public sealed class SeedExtractorSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<SeedExtractorComponent, InteractUsingEvent>(OnInteractUsing);
+
         // Utopia-Tweak : Machine Parts
         SubscribeLocalEvent<SeedExtractorComponent, RefreshPartsEvent>(OnRefreshParts);
         SubscribeLocalEvent<SeedExtractorComponent, UpgradeExamineEvent>(OnUpgradeExamine);

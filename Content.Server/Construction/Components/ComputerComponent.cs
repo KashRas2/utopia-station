@@ -10,9 +10,11 @@ namespace Content.Server.Construction.Components
         public string? BoardPrototype;
     }
 
+    // Utopia-Tweak : Machine Parts
     public enum MachineUpgradeScalingType : byte
     {
         Linear,
         Exponential
     }
+    // Utopia-Tweak : Machine Parts
 }

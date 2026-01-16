@@ -56,8 +56,10 @@ public sealed class ThrusterSystem : EntitySystem
 
         SubscribeLocalEvent<ShuttleComponent, TileChangedEvent>(OnShuttleTileChange);
 
+        // Utopia-Tweak : Machine Parts
         SubscribeLocalEvent<ThrusterComponent, RefreshPartsEvent>(OnRefreshParts);
         SubscribeLocalEvent<ThrusterComponent, UpgradeExamineEvent>(OnUpgradeExamine);
+        // Utopia-Tweak : Machine Parts
     }
 
     private void OnThrusterExamine(EntityUid uid, ThrusterComponent component, ExaminedEvent args)
@@ -216,12 +218,12 @@ public sealed class ThrusterSystem : EntitySystem
         if (component.Type == ThrusterType.Linear)
         {
             oldShuttleComponent.LinearThrust[oldDirection] -= component.Thrust;
-            oldShuttleComponent.BaseLinearThrust[oldDirection] -= component.BaseThrust;
+            oldShuttleComponent.BaseLinearThrust[oldDirection] -= component.BaseThrust; // Utopia-Tweak : Machine Parts
             DebugTools.Assert(oldShuttleComponent.LinearThrusters[oldDirection].Contains(uid));
             oldShuttleComponent.LinearThrusters[oldDirection].Remove(uid);
 
             shuttleComponent.LinearThrust[direction] += component.Thrust;
-            shuttleComponent.BaseLinearThrust[direction] += component.BaseThrust;
+            shuttleComponent.BaseLinearThrust[direction] += component.BaseThrust; // Utopia-Tweak : Machine Parts
             DebugTools.Assert(!shuttleComponent.LinearThrusters[direction].Contains(uid));
             shuttleComponent.LinearThrusters[direction].Add(uid);
         }

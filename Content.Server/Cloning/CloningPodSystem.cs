@@ -12,6 +12,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Cloning;
 using Content.Shared.Chat;
+using Content.Shared.Construction.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Emag.Components;
@@ -30,7 +31,6 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Shared.Chemistry.Reagent;
-using Content.Shared.Construction.Components;
 
 namespace Content.Server.Cloning;
 
@@ -73,6 +73,7 @@ public sealed class CloningPodSystem : EntitySystem
         SubscribeLocalEvent<CloningPodComponent, AnchorStateChangedEvent>(OnAnchor);
         SubscribeLocalEvent<CloningPodComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<CloningPodComponent, GotEmaggedEvent>(OnEmagged);
+
         // Utopia-Tweak : Machine Parts
         SubscribeLocalEvent<CloningPodComponent, RefreshPartsEvent>(OnPartsRefreshed);
         SubscribeLocalEvent<CloningPodComponent, UpgradeExamineEvent>(OnUpgradeExamine);
