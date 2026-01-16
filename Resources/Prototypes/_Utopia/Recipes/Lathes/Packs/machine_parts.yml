@@ -2,13 +2,13 @@
   id: MachineParts
   recipes:
   - RPED
-  - AdvancedCapacitorStockpartType
-  - AdvancedMatterBinStockpartType
-  - NanoManipulatorStockpartType
-  - AdvancedScanningModuleStockpartType
-  - HighPowerMicroLaserStockpartType
-  - SuperCapacitorStockpartType
-  - SuperMatterBinStockpartType
-  - PicoManipulatorStockpartType
-  - PhasicScanningModuleStockpartType
-  - UltraHighPowerMicroLaserStockpartType
+  - AdvancedCapacitorStockPart
+  - AdvancedMatterBinStockPart
+  - NanoManipulatorStockPart
+  - AdvancedScanningModuleStockPart
+  - HighPowerMicroLaserStockPart
+  - SuperCapacitorStockPart
+  - SuperMatterBinStockPart
+  - PicoManipulatorStockPart
+  - PhasicScanningModuleStockPart
+  - UltraHighPowerMicroLaserStockPart

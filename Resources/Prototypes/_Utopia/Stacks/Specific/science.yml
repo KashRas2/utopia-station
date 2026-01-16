@@ -4,28 +4,28 @@
   id: Capacitor
   name: stack-capacitor
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: capacitor }
-  spawn: CapacitorStockpartType
+  spawn: CapacitorStockPart
   maxCount: 10
 
 - type: stack
   id: MatterBin
   name: stack-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: matter_bin }
-  spawn: MatterBinStockpartType
+  spawn: MatterBinStockPart
   maxCount: 10
 
 - type: stack
   id: ScanningModule
   name: stack-scanning-module
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: scan_module }
-  spawn: ScanningModuleStockpartType
+  spawn: ScanningModuleStockPart
   maxCount: 10
 
 - type: stack
   id: MicroLaser
   name: stack-micro-laser
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: micro_laser }
-  spawn: MicroLaserStockpartType
+  spawn: MicroLaserStockPart
   maxCount: 10
 
 # Tier 2
@@ -34,35 +34,35 @@
   id: AdvancedCapacitor
   name: stack-advanced-capacitor
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: adv_capacitor }
-  spawn: AdvancedCapacitorStockpartType
+  spawn: AdvancedCapacitorStockPart
   maxCount: 10
 
 - type: stack
   id: NanoManipulator
   name: stack-advanced-manipulator
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: nano_mani }
-  spawn: NanoManipulatorStockpartType
+  spawn: NanoManipulatorStockPart
   maxCount: 10
 
 - type: stack
   id: AdvancedMatterBin
   name: stack-advanced-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: advanced_matter_bin }
-  spawn: AdvancedMatterBinStockpartType
+  spawn: AdvancedMatterBinStockPart
   maxCount: 10
 
 - type: stack
   id: AdvancedScanningModule
   name: stack-advanced-scanning-module
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: adv_scan_module }
-  spawn: AdvancedScanningModuleStockpartType
+  spawn: AdvancedScanningModuleStockPart
   maxCount: 10
 
 - type: stack
   id: HighPowerMicroLaser
   name: stack-high-power-micro-laser
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: high_micro_laser }
-  spawn: HighPowerMicroLaserStockpartType
+  spawn: HighPowerMicroLaserStockPart
   maxCount: 10
 
 # Tier 3
@@ -71,35 +71,35 @@
   id: SuperCapacitor
   name: stack-super-capacitor
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: super_capacitor }
-  spawn: SuperCapacitorStockpartType
+  spawn: SuperCapacitorStockPart
   maxCount: 10
 
 - type: stack
   id: PicoManipulator
   name: stack-super-manipulator
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: pico_mani }
-  spawn: PicoManipulatorStockpartType
+  spawn: PicoManipulatorStockPart
   maxCount: 10
 
 - type: stack
   id: SuperMatterBin
   name: stack-super-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: super_matter_bin }
-  spawn: SuperMatterBinStockpartType
+  spawn: SuperMatterBinStockPart
   maxCount: 10
 
 - type: stack
   id: PhasicScanningModule
   name: stack-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: super_scan_module }
-  spawn: PhasicScanningModuleStockpartType
+  spawn: PhasicScanningModuleStockPart
   maxCount: 10
 
 - type: stack
   id: UltraHighPowerMicroLaser
   name: stack-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: ultra_high_micro_laser }
-  spawn: UltraHighPowerMicroLaserStockpartType
+  spawn: UltraHighPowerMicroLaserStockPart
   maxCount: 10
 
 # Tier 4
@@ -108,33 +108,33 @@
   id: BluespaceCapacitor
   name: stack-bluespace-capacitor
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: quadratic_capacitor }
-  spawn: QuadraticCapacitorStockpartType
+  spawn: QuadraticCapacitorStockPart
   maxCount: 10
 
 - type: stack
   id: FemtoManipulator
   name: stack-bluespace-manipulator
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: femto_mani }
-  spawn: FemtoManipulatorStockpartType
+  spawn: FemtoManipulatorStockPart
   maxCount: 10
 
 - type: stack
   id: BluespaceMatterBin
   name: stack-bluespace-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: bluespace_matter_bin }
-  spawn: BluespaceMatterBinStockpartType
+  spawn: BluespaceMatterBinStockPart
   maxCount: 10
 
 - type: stack
   id: TriphasicScanningModule
   name: stack-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: triphasic_scan_module }
-  spawn: TriphasicScanningModuleStockpartType
+  spawn: TriphasicScanningModuleStockPart
   maxCount: 10
 
 - type: stack
   id:  QuadUltraMicroLaser
   name: stack-matter-bin
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: quadultra_micro_laser }
-  spawn:  QuadUltraMicroLaserStockpartType
+  spawn:  QuadUltraMicroLaserStockPart
   maxCount: 10

@@ -29,72 +29,72 @@
 
 - type: latheRecipe
   parent: BaseStockPartRecipe
-  id: CapacitorStockpartType
-  result: CapacitorStockpartType
+  id: CapacitorStockPart
+  result: CapacitorStockPart
 
 - type: latheRecipe
   parent: BaseStockPartRecipe
-  id: MatterBinStockpartType
-  result: MatterBinStockpartType
+  id: MatterBinStockPart
+  result: MatterBinStockPart
 
 - type: latheRecipe
   parent: BaseStockPartRecipe
-  id: ScanningModuleStockpartType
-  result: ScanningModuleStockpartType
+  id: ScanningModuleStockPart
+  result: ScanningModuleStockPart
 
 - type: latheRecipe
   parent: BaseStockPartRecipe
-  id: MicroLaserStockpartType
-  result: MicroLaserStockpartType
+  id: MicroLaserStockPart
+  result: MicroLaserStockPart
 
 # Rating 2
 - type: latheRecipe
   parent: BaseAdvancedPartRecipe
-  id: AdvancedCapacitorStockpartType
-  result: AdvancedCapacitorStockpartType
+  id: AdvancedCapacitorStockPart
+  result: AdvancedCapacitorStockPart
 
 - type: latheRecipe
   parent: BaseAdvancedPartRecipe
-  id: AdvancedMatterBinStockpartType
-  result: AdvancedMatterBinStockpartType
+  id: AdvancedMatterBinStockPart
+  result: AdvancedMatterBinStockPart
 
 - type: latheRecipe
   parent: BaseAdvancedPartRecipe
-  id: NanoManipulatorStockpartType
-  result: NanoManipulatorStockpartType
+  id: NanoManipulatorStockPart
+  result: NanoManipulatorStockPart
 
 - type: latheRecipe
   parent: BaseAdvancedPartRecipe
-  id: AdvancedScanningModuleStockpartType
-  result: AdvancedScanningModuleStockpartType
+  id: AdvancedScanningModuleStockPart
+  result: AdvancedScanningModuleStockPart
 
 - type: latheRecipe
   parent: BaseAdvancedPartRecipe
-  id: HighPowerMicroLaserStockpartType
-  result: HighPowerMicroLaserStockpartType
+  id: HighPowerMicroLaserStockPart
+  result: HighPowerMicroLaserStockPart
 
 # Rating 3
 - type: latheRecipe
   parent: BaseSuperPartRecipe
-  id: SuperCapacitorStockpartType
-  result: SuperCapacitorStockpartType
+  id: SuperCapacitorStockPart
+  result: SuperCapacitorStockPart
 
 - type: latheRecipe
   parent: BaseSuperPartRecipe
-  id: SuperMatterBinStockpartType
-  result: SuperMatterBinStockpartType
+  id: SuperMatterBinStockPart
+  result: SuperMatterBinStockPart
 
 - type: latheRecipe
   parent: BaseSuperPartRecipe
-  id: PicoManipulatorStockpartType
-  result: PicoManipulatorStockpartType
+  id: PicoManipulatorStockPart
+  result: PicoManipulatorStockPart
 
 - type: latheRecipe
   parent: BaseSuperPartRecipe
-  id: PhasicScanningModuleStockpartType
-  result: PhasicScanningModuleStockpartType
+  id: PhasicScanningModuleStockPart
+  result: PhasicScanningModuleStockPart
 
 - type: latheRecipe
   parent: BaseSuperPartRecipe
-  id: UltraHighPowerMicroLaserStockpartType
-  result: UltraHighPowerMicroLaserStockpartType
+  id: UltraHighPowerMicroLaserStockPart
+  result: UltraHighPowerMicroLaserStockPart

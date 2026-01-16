@@ -18,7 +18,7 @@ public sealed class MachineConstruction : InteractionTest
         ClientAssertPrototype(Unfinished, Target);
         await Interact(Wrench, Cable);
         AssertPrototype(MachineFrame);
-        await Interact(ProtolatheBoard, Manipulator1, Manipulator1, Manipulator1, Manipulator1, Beaker, Beaker, Screw);
+        await Interact(ProtolatheBoard, Bin1, Bin1, Manipulator1, Manipulator1, Beaker, Beaker, Screw); // Utopia-Tweak : Machine Parts
         AssertPrototype(Protolathe);
     }
 
@@ -36,7 +36,8 @@ public sealed class MachineConstruction : InteractionTest
             (Steel, 5),
             (Cable, 1),
             (Beaker, 2),
-            (Manipulator1, 4),
+            (Manipulator1, 2), // Utopia-Tweak : Machine Parts
+            (Bin1, 2), // Utopia-Tweak : Machine Parts
             (ProtolatheBoard, 1));
     }
 
