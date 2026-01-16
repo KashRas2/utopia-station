@@ -82,7 +82,7 @@
 
 - type: entity
   id: NanoManipulatorStockpartType
-  name: advanced manipulator
+  name: nano manipulator
   parent: MicroManipulatorStockPart
   description: An advanced manipulator used in the construction of a variety of devices.
   components:
@@ -92,7 +92,7 @@
       partType: Manipulator
       tier: 2
     - type: Stack
-      stackType: AdvancedManipulator
+      stackType: NanoManipulator
     - type: StackPrice
       price: 15
 
@@ -163,7 +163,7 @@
 
 - type: entity
   id: PicoManipulatorStockpartType
-  name: super manipulator
+  name: pico manipulator
   parent: MicroManipulatorStockPart
   description: A super manipulator used in the construction of a variety of devices.
   components:
@@ -173,7 +173,7 @@
       partType: Manipulator
       tier: 3
     - type: Stack
-      stackType: SuperManipulator
+      stackType: PicoManipulator
     - type: StackPrice
       price: 30
 
@@ -244,7 +244,7 @@
 
 - type: entity
   id: FemtoManipulatorStockpartType
-  name: bluespace manipulator
+  name: femto manipulator
   parent: MicroManipulatorStockPart
   description: A bluespace manipulator used in the construction of a variety of devices.
   components:
@@ -254,7 +254,7 @@
       partType: Manipulator
       tier: 4
     - type: Stack
-      stackType: BluespaceManipulator
+      stackType: FemtoManipulator
     - type: StackPrice
       price: 500
 

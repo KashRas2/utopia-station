@@ -38,7 +38,7 @@
   maxCount: 10
 
 - type: stack
-  id: AdvancedManipulator
+  id: NanoManipulator
   name: stack-advanced-manipulator
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: nano_mani }
   spawn: NanoManipulatorStockpartType
@@ -75,7 +75,7 @@
   maxCount: 10
 
 - type: stack
-  id: SuperManipulator
+  id: PicoManipulator
   name: stack-super-manipulator
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: pico_mani }
   spawn: PicoManipulatorStockpartType
@@ -112,7 +112,7 @@
   maxCount: 10
 
 - type: stack
-  id: BluespaceManipulator
+  id: FemtoManipulator
   name: stack-bluespace-manipulator
   icon: { sprite: /Textures/Objects/Misc/stock_parts.rsi, state: femto_mani }
   spawn: FemtoManipulatorStockpartType
