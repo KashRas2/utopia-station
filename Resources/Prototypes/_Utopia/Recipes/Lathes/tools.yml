@@ -1,0 +1,9 @@
+  id: RPED
+  parent: BaseToolRecipe
+  result: RPED
+  completetime: 10
+  materials:
+    Steel: 650
+    Plastic: 150
+    Gold: 50
+    Copper: 50
