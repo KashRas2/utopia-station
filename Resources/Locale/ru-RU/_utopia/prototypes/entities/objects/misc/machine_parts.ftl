@@ -1,77 +1,77 @@
-ent-CapacitorStockpartType = конденсатор
+ent-CapacitorStockPart = конденсатор
     .desc = Базовый конденсатор, используемый в конструкции различных устройств.
 
-ent-MatterBinStockpartType = ёмкость материи
+ent-MatterBinStockPart = ёмкость материи
     .desc = Контейнер, предназначенный для хранения спресованных материалов, ожидающих восстановления.
 
-ent-ScanningModuleStockpartType = сканирующий модуль
+ent-ScanningModuleStockPart = сканирующий модуль
     .desc = Компактный сканирующий модуль высокого разрешения, используемый в конструкции некоторых устройств.
 
-ent-MicroLaserStockpartType = микролазер
+ent-MicroLaserStockPart = микролазер
     .desc = Миниатюрный лазер, используемый в некоторых устройствах.
 
-ent-AdvancedCapacitorStockpartType = улучшенный конденсатор
+ent-AdvancedCapacitorStockPart = улучшенный конденсатор
     .desc = Улучшенный конденсатор, используемый в конструкции различных устройств.
 
-ent-NanoManipulatorStockpartType = наноманипулятор
+ent-NanoManipulatorStockPart = наноманипулятор
     .desc = Миниатюрный манипулятор, используемый в конструкции некоторых устройств.
 
-ent-AdvancedMatterBinStockpartType = улучшенная ёмкость материи
+ent-AdvancedMatterBinStockPart = улучшенная ёмкость материи
     .desc = Контейнер, предназначенный для хранения спресованных материалов, ожидающих восстановления.
 
-ent-AdvancedScanningModuleStockpartType = улучшенный сканирующий модуль
+ent-AdvancedScanningModuleStockPart = улучшенный сканирующий модуль
     .desc = Компактный сканирующий модуль высокого разрешения, используемый в конструкции некоторых устройств.
 
-ent-HighPowerMicroLaserStockpartType = высокомощный микролазер
+ent-HighPowerMicroLaserStockPart = высокомощный микролазер
     .desc = Миниатюрный лазер, используемый в некоторых устройствах.
 
-ent-SuperCapacitorStockpartType = суперконденсатор
+ent-SuperCapacitorStockPart = суперконденсатор
     .desc = Суперконденсатор, используемый в конструкции различных устройств.
 
-ent-PicoManipulatorStockpartType = пико-манипулятор
+ent-PicoManipulatorStockPart = пико-манипулятор
     .desc = Миниатюрный манипулятор, используемый в конструкции некоторых устройств.
 
-ent-SuperMatterBinStockpartType = супер ёмкость материи
+ent-SuperMatterBinStockPart = супер ёмкость материи
     .desc = Контейнер, предназначенный для хранения спресованных материалов, ожидающих восстановления.
 
-ent-PhasicScanningModuleStockpartType = фазовый сканирующий модуль
+ent-PhasicScanningModuleStockPart = фазовый сканирующий модуль
     .desc = Компактный фазовый сканирующий модуль высокого разрешения, используемый в конструкции некоторых устройств.
 
-ent-UltraHighPowerMicroLaserStockpartType = ультрамощный микролазер
+ent-UltraHighPowerMicroLaserStockPart = ультрамощный микролазер
     .desc = Миниатюрный лазер, используемый в некоторых устройствах.
 
-ent-QuadraticCapacitorStockpartType = квадратичный конденсатор
+ent-QuadraticCapacitorStockPart = квадратичный конденсатор
     .desc = Конденсатор квадратичной мощности, используемый в конструкции различных устройств.
 
-ent-FemtoManipulatorStockpartType = фемто-манипулятор
+ent-FemtoManipulatorStockPart = фемто-манипулятор
     .desc = Миниатюрный манипулятор, используемый в конструкции некоторых устройств.
 
-ent-BluespaceMatterBinStockpartType = блюспейс ёмкость материи
+ent-BluespaceMatterBinStockPart = блюспейс ёмкость материи
     .desc = Контейнер, предназначенный для хранения в блюспейсе спресованных материалов, ожидающих восстановления.
 
-ent-TriphasicScanningModuleStockpartType = трёхфазовый сканирующий модуль
+ent-TriphasicScanningModuleStockPart = трёхфазовый сканирующий модуль
     .desc = Компактный трёхфазовый сканирующий модуль высокого разрешения, используемый в конструкции некоторых устройств.
 
-ent-QuadUltraMicroLaserStockpartType = квад-ультра микролазер
+ent-QuadUltraMicroLaserStockPart = квад-ультра микролазер
     .desc = Миниатюрный лазер, используемый в некоторых устройствах.
 
-ent-AnsibleSubspaceStockpartType = подпространственный ансибл
+ent-AnsibleSubspaceStockPart = подпространственный ансибл
     .desc = Компактный модуль, способный определять внепространственную активность.
 
-ent-FilterSubspaceStockpartType = гиперволновой фильтр
+ent-FilterSubspaceStockPart = гиперволновой фильтр
     .desc = Крошечное устройство, способное фильтровать и преобразовывать сверхинтенсивные радиоволны.
 
-ent-AmplifierSubspaceStockpartType = подпространственный усилитель
+ent-AmplifierSubspaceStockPart = подпространственный усилитель
     .desc = Компактная микромашина, способная усиливать слабые подпространственные сигналы.
 
-ent-TreatmentSubspaceStockpartType = диск подпространственной обработки
+ent-TreatmentSubspaceStockPart = диск подпространственной обработки
     .desc = Компактная микромашина, способная протягивать гиперсжатые радиоволны.
 
-ent-AnalyzerSubspaceStockpartType = подпространственный анализатор длин волны
+ent-AnalyzerSubspaceStockPart = подпространственный анализатор длин волны
     .desc = Сложный анализатор, способный анализировать длины волн загадочного подпространства.
 
-ent-CrystalSubspaceStockpartType = ансибл кристалл
+ent-CrystalSubspaceStockPart = ансибл кристалл
     .desc = Кристалл из чистого стекла, используемый для передачи лазерных импульсов с данными в подпространство.
 
-ent-TransmitterSubspaceStockpartType = подпространственный трансмиттер
+ent-TransmitterSubspaceStockPart = подпространственный трансмиттер
     .desc = Большая часть оборудования, используемая для открытия окна в подпространственное измерение.

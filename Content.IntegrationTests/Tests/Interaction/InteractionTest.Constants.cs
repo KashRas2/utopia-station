@@ -33,13 +33,13 @@ public abstract partial class InteractionTest
 
     // Parts
     // Utopia-Tweak : Machine Parts
-    protected const string Bin1 = "MatterBinStockpartType";
-    protected const string Bin4 = "BluespaceMatterBinStockpartType";
-    protected const string Cap1 = "CapacitorStockpartType";
-    protected const string Cap4 = "QuadraticCapacitorStockpartType";
-    protected const string Manipulator4 = "FemtoManipulatorStockpartType";
-    protected const string Laser1 = "MicroLaserStockpartType";
-    protected const string Laser2 = "QuadUltraMicroLaserStockpartType";
+    protected const string Bin1 = "MatterBinStockPart";
+    protected const string Bin4 = "BluespaceMatterBinStockPart";
+    protected const string Cap1 = "CapacitorStockPart";
+    protected const string Cap4 = "QuadraticCapacitorStockPart";
+    protected const string Manipulator4 = "FemtoManipulatorStockPart";
+    protected const string Laser1 = "MicroLaserStockPart";
+    protected const string Laser2 = "QuadUltraMicroLaserStockPart";
     // Utopia-Tweak : Machine Parts
     protected const string Manipulator1 = "MicroManipulatorStockPart";
     protected const string Battery1 = "PowerCellSmall";

@@ -132,10 +132,10 @@ DrinkGoldschlagerGlass: DrinkGildlagerGlass
 ClosetBase: ClosetSteelBase
 
 # 2024-01-08
-SalvagePartsT4Spawner: SalvageLootSpawner
-SalvagePartsT3Spawner: SalvageLootSpawner
-SalvagePartsT3T4Spawner: SalvageLootSpawner
-SalvagePartsT2Spawner: SalvageLootSpawner
+# SalvagePartsT4Spawner: SalvageLootSpawner # Utopia-Tweak : Machine parts
+# SalvagePartsT3Spawner: SalvageLootSpawner
+# SalvagePartsT3T4Spawner: SalvageLootSpawner
+# SalvagePartsT2Spawner: SalvageLootSpawner # Utopia-Tweak : Machine parts
 #SuperCapacitorStockPart: CapacitorStockPart
 #QuadraticCapacitorStockPart: CapacitorStockPart
 #NanoManipulatorStockPart: MicroManipulatorStockPart
