@@ -5,6 +5,7 @@ namespace Content.Shared.Utopia.CCVar;
 [CVarDefs]
 public sealed class UCCVars
 {
+    // Barks
     public static readonly CVarDef<bool> BarksEnabled =
         CVarDef.Create("barks.enabled", true, CVar.SERVER | CVar.REPLICATED | CVar.ARCHIVE);
 
@@ -23,4 +24,7 @@ public sealed class UCCVars
     public static readonly CVarDef<float> BarksVolume =
         CVarDef.Create("barks.volume", 1f, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+    // Economy
+    public static readonly CVarDef<bool> PaySalary =
+        CVarDef.Create("economy.pay_salary", true, CVar.SERVERONLY | CVar.ARCHIVE);
 }

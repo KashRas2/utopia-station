@@ -1,14 +1,23 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Cargo.Systems;
 using Content.Server.Power.Components;
+using Content.Server.Stack;
+using Content.Server.Store.Components;
 using Content.Server.Vocalization.Systems;
+using Content.Server.Utopia.Economy;
 using Content.Shared.Cargo;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Emp;
+using Content.Shared.Interaction;
+using Content.Shared.PDA;
 using Content.Shared.Power;
+using Content.Shared.Stacks;
+using Content.Shared.Tag;
 using Content.Shared.Throwing;
+using Content.Shared.Utopia.Economy;
 using Content.Shared.VendingMachines;
 using Content.Shared.Wall;
 using Robust.Shared.Prototypes;
@@ -21,6 +30,9 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly PricingSystem _pricing = default!;
         [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
+        //ADT-Economy-Start
+        [Dependency] private readonly StackSystem _stackSystem = default!;
+        //ADT-Economy-End
 
         private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -36,6 +48,11 @@ namespace Content.Server.VendingMachines
             SubscribeLocalEvent<VendingMachineComponent, VendingMachineSelfDispenseEvent>(OnSelfDispense);
 
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
+
+            //ADT-Economy-Start
+            SubscribeLocalEvent<VendingMachineComponent, InteractUsingEvent>(OnInteractUsing);
+            SubscribeLocalEvent<VendingMachineComponent, VendingMachineWithdrawMessage>(OnWithdrawMessage);
+            //ADT-Economy-End
         }
 
         private void OnVendingPrice(EntityUid uid, VendingMachineComponent component, ref PriceCalculationEvent args)
@@ -244,5 +261,42 @@ namespace Content.Server.VendingMachines
         {
             args.Cancelled |= ent.Comp.Broken;
         }
+
+        private void OnInteractUsing(EntityUid uid, VendingMachineComponent component, InteractUsingEvent args)
+        {
+            if (args.Handled)
+                return;
+
+            if (component.Broken || Receiver.IsPowered(uid))
+                return;
+
+            if (!TryComp<CurrencyComponent>(args.Used, out var currency) ||
+                !currency.Price.Keys.Contains(component.CurrencyType))
+                return;
+
+            var stack = Comp<StackComponent>(args.Used);
+            component.Credits += stack.Count;
+            Del(args.Used);
+            Dirty(uid, component);
+            Audio.PlayPvs(component.SoundInsertCurrency, uid);
+            args.Handled = true;
+        }
+
+        protected override int GetEntryPrice(EntityPrototype proto)
+        {
+            var price = (int)_pricing.GetEstimatedPrice(proto);
+            return price > 0 ? price : 25;
+        }
+
+        private void OnWithdrawMessage(EntityUid uid, VendingMachineComponent component, VendingMachineWithdrawMessage args)
+        {
+            _stackSystem.SpawnAtPosition(component.Credits, PrototypeManager.Index(component.CreditStackPrototype),
+                Transform(uid).Coordinates);
+            component.Credits = 0;
+            Audio.PlayPvs(component.SoundWithdrawCurrency, uid);
+
+            Dirty(uid, component);
+        }
+        //ADT-Economy-End
     }
 }

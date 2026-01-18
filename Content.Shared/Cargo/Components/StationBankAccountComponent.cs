@@ -1,4 +1,5 @@
 using Content.Shared.Cargo.Prototypes;
+using Content.Shared.Utopia.Economy;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
@@ -8,7 +9,7 @@ namespace Content.Shared.Cargo.Components;
 /// <summary>
 /// Added to the abstract representation of a station to track its money.
 /// </summary>
-[RegisterComponent, NetworkedComponent, Access(typeof(SharedCargoSystem)), AutoGenerateComponentPause, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentPause, AutoGenerateComponentState] // Utopia-Tweak : Economy
 public sealed partial class StationBankAccountComponent : Component
 {
     /// <summary>
@@ -74,6 +75,13 @@ public sealed partial class StationBankAccountComponent : Component
     /// </summary>
     [DataField]
     public TimeSpan IncomeDelay = TimeSpan.FromSeconds(50);
+
+    // Utopia-Tweak : Economy
+    /// <summary>
+    /// Хранит в себе информацию о станционных банковских аккаунтах
+    /// </summary>
+    public Dictionary<ProtoId<CargoAccountPrototype>, BankAccount> BankAccounts = new();
+    // Utopia-Tweak : Economy
 }
 
 /// <summary>

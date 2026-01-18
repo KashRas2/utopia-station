@@ -4,3 +4,7 @@
 
 - type: Tag
   id: UtopiaLeadOre
+
+# Economy
+- type: Tag
+  id: IgnoreBalanceChecks

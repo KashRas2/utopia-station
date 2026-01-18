@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -9,8 +10,11 @@ using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Emp;
 using Content.Shared.Interaction;
+using Content.Shared.PDA;
 using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
+using Content.Shared.Tag;
+using Content.Shared.Utopia.Economy;
 using Content.Shared.UserInterface;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -30,12 +34,16 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
     [Dependency] private   readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] protected readonly SharedPointLightSystem Light = default!;
-    [Dependency] private   readonly SharedPowerReceiverSystem _receiver = default!;
+    [Dependency] protected readonly SharedPowerReceiverSystem Receiver = default!;
     [Dependency] protected readonly SharedPopupSystem Popup = default!;
     [Dependency] private   readonly SharedSpeakOnUIClosedSystem _speakOn = default!;
     [Dependency] protected readonly SharedUserInterfaceSystem UISystem = default!;
     [Dependency] protected readonly IRobustRandom Randomizer = default!;
     [Dependency] private readonly EmagSystem _emag = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
+    [Dependency] private readonly SharedEconomySystem _sharedEconomy = default!;
+
+    protected const double GlobalPriceMultiplier = 2.0; //ADT-Economy
 
     public override void Initialize()
     {
@@ -137,7 +145,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
     private void OnInventoryEjectMessage(Entity<VendingMachineComponent> entity, ref VendingMachineEjectMessage args)
     {
-        if (!_receiver.IsPowered(entity.Owner) || Deleted(entity))
+        if (!Receiver.IsPowered(entity.Owner) || Deleted(entity))
             return;
 
         if (args.Actor is not { Valid: true } actor)
@@ -153,7 +161,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
     private void OnEmpPulse(Entity<VendingMachineComponent> ent, ref EmpPulseEvent args)
     {
-        if (!ent.Comp.Broken && _receiver.IsPowered(ent.Owner))
+        if (!ent.Comp.Broken && Receiver.IsPowered(ent.Owner))
         {
             args.Affected = true;
             args.Disabled = true;
@@ -213,7 +221,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         if (!Resolve(uid, ref vendComponent))
             return;
 
-        if (vendComponent.Ejecting || vendComponent.Broken || !_receiver.IsPowered(uid))
+        if (vendComponent.Ejecting || vendComponent.Broken || !Receiver.IsPowered(uid))
         {
             return;
         }
@@ -232,6 +240,43 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
             Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid);
             Deny((uid, vendComponent));
             return;
+        }
+
+        var price = GetPrice(entry, vendComponent);
+        if (price > 0 && !vendComponent.AllForFree && user.HasValue && !_tag.HasTag(user.Value, "IgnoreBalanceChecks"))
+        {
+            var success = false;
+            if (vendComponent.Credits >= price)
+            {
+                vendComponent.Credits -= price;
+                success = true;
+            }
+            else
+            {
+                var items = _accessReader.FindPotentialAccessItems(user.Value);
+                foreach (var item in items)
+                {
+                    var nextItem = item;
+                    if (TryComp(item, out PdaComponent? pda) && pda.ContainedId is { Valid: true } id)
+                        nextItem = id;
+
+                    if (!TryComp<BankCardComponent>(nextItem, out var bankCard) || !bankCard.AccountId.HasValue
+                        || !_sharedEconomy.TryGetAccount(bankCard.AccountId.Value, out var account)
+                        || account.Balance < price)
+                        continue;
+
+                    _sharedEconomy.TryChangeBalance(bankCard.AccountId.Value, -price);
+                    success = true;
+                    break;
+                }
+            }
+
+            if (!success)
+            {
+                Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid);
+                Deny((uid, vendComponent));
+                return;
+            }
         }
 
         // Start Ejecting, and prevent users from ordering while anim playing
@@ -286,7 +331,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         {
             finalState = VendingMachineVisualState.Deny;
         }
-        else if (!_receiver.IsPowered(entity.Owner))
+        else if (!Receiver.IsPowered(entity.Owner))
         {
             finalState = VendingMachineVisualState.Off;
         }
@@ -405,7 +450,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
         foreach (var (id, amount) in entries)
         {
-            if (PrototypeManager.HasIndex<EntityPrototype>(id))
+            if (PrototypeManager.TryIndex<EntityPrototype>(id, out var proto))
             {
                 var restock = amount;
                 var chanceOfMissingStock = 1 - restockQuality;
@@ -425,10 +470,20 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
                     // losing the rest of the restock.
                     entry.Amount = Math.Min(entry.Amount + amount, 3 * restock);
                 else
-                    inventory.Add(id, new VendingMachineInventoryEntry(type, id, restock));
+                {
+                    var price = GetEntryPrice(proto);
+                    inventory.Add(id, new VendingMachineInventoryEntry(type, id, amount, price));
+                }
             }
         }
     }
+
+    //ADT-Economy-Stat
+    protected virtual int GetEntryPrice(EntityPrototype proto)
+    {
+        return 25;
+    }
+    //ADT-Economy-End
 
     private void OnActivatableUIOpenAttempt(EntityUid uid, VendingMachineComponent component, ActivatableUIOpenAttemptEvent args)
     {
@@ -443,5 +498,15 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         TryUpdateVisualState((uid, vendComponent));
 
         UISystem.CloseUi(uid, VendingMachineUiKey.Key);
+    }
+
+    protected double GetPriceMultiplier(VendingMachineComponent comp)
+    {
+        return comp.PriceMultiplier * GlobalPriceMultiplier;
+    }
+
+    private int GetPrice(VendingMachineInventoryEntry entry, VendingMachineComponent comp)
+    {
+        return (int)(entry.Price * comp.PriceMultiplier);
     }
 }

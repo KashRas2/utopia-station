@@ -15,6 +15,10 @@ namespace Content.Shared.VendingMachines
     }
 
     [Serializable, NetSerializable]
+    public sealed class VendingMachineWithdrawMessage : BoundUserInterfaceMessage;
+
+
+    [Serializable, NetSerializable]
     public enum VendingMachineUiKey
     {
         Key,

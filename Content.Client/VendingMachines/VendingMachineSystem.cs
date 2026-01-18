@@ -1,3 +1,4 @@
+using System.IO.Pipelines;
 using System.Linq;
 using Content.Shared.VendingMachines;
 using Robust.Client.Animations;

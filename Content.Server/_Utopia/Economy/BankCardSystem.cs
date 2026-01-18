@@ -1,0 +1,205 @@
+using System.Linq;
+using Content.Server.Access.Systems;
+using Content.Server.CartridgeLoader;
+using Content.Server.Chat.Systems;
+using Content.Server.GameTicking;
+using Content.Server.Roles.Jobs;
+using Content.Server.Station.Systems;
+using Content.Shared.Utopia.Economy;
+using Content.Shared.GameTicking;
+using Content.Shared.Inventory;
+using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
+using Content.Shared.Mobs.Systems;
+using Robust.Server.Player;
+using Robust.Shared.Prototypes;
+using Content.Shared.Cargo.Components;
+using Content.Shared.Cargo.Prototypes;
+using Robust.Shared.Configuration;
+using Robust.Shared.Random;
+using Content.Shared.Utopia.CCVar;
+
+namespace Content.Server.Utopia.Economy;
+
+public sealed partial class BankCardSystem : EntitySystem
+{
+    [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private readonly IPrototypeManager _protoMan = default!;
+    [Dependency] private readonly IdCardSystem _idCardSystem = default!;
+    [Dependency] private readonly StationSystem _station = default!;
+    [Dependency] private readonly ChatSystem _chatSystem = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly InventorySystem _inventorySystem = default!;
+    [Dependency] private readonly BankCartridgeSystem _bankCartridge = default!;
+    [Dependency] private readonly JobSystem _job = default!;
+    [Dependency] private readonly GameTicker _gameTicker = default!;
+    [Dependency] private readonly CartridgeLoaderSystem _cartridgeLoader = default!;
+    [Dependency] private readonly IConfigurationManager _configManager = default!;
+    [Dependency] private readonly SharedEconomySystem _sharedEconomy = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
+
+    private const int SalaryDelay = 2700;
+    private SalaryPrototype _salaries = default!;
+    private float _salaryTimer;
+
+    public override void Initialize()
+    {
+        _salaries = _protoMan.Index<SalaryPrototype>("Salaries");
+
+        SubscribeLocalEvent<BankCardComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawned);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<BalanceChange>(OnBalanceChange);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_gameTicker.RunLevel != GameRunLevel.InRound)
+        {
+            _salaryTimer = 0f;
+            return;
+        }
+
+        _salaryTimer += frameTime;
+
+        if (_salaryTimer <= SalaryDelay)
+            return;
+
+        _salaryTimer = 0f;
+        PaySalary();
+    }
+
+    private void PaySalary()
+    {
+        if (!_configManager.GetCVar(UCCVars.PaySalary))
+            return;
+
+        foreach (var account in _sharedEconomy.Accounts.Where(account =>
+                     account.Mind is { Comp.UserId: not null, Comp.CurrentEntity: not null } &&
+                     _playerManager.TryGetSessionById(account.Mind.Value.Comp.UserId.Value, out _) &&
+                     !_mobState.IsDead(account.Mind.Value.Comp.CurrentEntity.Value)))
+        {
+            var salary = GetSalary(account.Mind);
+            if (salary > 0)
+                _sharedEconomy.TryChangeBalance(account.AccountId, salary);
+        }
+
+        _chatSystem.DispatchGlobalAnnouncement(Loc.GetString("salary-pay-announcement"),
+            colorOverride: Color.FromHex("#18abf5"));
+    }
+
+    private int GetSalary(EntityUid? mind)
+    {
+        if (!_job.MindTryGetJob(mind, out var job) || !_salaries.Salaries.TryGetValue(job.ID, out var salary))
+            return 0;
+
+        return salary;
+    }
+
+    private void OnMapInit(EntityUid uid, BankCardComponent component, MapInitEvent args)
+    {
+        if (component.CommandBudgetCard)
+        {
+            if (TryComp<StationBankAccountComponent>(_station.GetOwningStation(uid), out var stationBank)
+                && component.CommandBudgetType != null)
+            {
+
+                var existingAccount = _sharedEconomy.Accounts.FirstOrDefault(acc =>
+                    acc.CommandBudgetAccount &&
+                    acc.AccountPrototype == component.CommandBudgetType);
+
+                if (existingAccount != null)
+                {
+                    component.AccountId = existingAccount.AccountId;
+                    return;
+                }
+
+                stationBank.BankAccounts.Add(component.CommandBudgetType.Value, CreateDepartmentAccount(component.CommandBudgetType.Value));
+                stationBank.BankAccounts.TryGetValue(component.CommandBudgetType.Value, out var account);
+
+                if (account != null)
+                {
+                    component.AccountId = account.AccountId;
+                    return;
+                }
+            }
+        }
+
+        if (component.AccountId.HasValue)
+        {
+            _sharedEconomy.CreateAccount(component.AccountId.Value, component.StartingBalance);
+            return;
+        }
+
+        var playerAccount = _sharedEconomy.CreateAccount(default, component.StartingBalance);
+        component.AccountId = playerAccount.AccountId;
+    }
+
+    private BankAccount CreateDepartmentAccount(ProtoId<CargoAccountPrototype> departmentType)
+    {
+        int accountNumber;
+        do
+        {
+            accountNumber = _random.Next(100000, 999999);
+        } while (_sharedEconomy.AccountExist(accountNumber));
+
+        var account = new BankAccount(accountNumber, 0, _random);
+        account.AccountPrototype = departmentType;
+        account.CommandBudgetAccount = true;
+        account.Name = Loc.GetString($"command-budget-{departmentType}");
+
+        _sharedEconomy.Accounts.Add(account);
+        return account;
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        _sharedEconomy.Accounts.Clear();
+    }
+
+    private void OnBalanceChange(BalanceChange ev)
+    {
+        if (ev.CartridgeUid.HasValue)
+        {
+            _bankCartridge.UpdateUiState(ev.CartridgeUid.Value);
+        }
+    }
+
+    private void OnPlayerSpawned(PlayerSpawnCompleteEvent ev)
+    {
+        if (_idCardSystem.TryFindIdCard(ev.Mob, out var id) && TryComp<MindContainerComponent>(ev.Mob, out var mind))
+        {
+            var cardEntity = id.Owner;
+            var bankCardComponent = EnsureComp<BankCardComponent>(cardEntity);
+
+            if (!bankCardComponent.AccountId.HasValue || !_sharedEconomy.TryGetAccount(bankCardComponent.AccountId.Value, out var bankAccount))
+                return;
+
+            if (!TryComp(mind.Mind, out MindComponent? mindComponent))
+                return;
+
+            bankAccount.Balance = GetSalary(mind.Mind) + 100;
+            mindComponent.AddMemory(new Memory("PIN", bankAccount.AccountPin.ToString()));
+            mindComponent.AddMemory(new Memory(Loc.GetString("character-info-memories-account-number"),
+                bankAccount.AccountId.ToString()));
+            bankAccount.Mind = (mind.Mind.Value, mindComponent);
+            bankAccount.Name = Name(ev.Mob);
+
+            if (!_inventorySystem.TryGetSlotEntity(ev.Mob, "id", out var pdaUid))
+                return;
+
+            BankCartridgeComponent? comp = null;
+
+            var programs = _cartridgeLoader.GetInstalled(pdaUid.Value);
+
+            var program = programs.ToList().Find(program => TryComp(program, out comp));
+            if (comp == null)
+                return;
+
+            bankAccount.CartridgeUid = program;
+            comp.AccountId = bankAccount.AccountId;
+        }
+    }
+}
