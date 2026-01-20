@@ -22,6 +22,7 @@ using Content.Shared.VendingMachines;
 using Content.Shared.Wall;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Toolshed.Commands.Values;
 
 namespace Content.Server.VendingMachines
 {
@@ -31,6 +32,8 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly PricingSystem _pricing = default!;
         [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
         //ADT-Economy-Start
+        [Dependency] private readonly BankCardSystem _bankCard = default!;
+        [Dependency] private readonly TagSystem _tag = default!;
         [Dependency] private readonly StackSystem _stackSystem = default!;
         //ADT-Economy-End
 
@@ -297,6 +300,69 @@ namespace Content.Server.VendingMachines
 
             Dirty(uid, component);
         }
-        //ADT-Economy-End
+
+        // Frontier: custom vending check
+        protected override void TryChangeBalance(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
+        {
+            PrototypeManager.TryIndex<EntityPrototype>(itemId, out var protoId);
+            if (protoId == null)
+                return;
+
+            var price = (int)(GetEntryPrice(protoId) * component.PriceMultiplier);
+
+            if (price > 0 && !component.AllForFree && !_tag.HasTag(sender, "IgnoreBalanceChecks"))
+            {
+                component.OperationSuccess = false;
+                if (component.Credits >= price)
+                {
+                    component.Credits -= price;
+                    component.OperationSuccess = true;
+                }
+                else
+                {
+                    var items = AccessReader.FindPotentialAccessItems(sender);
+                    foreach (var item in items)
+                    {
+                        var nextItem = item;
+                        if (TryComp(item, out PdaComponent? pda) && pda.ContainedId is { Valid: true } id)
+                            nextItem = id;
+
+                        if (!TryComp<BankCardComponent>(nextItem, out var bankCard) || !bankCard.AccountId.HasValue
+                            || !_bankCard.TryGetAccount(bankCard.AccountId.Value, out var account)
+                            || account.Balance < price)
+                            continue;
+
+                        _bankCard.TryChangeBalance(bankCard.AccountId.Value, -price);
+                        component.OperationSuccess = true;
+                        break;
+                    }
+                }
+            }
+        }
+        // End Frontier: custom vending check
+
+        public void GetAccountBalance(EntityUid? sender, out int balance)
+        {
+            balance = 0;
+            if (sender.HasValue)
+            {
+                var items = AccessReader.FindPotentialAccessItems(sender.Value);
+                foreach (var item in items)
+                {
+                    var currentItem = item;
+
+                    if (TryComp(item, out PdaComponent? pda) && pda.ContainedId is { Valid: true } id)
+                        currentItem = id;
+
+                    if (!TryComp<BankCardComponent>(currentItem, out var bankCard) ||
+                        !bankCard.AccountId.HasValue ||
+                        !_bankCard.TryGetAccount(bankCard.AccountId.Value, out var account))
+                        continue;
+
+                    balance = account.Balance;
+                    break;
+                }
+            }
+        }
     }
 }

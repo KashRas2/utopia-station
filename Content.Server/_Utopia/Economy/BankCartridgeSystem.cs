@@ -9,7 +9,7 @@ namespace Content.Server.Utopia.Economy;
 public sealed class BankCartridgeSystem : EntitySystem
 {
     [Dependency] private readonly CartridgeLoaderSystem? _cartridgeLoaderSystem = default!;
-    [Dependency] private readonly SharedEconomySystem _sharedEconomy = default!;
+    [Dependency] private readonly BankCardSystem _bankCardSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     public override void Initialize()
@@ -33,7 +33,7 @@ public sealed class BankCartridgeSystem : EntitySystem
 
     private void OnAccountLink(EntityUid uid, BankCartridgeComponent component, BankAccountLinkMessage args)
     {
-        if (!_sharedEconomy.TryGetAccount(args.AccountId, out var account) || args.Pin != account.AccountPin ||
+        if (!_bankCardSystem.TryGetAccount(args.AccountId, out var account) || args.Pin != account.AccountPin ||
             account.CommandBudgetAccount)
         {
             component.AccountLinkResult = Loc.GetString("bank-program-ui-link-error");
@@ -45,7 +45,7 @@ public sealed class BankCartridgeSystem : EntitySystem
         if (args.AccountId != component.AccountId)
         {
             if (component.AccountId != null &&
-                _sharedEconomy.TryGetAccount(component.AccountId.Value, out var oldAccount) &&
+                _bankCardSystem.TryGetAccount(component.AccountId.Value, out var oldAccount) &&
                 oldAccount.CartridgeUid == uid)
                 oldAccount.CartridgeUid = null;
 
@@ -66,7 +66,7 @@ public sealed class BankCartridgeSystem : EntitySystem
 
     private void OnTransfer(Entity<BankCartridgeComponent> bankCartridge, BankTransferMessage args)
     {
-        if (bankCartridge.Comp.AccountId == null || !_sharedEconomy.TryGetAccount(bankCartridge.Comp.AccountId.Value, out var senderAccount))
+        if (bankCartridge.Comp.AccountId == null || !_bankCardSystem.TryGetAccount(bankCartridge.Comp.AccountId.Value, out var senderAccount))
         {
             bankCartridge.Comp.TransferResult = Loc.GetString("bank-program-ui-transfer-error-no-account");
             return;
@@ -78,7 +78,7 @@ public sealed class BankCartridgeSystem : EntitySystem
             return;
         }
 
-        if (!_sharedEconomy.TryGetAccount(args.AccountTargetId, out var targetAccount))
+        if (!_bankCardSystem.TryGetAccount(args.AccountTargetId, out var targetAccount))
         {
             bankCartridge.Comp.TransferResult = Loc.GetString("bank-program-ui-transfer-error-target");
             return;
@@ -168,7 +168,7 @@ public sealed class BankCartridgeSystem : EntitySystem
             TransferResult = component.TransferResult
         };
 
-        if (component.AccountId != null && _sharedEconomy.TryGetAccount(component.AccountId.Value, out var account))
+        if (component.AccountId != null && _bankCardSystem.TryGetAccount(component.AccountId.Value, out var account))
         {
             state.Balance = account.Balance;
             state.AccountId = account.AccountId;

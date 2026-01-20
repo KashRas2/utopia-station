@@ -12,7 +12,7 @@ namespace Content.Server.Utopia.Economy;
 public sealed class EftposSystem : EntitySystem
 {
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly SharedEconomySystem _sharedEconomy = default!;
+    [Dependency] private readonly BankCardSystem _bankCardSystem = default!;
     [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly HandsSystem _handsSystem = default!;
@@ -31,8 +31,8 @@ public sealed class EftposSystem : EntitySystem
             bankCard.AccountId == component.BankAccountId || component.Amount <= 0 || bankCard.CommandBudgetCard)
             return;
 
-        if (_sharedEconomy.TryChangeBalance(bankCard.AccountId!.Value, -component.Amount) &&
-            _sharedEconomy.TryChangeBalance(component.BankAccountId.Value, component.Amount))
+        if (_bankCardSystem.TryChangeBalance(bankCard.AccountId!.Value, -component.Amount) &&
+            _bankCardSystem.TryChangeBalance(component.BankAccountId.Value, component.Amount))
         {
             _popupSystem.PopupEntity(Loc.GetString("eftpos-transaction-success"), uid);
             _audioSystem.PlayPvs(component.SoundApply, uid);
@@ -70,7 +70,7 @@ public sealed class EftposSystem : EntitySystem
 
     private string GetOwner(EntityUid uid, int? bankAccountId)
     {
-        if (bankAccountId == null || !_sharedEconomy.TryGetAccount(bankAccountId.Value, out var account))
+        if (bankAccountId == null || !_bankCardSystem.TryGetAccount(bankAccountId.Value, out var account))
             return string.Empty;
 
         if (TryComp(uid, out IdCardComponent? idCard) && idCard.FullName != null)

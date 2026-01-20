@@ -223,6 +223,9 @@ namespace Content.Shared.VendingMachines
 
         [ViewVariables]
         public bool AllForFree = false;
+
+        [ViewVariables]
+        public bool OperationSuccess = true;
         //ADT-Economy-End
     }
 

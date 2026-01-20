@@ -29,7 +29,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 {
     [Dependency] protected readonly IGameTiming Timing = default!;
     [Dependency] protected readonly IPrototypeManager PrototypeManager = default!;
-    [Dependency] private   readonly AccessReaderSystem _accessReader = default!;
+    [Dependency] protected readonly AccessReaderSystem AccessReader = default!;
     [Dependency] private   readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
     [Dependency] private   readonly SharedDoAfterSystem _doAfter = default!;
@@ -40,10 +40,6 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     [Dependency] protected readonly SharedUserInterfaceSystem UISystem = default!;
     [Dependency] protected readonly IRobustRandom Randomizer = default!;
     [Dependency] private readonly EmagSystem _emag = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
-    [Dependency] private readonly SharedEconomySystem _sharedEconomy = default!;
-
-    protected const double GlobalPriceMultiplier = 2.0; //ADT-Economy
 
     public override void Initialize()
     {
@@ -185,7 +181,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         if (!TryComp<AccessReaderComponent>(uid, out var accessReader))
             return true;
 
-        if (_accessReader.IsAllowed(sender, uid, accessReader) || HasComp<EmaggedComponent>(uid))
+        if (AccessReader.IsAllowed(sender, uid, accessReader) || HasComp<EmaggedComponent>(uid))
             return true;
 
         Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-access-denied"), uid, sender);
@@ -230,53 +226,16 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
         if (string.IsNullOrEmpty(entry?.ID))
         {
-            Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-invalid-item"), uid);
+            Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-invalid-item"), uid, user, PopupType.Small);
             Deny((uid, vendComponent));
             return;
         }
 
         if (entry.Amount <= 0)
         {
-            Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid);
+            Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid, user, PopupType.Small);
             Deny((uid, vendComponent));
             return;
-        }
-
-        var price = GetPrice(entry, vendComponent);
-        if (price > 0 && !vendComponent.AllForFree && user.HasValue && !_tag.HasTag(user.Value, "IgnoreBalanceChecks"))
-        {
-            var success = false;
-            if (vendComponent.Credits >= price)
-            {
-                vendComponent.Credits -= price;
-                success = true;
-            }
-            else
-            {
-                var items = _accessReader.FindPotentialAccessItems(user.Value);
-                foreach (var item in items)
-                {
-                    var nextItem = item;
-                    if (TryComp(item, out PdaComponent? pda) && pda.ContainedId is { Valid: true } id)
-                        nextItem = id;
-
-                    if (!TryComp<BankCardComponent>(nextItem, out var bankCard) || !bankCard.AccountId.HasValue
-                        || !_sharedEconomy.TryGetAccount(bankCard.AccountId.Value, out var account)
-                        || account.Balance < price)
-                        continue;
-
-                    _sharedEconomy.TryChangeBalance(bankCard.AccountId.Value, -price);
-                    success = true;
-                    break;
-                }
-            }
-
-            if (!success)
-            {
-                Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid);
-                Deny((uid, vendComponent));
-                return;
-            }
         }
 
         // Start Ejecting, and prevent users from ordering while anim playing
@@ -358,6 +317,15 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     {
         if (IsAuthorized(uid, sender, component))
         {
+            // TryChangeBalance(uid, sender, type, itemId, component);
+
+            // if (!component.OperationSuccess)
+            // {
+            //     Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid);
+            //     Deny((uid, component));
+            //     return;
+            // }
+
             TryEjectVendorItem(uid, type, itemId, component.CanShoot, sender, component);
         }
     }
@@ -500,13 +468,10 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         UISystem.CloseUi(uid, VendingMachineUiKey.Key);
     }
 
-    protected double GetPriceMultiplier(VendingMachineComponent comp)
-    {
-        return comp.PriceMultiplier * GlobalPriceMultiplier;
-    }
-
-    private int GetPrice(VendingMachineInventoryEntry entry, VendingMachineComponent comp)
+    protected int GetPrice(VendingMachineInventoryEntry entry, VendingMachineComponent comp)
     {
         return (int)(entry.Price * comp.PriceMultiplier);
     }
+
+    protected virtual void TryChangeBalance(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component) { }
 }

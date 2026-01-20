@@ -9,7 +9,7 @@ namespace Content.Shared.Cargo.Components;
 /// <summary>
 /// Added to the abstract representation of a station to track its money.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentPause, AutoGenerateComponentState] // Utopia-Tweak : Economy
+[RegisterComponent, NetworkedComponent, Access(typeof(SharedCargoSystem), typeof(SharedEconomySystem)), AutoGenerateComponentPause, AutoGenerateComponentState] // Utopia-Tweak : Economy
 public sealed partial class StationBankAccountComponent : Component
 {
     /// <summary>

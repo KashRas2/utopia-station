@@ -19,7 +19,7 @@ namespace Content.Server.Utopia.Economy;
 public sealed class ATMSystem : SharedATMSystem
 {
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly SharedEconomySystem _sharedEconomy = default!;
+    [Dependency] private readonly BankCardSystem _bankCardSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly StackSystem _stackSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
@@ -75,11 +75,11 @@ public sealed class ATMSystem : SharedATMSystem
             return;
         }
 
-        _sharedEconomy.TryChangeBalance(bankCard.AccountId!.Value, amount);
+        _bankCardSystem.TryChangeBalance(bankCard.AccountId!.Value, amount);
         Del(args.Used);
 
         _audioSystem.PlayPvs(component.SoundInsertCurrency, uid);
-        UpdateUiState(uid, _sharedEconomy.GetBalance(bankCard.AccountId.Value), true, Loc.GetString("atm-ui-select-withdraw-amount"));
+        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true, Loc.GetString("atm-ui-select-withdraw-amount"));
     }
 
     private void OnCardInserted(EntityUid uid, ATMComponent component, EntInsertedIntoContainerMessage args)
@@ -90,7 +90,7 @@ public sealed class ATMSystem : SharedATMSystem
             return;
         }
 
-        UpdateUiState(uid, _sharedEconomy.GetBalance(bankCard.AccountId.Value), true, Loc.GetString("atm-ui-select-withdraw-amount"));
+        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true, Loc.GetString("atm-ui-select-withdraw-amount"));
     }
 
     private void OnCardRemoved(EntityUid uid, ATMComponent component, EntRemovedFromContainerMessage args)
@@ -107,7 +107,7 @@ public sealed class ATMSystem : SharedATMSystem
             return;
         }
 
-        if (!_sharedEconomy.TryGetAccount(bankCard.AccountId.Value, out var account) ||
+        if (!_bankCardSystem.TryGetAccount(bankCard.AccountId.Value, out var account) ||
             account.AccountPin != args.Pin && !HasComp<EmaggedComponent>(uid))
         {
             _popupSystem.PopupEntity(Loc.GetString("atm-wrong-pin"), uid);
@@ -115,7 +115,7 @@ public sealed class ATMSystem : SharedATMSystem
             return;
         }
 
-        if (!_sharedEconomy.TryChangeBalance(account.AccountId, -args.Amount))
+        if (!_bankCardSystem.TryChangeBalance(account.AccountId, -args.Amount))
         {
             _popupSystem.PopupEntity(Loc.GetString("atm-not-enough-cash"), uid);
             _audioSystem.PlayPvs(component.SoundDeny, uid);

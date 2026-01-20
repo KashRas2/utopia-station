@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.Access.Systems;
+using Content.Server.Cargo.Systems;
 using Content.Server.CartridgeLoader;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
@@ -15,18 +16,19 @@ using Robust.Server.Player;
 using Robust.Shared.Prototypes;
 using Content.Shared.Cargo.Components;
 using Content.Shared.Cargo.Prototypes;
+using Robust.Shared.Timing;
 using Robust.Shared.Configuration;
-using Robust.Shared.Random;
 using Content.Shared.Utopia.CCVar;
 
 namespace Content.Server.Utopia.Economy;
 
-public sealed partial class BankCardSystem : EntitySystem
+public sealed class BankCardSystem : SharedEconomySystem
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IPrototypeManager _protoMan = default!;
     [Dependency] private readonly IdCardSystem _idCardSystem = default!;
     [Dependency] private readonly StationSystem _station = default!;
+    [Dependency] private readonly CargoSystem _cargo = default!;
     [Dependency] private readonly ChatSystem _chatSystem = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly InventorySystem _inventorySystem = default!;
@@ -34,9 +36,8 @@ public sealed partial class BankCardSystem : EntitySystem
     [Dependency] private readonly JobSystem _job = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly CartridgeLoaderSystem _cartridgeLoader = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IConfigurationManager _configManager = default!;
-    [Dependency] private readonly SharedEconomySystem _sharedEconomy = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
 
     private const int SalaryDelay = 2700;
     private SalaryPrototype _salaries = default!;
@@ -47,9 +48,8 @@ public sealed partial class BankCardSystem : EntitySystem
         _salaries = _protoMan.Index<SalaryPrototype>("Salaries");
 
         SubscribeLocalEvent<BankCardComponent, MapInitEvent>(OnMapInit);
-        SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawned);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        SubscribeLocalEvent<BalanceChange>(OnBalanceChange);
+        SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawned);
     }
 
     public override void Update(float frameTime)
@@ -76,14 +76,14 @@ public sealed partial class BankCardSystem : EntitySystem
         if (!_configManager.GetCVar(UCCVars.PaySalary))
             return;
 
-        foreach (var account in _sharedEconomy.Accounts.Where(account =>
+        foreach (var account in Accounts.Where(account =>
                      account.Mind is { Comp.UserId: not null, Comp.CurrentEntity: not null } &&
-                     _playerManager.TryGetSessionById(account.Mind.Value.Comp.UserId.Value, out _) &&
-                     !_mobState.IsDead(account.Mind.Value.Comp.CurrentEntity.Value)))
+                     _playerManager.TryGetSessionById(account.Mind.Value.Comp.UserId!.Value, out _) &&
+                     !_mobState.IsDead(account.Mind.Value.Comp.CurrentEntity!.Value)))
         {
             var salary = GetSalary(account.Mind);
             if (salary > 0)
-                _sharedEconomy.TryChangeBalance(account.AccountId, salary);
+                TryChangeBalance(account.AccountId, salary);
         }
 
         _chatSystem.DispatchGlobalAnnouncement(Loc.GetString("salary-pay-announcement"),
@@ -106,7 +106,7 @@ public sealed partial class BankCardSystem : EntitySystem
                 && component.CommandBudgetType != null)
             {
 
-                var existingAccount = _sharedEconomy.Accounts.FirstOrDefault(acc =>
+                var existingAccount = Accounts.FirstOrDefault(acc =>
                     acc.CommandBudgetAccount &&
                     acc.AccountPrototype == component.CommandBudgetType);
 
@@ -129,11 +129,11 @@ public sealed partial class BankCardSystem : EntitySystem
 
         if (component.AccountId.HasValue)
         {
-            _sharedEconomy.CreateAccount(component.AccountId.Value, component.StartingBalance);
+            CreateAccount(component.AccountId.Value, component.StartingBalance);
             return;
         }
 
-        var playerAccount = _sharedEconomy.CreateAccount(default, component.StartingBalance);
+        var playerAccount = CreateAccount(default, component.StartingBalance);
         component.AccountId = playerAccount.AccountId;
     }
 
@@ -142,29 +142,63 @@ public sealed partial class BankCardSystem : EntitySystem
         int accountNumber;
         do
         {
-            accountNumber = _random.Next(100000, 999999);
-        } while (_sharedEconomy.AccountExist(accountNumber));
+            accountNumber = Random.Next(100000, 999999);
+        } while (AccountExist(accountNumber));
 
-        var account = new BankAccount(accountNumber, 0, _random);
+        var account = new BankAccount(accountNumber, 0, Random);
         account.AccountPrototype = departmentType;
         account.CommandBudgetAccount = true;
         account.Name = Loc.GetString($"command-budget-{departmentType}");
 
-        _sharedEconomy.Accounts.Add(account);
+        Accounts.Add(account);
         return account;
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        _sharedEconomy.Accounts.Clear();
+        Accounts.Clear();
     }
 
-    private void OnBalanceChange(BalanceChange ev)
+    public bool TryChangeBalance(int accountId, int amount)
     {
-        if (ev.CartridgeUid.HasValue)
+        if (!TryGetAccount(accountId, out var account))
+            return false;
+
+        if (account.CommandBudgetAccount && account.AccountPrototype != null)
         {
-            _bankCartridge.UpdateUiState(ev.CartridgeUid.Value);
+            var query = EntityQueryEnumerator<StationBankAccountComponent>();
+            while (query.MoveNext(out var stationUid, out var stationBank))
+            {
+                if (stationBank.Accounts.ContainsKey(account.AccountPrototype.Value))
+                {
+                    var currentBalance = stationBank.Accounts[account.AccountPrototype.Value];
+                    if (currentBalance + amount < 0)
+                        return false;
+
+                    _cargo.UpdateBankAccount((stationUid, stationBank), amount, account.AccountPrototype.Value);
+                    return true;
+                }
+            }
+            return false;
         }
+
+        if (account.Balance + amount < 0)
+            return false;
+
+        account.Balance += amount;
+        account.History ??= new List<TransactionsHistory>();
+        account.History.Add(new TransactionsHistory(
+            amount,
+            _timing.CurTime,
+            amount > 0 ? Loc.GetString("bank-deposit") : Loc.GetString("bank-withdrawal"),
+            Loc.GetString("bank-system"),
+            null
+        ));
+
+        if (account.CartridgeUid != null)
+            _bankCartridge.UpdateUiState(account.CartridgeUid.Value);
+
+        return true;
     }
 
     private void OnPlayerSpawned(PlayerSpawnCompleteEvent ev)
@@ -174,7 +208,7 @@ public sealed partial class BankCardSystem : EntitySystem
             var cardEntity = id.Owner;
             var bankCardComponent = EnsureComp<BankCardComponent>(cardEntity);
 
-            if (!bankCardComponent.AccountId.HasValue || !_sharedEconomy.TryGetAccount(bankCardComponent.AccountId.Value, out var bankAccount))
+            if (!bankCardComponent.AccountId.HasValue || !TryGetAccount(bankCardComponent.AccountId.Value, out var bankAccount))
                 return;
 
             if (!TryComp(mind.Mind, out MindComponent? mindComponent))
