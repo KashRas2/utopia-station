@@ -2,7 +2,6 @@
 
 namespace Content.Client._Utopia.Economy.UI;
 
-
 [UsedImplicitly]
 public sealed class ATMBui : BoundUserInterface
 {

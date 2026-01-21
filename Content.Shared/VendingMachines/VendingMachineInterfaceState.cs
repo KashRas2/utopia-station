@@ -14,9 +14,26 @@ namespace Content.Shared.VendingMachines
         }
     }
 
+    // Utopia-Tweak : Economy
+    [Serializable, NetSerializable]
+    public sealed class VendingMachineInterfaceState : BoundUserInterfaceState
+    {
+        public List<VendingMachineInventoryEntry> Inventory;
+        public double PriceMultiplier;
+        public int Credits;
+
+        public VendingMachineInterfaceState(List<VendingMachineInventoryEntry> inventory, double priceMultiplier,
+            int credits)
+        {
+            Inventory = inventory;
+            PriceMultiplier = priceMultiplier;
+            Credits = credits;
+        }
+    }
+
     [Serializable, NetSerializable]
     public sealed class VendingMachineWithdrawMessage : BoundUserInterfaceMessage;
-
+    // Utopia-Tweak : Economy
 
     [Serializable, NetSerializable]
     public enum VendingMachineUiKey

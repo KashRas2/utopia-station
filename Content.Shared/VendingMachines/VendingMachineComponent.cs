@@ -201,7 +201,7 @@ namespace Content.Shared.VendingMachines
         public bool LoopDenyAnimation = true;
         #endregion
 
-        //ADT-Economy-Start
+        // Utopia-Tweak : Economy
         [DataField, ViewVariables(VVAccess.ReadWrite)]
         public double PriceMultiplier = 0.25;
 
@@ -212,21 +212,18 @@ namespace Content.Shared.VendingMachines
 
         [DataField]
         public SoundSpecifier SoundInsertCurrency =
-            new SoundPathSpecifier("/Audio/ADT/Machines/polaroid2.ogg");
+            new SoundPathSpecifier("/Audio/_Utopia/Machines/polaroid2.ogg");
 
         [DataField]
         public SoundSpecifier SoundWithdrawCurrency =
-            new SoundPathSpecifier("/Audio/ADT/Machines/polaroid1.ogg");
+            new SoundPathSpecifier("/Audio/_Utopia/Machines/polaroid1.ogg");
 
         [ViewVariables]
         public int Credits;
 
         [ViewVariables]
         public bool AllForFree = false;
-
-        [ViewVariables]
-        public bool OperationSuccess = true;
-        //ADT-Economy-End
+        // Utopia-Tweak : Economy
     }
 
     [Serializable, NetSerializable, DataDefinition]

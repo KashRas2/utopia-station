@@ -31,6 +31,7 @@ namespace Content.Client.VendingMachines.UI
         private bool _enabled;
 
         public event Action<GUIBoundKeyEventArgs, ListData>? OnItemSelected;
+        public event Action<VendingMachineWithdrawMessage>? OnWithdraw; // Utopia-Tweak : Economy
 
         public VendingMachineMenu()
         {
@@ -42,7 +43,16 @@ namespace Content.Client.VendingMachines.UI
             VendingContents.DataFilterCondition += DataFilterCondition;
             VendingContents.GenerateItem += GenerateButton;
             VendingContents.ItemKeyBindDown += (args, data) => OnItemSelected?.Invoke(args, data);
+
+            WithdrawButton.OnPressed += OnWithdrawPressed; // Utopia-Tweak : Economy
         }
+
+        // Utopia-Tweak : Economy
+        private void OnWithdrawPressed(BaseButton.ButtonEventArgs args)
+        {
+            OnWithdraw?.Invoke(new VendingMachineWithdrawMessage());
+        }
+        // Utopia-Tweak : Economy
 
         protected override void Dispose(bool disposing)
         {
@@ -58,6 +68,8 @@ namespace Content.Client.VendingMachines.UI
                 _entityManager.QueueDeleteEntity(entity);
             }
             _dummies.Clear();
+
+            WithdrawButton.OnPressed -= OnWithdrawPressed; // Utopia-Tweak : Economy
         }
 
         private bool DataFilterCondition(string filter, ListData data)
@@ -87,11 +99,16 @@ namespace Content.Client.VendingMachines.UI
         /// Populates the list of available items on the vending machine interface
         /// and sets icons based on their prototypes
         /// </summary>
-        public void Populate(List<VendingMachineInventoryEntry> inventory, bool enabled)
+        public void Populate(List<VendingMachineInventoryEntry> inventory, bool enabled, double priceMultiplier, int credits) // Utopia-Tweak : Economy
         {
             _enabled = enabled;
             _listItems.Clear();
             _amounts.Clear();
+
+            // Utopia-Tweak : Economy
+            CreditsLabel.Text = Loc.GetString("vending-ui-credits-amount", ("credits", credits));
+            WithdrawButton.Disabled = credits == 0;
+            // Utopia-Tweak : Economy
 
             if (inventory.Count == 0 && VendingContents.Visible)
             {
@@ -133,8 +150,9 @@ namespace Content.Client.VendingMachines.UI
                     _dummies.Add(entry.ID, dummy);
                 }
 
+                var price = (int)(entry.Price * priceMultiplier); // Utopia-Tweak : Economy
                 var itemName = Identity.Name(dummy, _entityManager);
-                var itemText = $"{itemName} [{entry.Amount}]";
+                var itemText = $"[{price}$] {itemName} [{entry.Amount}]"; // Utopia-Tweak : Economy
                 _amounts[entry.ID] = entry.Amount;
 
                 if (itemText.Length > longestEntry.Length)
@@ -154,9 +172,14 @@ namespace Content.Client.VendingMachines.UI
         /// <summary>
         /// Updates text entries for vending data in place without modifying the list controls.
         /// </summary>
-        public void UpdateAmounts(List<VendingMachineInventoryEntry> cachedInventory, bool enabled)
+        public void UpdateAmounts(List<VendingMachineInventoryEntry> cachedInventory, bool enabled, double priceMultiplier, int credits) // Utopia-Tweak : Economy
         {
             _enabled = enabled;
+
+            // Utopia-Tweak : Economy
+            CreditsLabel.Text = Loc.GetString("vending-ui-credits-amount", ("credits", credits));
+            WithdrawButton.Disabled = credits == 0;
+            // Utopia-Tweak : Economy
 
             foreach (var proto in _dummies.Keys)
             {
@@ -168,17 +191,18 @@ namespace Content.Client.VendingMachines.UI
                     continue;
                 var amount = entry.Amount;
                 // Could be better? Problem is all inventory entries get squashed.
-                var text = GetItemText(dummy, amount);
+                var price = (int)(entry.Price * priceMultiplier); // Utopia-Tweak : Economy
+                var text = GetItemText(dummy, amount, price); // Utopia-Tweak : Economy
 
                 button.Item.SetText(text);
                 button.Button.Disabled = !enabled || amount == 0;
             }
         }
 
-        private string GetItemText(EntityUid dummy, uint amount)
+        private string GetItemText(EntityUid dummy, uint amount, int price) // Utopia-Tweak : Economy
         {
             var itemName = Identity.Name(dummy, _entityManager);
-            return $"{itemName} [{amount}]";
+            return $"[{price}$] {itemName} [{amount}]"; // Utopia-Tweak : Economy
         }
 
         private void SetSizeAfterUpdate(int longestEntryLength, int contentCount)

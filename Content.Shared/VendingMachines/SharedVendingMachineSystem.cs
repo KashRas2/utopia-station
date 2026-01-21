@@ -29,12 +29,12 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 {
     [Dependency] protected readonly IGameTiming Timing = default!;
     [Dependency] protected readonly IPrototypeManager PrototypeManager = default!;
-    [Dependency] protected readonly AccessReaderSystem AccessReader = default!;
+    [Dependency] private readonly AccessReaderSystem _accessReader = default!;
     [Dependency] private   readonly SharedAppearanceSystem _appearanceSystem = default!;
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
     [Dependency] private   readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] protected readonly SharedPointLightSystem Light = default!;
-    [Dependency] protected readonly SharedPowerReceiverSystem Receiver = default!;
+    [Dependency] protected readonly SharedPowerReceiverSystem Receiver = default!; // Utopia-Tweak : Economy
     [Dependency] protected readonly SharedPopupSystem Popup = default!;
     [Dependency] private   readonly SharedSpeakOnUIClosedSystem _speakOn = default!;
     [Dependency] protected readonly SharedUserInterfaceSystem UISystem = default!;
@@ -181,10 +181,10 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         if (!TryComp<AccessReaderComponent>(uid, out var accessReader))
             return true;
 
-        if (AccessReader.IsAllowed(sender, uid, accessReader) || HasComp<EmaggedComponent>(uid))
+        if (_accessReader.IsAllowed(sender, uid, accessReader) || HasComp<EmaggedComponent>(uid))
             return true;
 
-        Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-access-denied"), uid, sender);
+        Popup.PopupEntity(Loc.GetString("vending-machine-component-try-eject-access-denied"), uid, sender);
         Deny((uid, vendComponent), sender);
         return false;
     }
@@ -217,7 +217,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         if (!Resolve(uid, ref vendComponent))
             return;
 
-        if (vendComponent.Ejecting || vendComponent.Broken || !Receiver.IsPowered(uid))
+        if (vendComponent.Ejecting || vendComponent.Broken || !Receiver.IsPowered(uid)) // Utopia-Tweak : Economy
         {
             return;
         }
@@ -226,14 +226,14 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
         if (string.IsNullOrEmpty(entry?.ID))
         {
-            Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-invalid-item"), uid, user, PopupType.Small);
+            Popup.PopupPredicted(Loc.GetString("vending-machine-component-try-eject-invalid-item"), uid, user); // Utopia-Tweak : Economy
             Deny((uid, vendComponent));
             return;
         }
 
         if (entry.Amount <= 0)
         {
-            Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid, user, PopupType.Small);
+            Popup.PopupPredicted(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid, user); // Utopia-Tweak : Economy
             Deny((uid, vendComponent));
             return;
         }
@@ -313,19 +313,10 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     /// <param name="type">The type of inventory the item is from</param>
     /// <param name="itemId">The prototype ID of the item</param>
     /// <param name="component"></param>
-    public void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
+    public virtual void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component) // Utopia-Tweak : Economy
     {
         if (IsAuthorized(uid, sender, component))
         {
-            // TryChangeBalance(uid, sender, type, itemId, component);
-
-            // if (!component.OperationSuccess)
-            // {
-            //     Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid);
-            //     Deny((uid, component));
-            //     return;
-            // }
-
             TryEjectVendorItem(uid, type, itemId, component.CanShoot, sender, component);
         }
     }
@@ -446,12 +437,11 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         }
     }
 
-    //ADT-Economy-Stat
+    // Utopia-Tweak : Economy
     protected virtual int GetEntryPrice(EntityPrototype proto)
     {
         return 25;
     }
-    //ADT-Economy-End
 
     private void OnActivatableUIOpenAttempt(EntityUid uid, VendingMachineComponent component, ActivatableUIOpenAttemptEvent args)
     {
@@ -472,6 +462,5 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     {
         return (int)(entry.Price * comp.PriceMultiplier);
     }
-
-    protected virtual void TryChangeBalance(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component) { }
+    // Utopia-Tweak : Economy
 }

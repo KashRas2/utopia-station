@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
+using Content.Server.Access.Systems;
 using Content.Server.Cargo.Systems;
 using Content.Server.Power.Components;
 using Content.Server.Stack;
@@ -31,11 +32,12 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly PricingSystem _pricing = default!;
         [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
-        //ADT-Economy-Start
+        // Utopia-Tweak : Economy
         [Dependency] private readonly BankCardSystem _bankCard = default!;
         [Dependency] private readonly TagSystem _tag = default!;
         [Dependency] private readonly StackSystem _stackSystem = default!;
-        //ADT-Economy-End
+        [Dependency] private readonly IdCardSystem _idCard = default!;
+        // Utopia-Tweak : Economy
 
         private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -52,10 +54,14 @@ namespace Content.Server.VendingMachines
 
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
 
-            //ADT-Economy-Start
+            // Utopia-Tweak : Economy
+            Subs.BuiEvents<VendingMachineComponent>(VendingMachineUiKey.Key, subs =>
+            {
+                subs.Event<BoundUIOpenedEvent>(OnBoundUIOpened);
+            });
             SubscribeLocalEvent<VendingMachineComponent, InteractUsingEvent>(OnInteractUsing);
             SubscribeLocalEvent<VendingMachineComponent, VendingMachineWithdrawMessage>(OnWithdrawMessage);
-            //ADT-Economy-End
+            // Utopia-Tweak : Economy
         }
 
         private void OnVendingPrice(EntityUid uid, VendingMachineComponent component, ref PriceCalculationEvent args)
@@ -265,6 +271,80 @@ namespace Content.Server.VendingMachines
             args.Cancelled |= ent.Comp.Broken;
         }
 
+        // Utopia-Tweak : Economy
+        private void OnBoundUIOpened(EntityUid uid, VendingMachineComponent component, BoundUIOpenedEvent args)
+        {
+            UpdateVendingMachineInterfaceState(uid, component);
+        }
+
+        private void UpdateVendingMachineInterfaceState(EntityUid uid, VendingMachineComponent component)
+        {
+            var state = new VendingMachineInterfaceState(GetAllInventory(uid, component), component.PriceMultiplier,
+                component.Credits);
+
+            UISystem.SetUiState(uid, VendingMachineUiKey.Key, state);
+        }
+
+        public override void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
+        {
+            if (component.Ejecting || !IsAuthorized(uid, sender, component))
+                return;
+
+            if (!IsAuthorized(uid, sender, component))
+                return;
+
+            var entry = GetEntry(uid, itemId, type, component);
+            if (entry == null)
+            {
+                base.AuthorizedVend(uid, sender, type, itemId, component);
+                return;
+            }
+
+            if (entry.Amount <= 0)
+            {
+                Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid);
+                Deny((uid, component));
+                return;
+            }
+
+            var price = GetPrice(entry, component);
+            var canVendForFree = component.AllForFree || _tag.HasTag(sender, "IgnoreBalanceChecks");
+
+            if (price <= 0 || canVendForFree)
+            {
+                base.AuthorizedVend(uid, sender, type, itemId, component);
+                return;
+            }
+
+            if (component.Credits >= price)
+            {
+                component.Credits -= price;
+                base.AuthorizedVend(uid, sender, type, itemId, component);
+                UpdateVendingMachineInterfaceState(uid, component);
+                return;
+            }
+            else if (TryPayWithBankCard(sender, price))
+            {
+                base.AuthorizedVend(uid, sender, type, itemId, component);
+                UpdateVendingMachineInterfaceState(uid, component);
+                return;
+            }
+
+            Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid);
+            Deny((uid, component));
+        }
+
+        private bool TryPayWithBankCard(EntityUid user, int amount)
+        {
+            if (!_idCard.TryFindIdCard(user, out var idCard))
+                return false;
+
+            if (!TryComp<BankCardComponent>(idCard.Owner, out var bankCard) || bankCard.AccountId == null)
+                return false;
+
+            return _bankCard.TryChangeBalance(bankCard.AccountId.Value, -amount);
+        }
+
         private void OnInteractUsing(EntityUid uid, VendingMachineComponent component, InteractUsingEvent args)
         {
             if (args.Handled)
@@ -274,13 +354,15 @@ namespace Content.Server.VendingMachines
                 return;
 
             if (!TryComp<CurrencyComponent>(args.Used, out var currency) ||
-                !currency.Price.Keys.Contains(component.CurrencyType))
+                !currency.Price.ContainsKey(component.CurrencyType))
                 return;
 
-            var stack = Comp<StackComponent>(args.Used);
+            if (!TryComp<StackComponent>(args.Used, out var stack))
+                return;
+
             component.Credits += stack.Count;
             Del(args.Used);
-            Dirty(uid, component);
+            UpdateVendingMachineInterfaceState(uid, component);
             Audio.PlayPvs(component.SoundInsertCurrency, uid);
             args.Handled = true;
         }
@@ -293,76 +375,19 @@ namespace Content.Server.VendingMachines
 
         private void OnWithdrawMessage(EntityUid uid, VendingMachineComponent component, VendingMachineWithdrawMessage args)
         {
+            if (component.Credits <= 0)
+                return;
+
+            if (!IsAuthorized(uid, args.Actor, component))
+                return;
+
             _stackSystem.SpawnAtPosition(component.Credits, PrototypeManager.Index(component.CreditStackPrototype),
                 Transform(uid).Coordinates);
             component.Credits = 0;
             Audio.PlayPvs(component.SoundWithdrawCurrency, uid);
 
-            Dirty(uid, component);
+            UpdateVendingMachineInterfaceState(uid, component);
         }
-
-        // Frontier: custom vending check
-        protected override void TryChangeBalance(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
-        {
-            PrototypeManager.TryIndex<EntityPrototype>(itemId, out var protoId);
-            if (protoId == null)
-                return;
-
-            var price = (int)(GetEntryPrice(protoId) * component.PriceMultiplier);
-
-            if (price > 0 && !component.AllForFree && !_tag.HasTag(sender, "IgnoreBalanceChecks"))
-            {
-                component.OperationSuccess = false;
-                if (component.Credits >= price)
-                {
-                    component.Credits -= price;
-                    component.OperationSuccess = true;
-                }
-                else
-                {
-                    var items = AccessReader.FindPotentialAccessItems(sender);
-                    foreach (var item in items)
-                    {
-                        var nextItem = item;
-                        if (TryComp(item, out PdaComponent? pda) && pda.ContainedId is { Valid: true } id)
-                            nextItem = id;
-
-                        if (!TryComp<BankCardComponent>(nextItem, out var bankCard) || !bankCard.AccountId.HasValue
-                            || !_bankCard.TryGetAccount(bankCard.AccountId.Value, out var account)
-                            || account.Balance < price)
-                            continue;
-
-                        _bankCard.TryChangeBalance(bankCard.AccountId.Value, -price);
-                        component.OperationSuccess = true;
-                        break;
-                    }
-                }
-            }
-        }
-        // End Frontier: custom vending check
-
-        public void GetAccountBalance(EntityUid? sender, out int balance)
-        {
-            balance = 0;
-            if (sender.HasValue)
-            {
-                var items = AccessReader.FindPotentialAccessItems(sender.Value);
-                foreach (var item in items)
-                {
-                    var currentItem = item;
-
-                    if (TryComp(item, out PdaComponent? pda) && pda.ContainedId is { Valid: true } id)
-                        currentItem = id;
-
-                    if (!TryComp<BankCardComponent>(currentItem, out var bankCard) ||
-                        !bankCard.AccountId.HasValue ||
-                        !_bankCard.TryGetAccount(bankCard.AccountId.Value, out var account))
-                        continue;
-
-                    balance = account.Balance;
-                    break;
-                }
-            }
-        }
+        // Utopia-Tweak : Economy
     }
 }

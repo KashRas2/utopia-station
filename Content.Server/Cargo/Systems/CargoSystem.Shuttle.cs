@@ -231,6 +231,7 @@ public sealed partial class CargoSystem
             return;
         }
 
+        // Utopia-Tweak : Economy
         if (component.CurrencyProto != null)
         {
             var stackPrototype = _protoMan.Index<StackPrototype>(component.CurrencyProto);
@@ -246,6 +247,7 @@ public sealed partial class CargoSystem
                 _audio.PlayPvs(ApproveSound, uid);
             }
         }
+        // Utopia-Tweak : Economy
 
         if (!SellPallets(gridUid, station, out var goods))
             return;
