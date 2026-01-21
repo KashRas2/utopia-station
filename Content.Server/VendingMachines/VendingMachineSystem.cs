@@ -55,10 +55,6 @@ namespace Content.Server.VendingMachines
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
 
             // Utopia-Tweak : Economy
-            Subs.BuiEvents<VendingMachineComponent>(VendingMachineUiKey.Key, subs =>
-            {
-                subs.Event<BoundUIOpenedEvent>(OnBoundUIOpened);
-            });
             SubscribeLocalEvent<VendingMachineComponent, InteractUsingEvent>(OnInteractUsing);
             SubscribeLocalEvent<VendingMachineComponent, VendingMachineWithdrawMessage>(OnWithdrawMessage);
             // Utopia-Tweak : Economy
@@ -272,25 +268,9 @@ namespace Content.Server.VendingMachines
         }
 
         // Utopia-Tweak : Economy
-        private void OnBoundUIOpened(EntityUid uid, VendingMachineComponent component, BoundUIOpenedEvent args)
-        {
-            UpdateVendingMachineInterfaceState(uid, component);
-        }
-
-        private void UpdateVendingMachineInterfaceState(EntityUid uid, VendingMachineComponent component)
-        {
-            var state = new VendingMachineInterfaceState(GetAllInventory(uid, component), component.PriceMultiplier,
-                component.Credits);
-
-            UISystem.SetUiState(uid, VendingMachineUiKey.Key, state);
-        }
-
         public override void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
         {
             if (component.Ejecting || !IsAuthorized(uid, sender, component))
-                return;
-
-            if (!IsAuthorized(uid, sender, component))
                 return;
 
             var entry = GetEntry(uid, itemId, type, component);
@@ -320,13 +300,13 @@ namespace Content.Server.VendingMachines
             {
                 component.Credits -= price;
                 base.AuthorizedVend(uid, sender, type, itemId, component);
-                UpdateVendingMachineInterfaceState(uid, component);
+                Dirty(uid, component);
                 return;
             }
             else if (TryPayWithBankCard(sender, price))
             {
                 base.AuthorizedVend(uid, sender, type, itemId, component);
-                UpdateVendingMachineInterfaceState(uid, component);
+                Dirty(uid, component);
                 return;
             }
 
@@ -362,7 +342,7 @@ namespace Content.Server.VendingMachines
 
             component.Credits += stack.Count;
             Del(args.Used);
-            UpdateVendingMachineInterfaceState(uid, component);
+            Dirty(uid, component);
             Audio.PlayPvs(component.SoundInsertCurrency, uid);
             args.Handled = true;
         }
@@ -386,7 +366,7 @@ namespace Content.Server.VendingMachines
             component.Credits = 0;
             Audio.PlayPvs(component.SoundWithdrawCurrency, uid);
 
-            UpdateVendingMachineInterfaceState(uid, component);
+            Dirty(uid, component);
         }
         // Utopia-Tweak : Economy
     }

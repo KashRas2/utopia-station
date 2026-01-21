@@ -141,7 +141,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
     private void OnInventoryEjectMessage(Entity<VendingMachineComponent> entity, ref VendingMachineEjectMessage args)
     {
-        if (!Receiver.IsPowered(entity.Owner) || Deleted(entity))
+        if (!Receiver.IsPowered(entity.Owner) || Deleted(entity) || entity.Comp.Ejecting)
             return;
 
         if (args.Actor is not { Valid: true } actor)
@@ -184,7 +184,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         if (_accessReader.IsAllowed(sender, uid, accessReader) || HasComp<EmaggedComponent>(uid))
             return true;
 
-        Popup.PopupEntity(Loc.GetString("vending-machine-component-try-eject-access-denied"), uid, sender);
+        Popup.PopupPredicted(Loc.GetString("vending-machine-component-try-eject-access-denied"), uid, sender);
         Deny((uid, vendComponent), sender);
         return false;
     }

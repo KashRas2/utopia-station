@@ -85,30 +85,37 @@ namespace Content.Client.VendingMachines.UI
 
         private void GenerateButton(ListData data, ListContainerButton button)
         {
-            if (data is not VendorItemsListData { ItemProtoID: var protoID, ItemText: var text })
+            if (data is not VendorItemsListData { ItemProtoID: var protoID, ItemText: var text, Price: var price })
                 return;
 
-            var item = new VendingMachineItem(protoID, text);
+            var item = new VendingMachineItem(protoID, text, price);
             _listItems[protoID] = (button, item);
             button.AddChild(item);
             button.AddStyleClass(StyleClass.ButtonSquare);
             button.Disabled = !_enabled || _amounts[protoID] == 0;
         }
 
+        public void SetCredits(int newBalance)
+        {
+            CreditsLabel.Text = Loc.GetString("vending-ui-credits-amount", ("credits", newBalance));
+            WithdrawButton.Disabled = newBalance == 0;
+        }
+
+        public void SetCreditsVisible(bool isVisible)
+        {
+            Credits.Visible = isVisible;
+        }
+
         /// <summary>
         /// Populates the list of available items on the vending machine interface
         /// and sets icons based on their prototypes
         /// </summary>
-        public void Populate(List<VendingMachineInventoryEntry> inventory, bool enabled, double priceMultiplier, int credits) // Utopia-Tweak : Economy
+        public void Populate(List<VendingMachineInventoryEntry> inventory, bool enabled, double priceMultiplier) // Utopia-Tweak : Economy
         {
             _enabled = enabled;
             _listItems.Clear();
             _amounts.Clear();
-
-            // Utopia-Tweak : Economy
-            CreditsLabel.Text = Loc.GetString("vending-ui-credits-amount", ("credits", credits));
-            WithdrawButton.Disabled = credits == 0;
-            // Utopia-Tweak : Economy
+            var creditsBarVisible = false;
 
             if (inventory.Count == 0 && VendingContents.Visible)
             {
@@ -150,21 +157,23 @@ namespace Content.Client.VendingMachines.UI
                     _dummies.Add(entry.ID, dummy);
                 }
 
-                var price = (int)(entry.Price * priceMultiplier); // Utopia-Tweak : Economy
                 var itemName = Identity.Name(dummy, _entityManager);
-                var itemText = $"[{price}$] {itemName} [{entry.Amount}]"; // Utopia-Tweak : Economy
+                var itemText = $"{itemName} [{entry.Amount}]";
                 _amounts[entry.ID] = entry.Amount;
 
                 if (itemText.Length > longestEntry.Length)
                     longestEntry = itemText;
 
-                listData.Add(new VendorItemsListData(prototype.ID, i)
+                listData.Add(new VendorItemsListData(prototype.ID, i, (int)(entry.Price * priceMultiplier))
                 {
                     ItemText = itemText,
                 });
+
+                if (entry.Price != 0) creditsBarVisible = true;
             }
 
             VendingContents.PopulateList(listData);
+            SetCreditsVisible(creditsBarVisible);
 
             SetSizeAfterUpdate(longestEntry.Length, inventory.Count);
         }
@@ -172,14 +181,9 @@ namespace Content.Client.VendingMachines.UI
         /// <summary>
         /// Updates text entries for vending data in place without modifying the list controls.
         /// </summary>
-        public void UpdateAmounts(List<VendingMachineInventoryEntry> cachedInventory, bool enabled, double priceMultiplier, int credits) // Utopia-Tweak : Economy
+        public void UpdateAmounts(List<VendingMachineInventoryEntry> cachedInventory, bool enabled) // Utopia-Tweak : Economy
         {
             _enabled = enabled;
-
-            // Utopia-Tweak : Economy
-            CreditsLabel.Text = Loc.GetString("vending-ui-credits-amount", ("credits", credits));
-            WithdrawButton.Disabled = credits == 0;
-            // Utopia-Tweak : Economy
 
             foreach (var proto in _dummies.Keys)
             {
@@ -191,18 +195,17 @@ namespace Content.Client.VendingMachines.UI
                     continue;
                 var amount = entry.Amount;
                 // Could be better? Problem is all inventory entries get squashed.
-                var price = (int)(entry.Price * priceMultiplier); // Utopia-Tweak : Economy
-                var text = GetItemText(dummy, amount, price); // Utopia-Tweak : Economy
+                var text = GetItemText(dummy, amount);
 
                 button.Item.SetText(text);
                 button.Button.Disabled = !enabled || amount == 0;
             }
         }
 
-        private string GetItemText(EntityUid dummy, uint amount, int price) // Utopia-Tweak : Economy
+        private string GetItemText(EntityUid dummy, uint amount)
         {
             var itemName = Identity.Name(dummy, _entityManager);
-            return $"[{price}$] {itemName} [{amount}]"; // Utopia-Tweak : Economy
+            return $"{itemName} [{amount}]";
         }
 
         private void SetSizeAfterUpdate(int longestEntryLength, int contentCount)
@@ -212,7 +215,7 @@ namespace Content.Client.VendingMachines.UI
         }
     }
 
-    public record VendorItemsListData(EntProtoId ItemProtoID, int ItemIndex) : ListData
+    public record VendorItemsListData(EntProtoId ItemProtoID, int ItemIndex, int Price) : ListData
     {
         public string ItemText = string.Empty;
     }

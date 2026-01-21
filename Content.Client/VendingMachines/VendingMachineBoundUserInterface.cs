@@ -15,13 +15,6 @@ namespace Content.Client.VendingMachines
         [ViewVariables]
         private List<VendingMachineInventoryEntry> _cachedInventory = new();
 
-        // Utopia-Tweak : Economy
-        [ViewVariables]
-        private double _priceMultiplier;
-        [ViewVariables]
-        private int _credits;
-        // Utopia-Tweak : Economy
-
         public VendingMachineBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
         }
@@ -42,20 +35,6 @@ namespace Content.Client.VendingMachines
         {
             SendPredictedMessage(new VendingMachineWithdrawMessage());
         }
-
-        protected override void UpdateState(BoundUserInterfaceState state)
-        {
-            base.UpdateState(state);
-
-            if (state is not VendingMachineInterfaceState newState)
-                return;
-
-            _cachedInventory = newState.Inventory;
-            _priceMultiplier = newState.PriceMultiplier;
-            _credits = newState.Credits;
-
-            Refresh();
-        }
         // Utopia-Tweak : Economy
 
         public void Refresh()
@@ -65,7 +44,15 @@ namespace Content.Client.VendingMachines
             var system = EntMan.System<VendingMachineSystem>();
             _cachedInventory = system.GetAllInventory(Owner);
 
-            _menu?.Populate(_cachedInventory, enabled, _priceMultiplier, _credits); // Utopia-Tweak : Economy
+            if (bendy == null)
+                return;
+
+            _menu?.Populate(_cachedInventory, enabled, bendy.PriceMultiplier);
+
+            if (bendy.Credits != 0)
+                _menu?.SetCreditsVisible(true);
+
+            _menu?.SetCredits(bendy.Credits);
         }
 
         public void UpdateAmounts()
@@ -74,7 +61,7 @@ namespace Content.Client.VendingMachines
 
             var system = EntMan.System<VendingMachineSystem>();
             _cachedInventory = system.GetAllInventory(Owner);
-            _menu?.UpdateAmounts(_cachedInventory, enabled, _priceMultiplier, _credits); // Utopia-Tweak : Economy
+            _menu?.UpdateAmounts(_cachedInventory, enabled);
         }
 
         private void OnItemSelected(GUIBoundKeyEventArgs args, ListData data)
