@@ -5,6 +5,10 @@
 - type: Tag
   id: UtopiaLeadOre
 
+# URT
+- type: Tag
+  id: UtopiaSteelSheet
+
 # Economy
 - type: Tag
   id: IgnoreBalanceChecks
