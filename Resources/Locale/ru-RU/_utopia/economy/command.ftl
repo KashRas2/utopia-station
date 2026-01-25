@@ -1,4 +1,4 @@
-command-budget-Cargo = Бюджет станции
+command-budget-Cargo = Бюджет карго
 command-budget-Service = Бюджет сервисного отдела
 command-budget-Engineering = Бюджет инженерного отдела
 command-budget-Medical = Бюджет медицинского отдела

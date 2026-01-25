@@ -1,11 +1,11 @@
-using Content.Shared.Utopia.Economy;
+using Content.Server.Hands.Systems;
 using Content.Shared.Access.Components;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
+using Content.Shared.Utopia.Economy;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
-using Content.Server.Hands.Systems;
 
 namespace Content.Server.Utopia.Economy;
 

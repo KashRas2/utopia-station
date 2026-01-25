@@ -221,8 +221,8 @@ namespace Content.Shared.VendingMachines
         [ViewVariables]
         public int Credits;
 
-        [ViewVariables]
-        public bool AllForFree = false;
+        [DataField]
+        public bool AllForFree = true;
         // Utopia-Tweak : Economy
     }
 

@@ -6,19 +6,19 @@ using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
 using Content.Server.Roles.Jobs;
 using Content.Server.Station.Systems;
-using Content.Shared.Utopia.Economy;
+using Content.Shared.Cargo.Components;
+using Content.Shared.Cargo.Prototypes;
 using Content.Shared.GameTicking;
 using Content.Shared.Inventory;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
-using Robust.Server.Player;
-using Robust.Shared.Prototypes;
-using Content.Shared.Cargo.Components;
-using Content.Shared.Cargo.Prototypes;
-using Robust.Shared.Timing;
-using Robust.Shared.Configuration;
 using Content.Shared.Utopia.CCVar;
+using Content.Shared.Utopia.Economy;
+using Robust.Server.Player;
+using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.Server.Utopia.Economy;
 
@@ -39,13 +39,16 @@ public sealed class BankCardSystem : SharedEconomySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IConfigurationManager _configManager = default!;
 
-    private const int SalaryDelay = 2700;
     private SalaryPrototype _salaries = default!;
+
+    private const string Salaries = "Salaries";
+    private const int SalaryDelay = 2700;
+
     private float _salaryTimer;
 
     public override void Initialize()
     {
-        _salaries = _protoMan.Index<SalaryPrototype>("Salaries");
+        _salaries = _protoMan.Index<SalaryPrototype>(Salaries);
 
         SubscribeLocalEvent<BankCardComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -105,7 +108,6 @@ public sealed class BankCardSystem : SharedEconomySystem
             if (TryComp<StationBankAccountComponent>(_station.GetOwningStation(uid), out var stationBank)
                 && component.CommandBudgetType != null)
             {
-
                 var existingAccount = Accounts.FirstOrDefault(acc =>
                     acc.CommandBudgetAccount &&
                     acc.AccountPrototype == component.CommandBudgetType);
@@ -116,7 +118,7 @@ public sealed class BankCardSystem : SharedEconomySystem
                     return;
                 }
 
-                stationBank.BankAccounts.Add(component.CommandBudgetType.Value, CreateDepartmentAccount(component.CommandBudgetType.Value));
+                stationBank.BankAccounts.Add(component.CommandBudgetType.Value, CreateBudgetAccount(component.CommandBudgetType.Value));
                 stationBank.BankAccounts.TryGetValue(component.CommandBudgetType.Value, out var account);
 
                 if (account != null)
@@ -137,7 +139,7 @@ public sealed class BankCardSystem : SharedEconomySystem
         component.AccountId = playerAccount.AccountId;
     }
 
-    private BankAccount CreateDepartmentAccount(ProtoId<CargoAccountPrototype> departmentType)
+    private BankAccount CreateBudgetAccount(ProtoId<CargoAccountPrototype> departmentType)
     {
         int accountNumber;
         do

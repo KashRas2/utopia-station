@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.Stack;
 using Content.Server.Store.Components;
 using Content.Shared.Emag.Components;
@@ -69,14 +69,23 @@ public sealed class ATMSystem : SharedATMSystem
         if (_random.Prob(component.ErrorChance))
         {
             Del(args.Used);
-            _stackSystem.SpawnAtPosition(amount, _prototypeManager.Index<StackPrototype>(component.CreditStackPrototype), Transform(uid).Coordinates);
+            args.Handled = true;
+
+            _stackSystem.SpawnAtPosition(amount, _prototypeManager.Index(component.CreditStackPrototype), Transform(uid).Coordinates);
             _audioSystem.PlayPvs(component.SoundWithdrawCurrency, uid);
             _popupSystem.PopupEntity(Loc.GetString("atm-error"), uid);
             return;
         }
 
-        _bankCardSystem.TryChangeBalance(bankCard.AccountId!.Value, amount);
+        if (!_bankCardSystem.TryChangeBalance(bankCard.AccountId!.Value, amount))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("atm-deposit-failed"), uid, args.User, PopupType.Medium);
+            _audioSystem.PlayPvs(component.SoundDeny, uid);
+            return;
+        }
+
         Del(args.Used);
+        args.Handled = true;
 
         _audioSystem.PlayPvs(component.SoundInsertCurrency, uid);
         UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true, Loc.GetString("atm-ui-select-withdraw-amount"));
@@ -122,7 +131,7 @@ public sealed class ATMSystem : SharedATMSystem
             return;
         }
 
-        _stackSystem.SpawnAtPosition(args.Amount, _prototypeManager.Index<StackPrototype>(component.CreditStackPrototype), Transform(uid).Coordinates);
+        _stackSystem.SpawnAtPosition(args.Amount, _prototypeManager.Index(component.CreditStackPrototype), Transform(uid).Coordinates);
         _audioSystem.PlayPvs(component.SoundWithdrawCurrency, uid);
 
         UpdateUiState(uid, account.Balance, true, Loc.GetString("atm-ui-select-withdraw-amount"));
@@ -136,7 +145,6 @@ public sealed class ATMSystem : SharedATMSystem
             HasCard = hasCard,
             InfoMessage = infoMessage
         };
-
 
         _ui.SetUiState(uid, ATMUiKey.Key, state);
     }

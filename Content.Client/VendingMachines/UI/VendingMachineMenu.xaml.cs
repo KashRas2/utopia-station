@@ -85,16 +85,17 @@ namespace Content.Client.VendingMachines.UI
 
         private void GenerateButton(ListData data, ListContainerButton button)
         {
-            if (data is not VendorItemsListData { ItemProtoID: var protoID, ItemText: var text, Price: var price })
+            if (data is not VendorItemsListData { ItemProtoID: var protoID, ItemText: var text, Price: var price }) // Utopia-Tweak : Economy
                 return;
 
-            var item = new VendingMachineItem(protoID, text, price);
+            var item = new VendingMachineItem(protoID, text, price); // Utopia-Tweak : Economy
             _listItems[protoID] = (button, item);
             button.AddChild(item);
             button.AddStyleClass(StyleClass.ButtonSquare);
             button.Disabled = !_enabled || _amounts[protoID] == 0;
         }
 
+        // Utopia-Tweak : Economy
         public void SetCredits(int newBalance)
         {
             CreditsLabel.Text = Loc.GetString("vending-ui-credits-amount", ("credits", newBalance));
@@ -105,6 +106,7 @@ namespace Content.Client.VendingMachines.UI
         {
             Credits.Visible = isVisible;
         }
+        // Utopia-Tweak : Economy
 
         /// <summary>
         /// Populates the list of available items on the vending machine interface
@@ -164,16 +166,16 @@ namespace Content.Client.VendingMachines.UI
                 if (itemText.Length > longestEntry.Length)
                     longestEntry = itemText;
 
-                listData.Add(new VendorItemsListData(prototype.ID, i, (int)(entry.Price * priceMultiplier))
+                listData.Add(new VendorItemsListData(prototype.ID, i, (int)(entry.Price * priceMultiplier)) // Utopia-Tweak : Economy
                 {
                     ItemText = itemText,
                 });
 
-                if (entry.Price != 0) creditsBarVisible = true;
+                if (entry.Price * priceMultiplier != 0) creditsBarVisible = true; // Utopia-Tweak : Economy
             }
 
             VendingContents.PopulateList(listData);
-            SetCreditsVisible(creditsBarVisible);
+            SetCreditsVisible(creditsBarVisible); // Utopia-Tweak : Economy
 
             SetSizeAfterUpdate(longestEntry.Length, inventory.Count);
         }

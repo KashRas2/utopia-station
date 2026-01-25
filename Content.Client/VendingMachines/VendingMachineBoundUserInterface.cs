@@ -47,12 +47,21 @@ namespace Content.Client.VendingMachines
             if (bendy == null)
                 return;
 
-            _menu?.Populate(_cachedInventory, enabled, bendy.PriceMultiplier);
+            // Utopia-Tweak : Economy
+            var multiplier = bendy.PriceMultiplier;
 
-            if (bendy.Credits != 0)
+            if (bendy.AllForFree)
+                multiplier = 0;
+            // Utopia-Tweak : Economy
+
+            _menu?.Populate(_cachedInventory, enabled, multiplier); // Utopia-Tweak : Economy
+
+            // Utopia-Tweak : Economy
+            if (bendy.Credits != 0 && !bendy.AllForFree)
                 _menu?.SetCreditsVisible(true);
 
             _menu?.SetCredits(bendy.Credits);
+            // Utopia-Tweak : Economy
         }
 
         public void UpdateAmounts()

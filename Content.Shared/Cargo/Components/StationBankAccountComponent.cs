@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.Utopia.Economy;
 using Robust.Shared.GameStates;
@@ -80,6 +81,7 @@ public sealed partial class StationBankAccountComponent : Component
     /// <summary>
     /// Хранит в себе информацию о станционных банковских аккаунтах
     /// </summary>
+    [ViewVariables(VVAccess.ReadOnly)]
     public Dictionary<ProtoId<CargoAccountPrototype>, BankAccount> BankAccounts = new();
     // Utopia-Tweak : Economy
 }
@@ -88,4 +90,16 @@ public sealed partial class StationBankAccountComponent : Component
 /// Broadcast and raised on station ent whenever its balance is updated.
 /// </summary>
 [ByRefEvent]
-public readonly record struct BankBalanceUpdatedEvent(EntityUid Station, Dictionary<ProtoId<CargoAccountPrototype>, int> Balance);
+// Utopia-Tweak : Economy
+public sealed class BankBalanceUpdatedEvent : EntityEventArgs
+{
+    public readonly EntityUid Station;
+    public readonly Dictionary<ProtoId<CargoAccountPrototype>, int> Balance;
+
+    public BankBalanceUpdatedEvent(EntityUid station, Dictionary<ProtoId<CargoAccountPrototype>, int> balance)
+    {
+        Station = station;
+        Balance = balance;
+    }
+}
+// Utopia-Tweak : Economy

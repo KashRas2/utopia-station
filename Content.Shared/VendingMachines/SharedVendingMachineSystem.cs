@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -10,11 +9,8 @@ using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Emp;
 using Content.Shared.Interaction;
-using Content.Shared.PDA;
 using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
-using Content.Shared.Tag;
-using Content.Shared.Utopia.Economy;
 using Content.Shared.UserInterface;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -36,7 +32,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     [Dependency] protected readonly SharedPointLightSystem Light = default!;
     [Dependency] protected readonly SharedPowerReceiverSystem Receiver = default!; // Utopia-Tweak : Economy
     [Dependency] protected readonly SharedPopupSystem Popup = default!;
-    [Dependency] private   readonly SharedSpeakOnUIClosedSystem _speakOn = default!;
+    [Dependency] protected readonly SharedSpeakOnUIClosedSystem SpeakOn = default!; // Utopia-Tweak : Economy
     [Dependency] protected readonly SharedUserInterfaceSystem UISystem = default!;
     [Dependency] protected readonly IRobustRandom Randomizer = default!;
     [Dependency] private readonly EmagSystem _emag = default!;
@@ -212,46 +208,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     /// <param name="itemId">The prototype ID of the item</param>
     /// <param name="throwItem">Whether the item should be thrown in a random direction after ejection</param>
     /// <param name="vendComponent"></param>
-    public void TryEjectVendorItem(EntityUid uid, InventoryType type, string itemId, bool throwItem, EntityUid? user = null, VendingMachineComponent? vendComponent = null)
-    {
-        if (!Resolve(uid, ref vendComponent))
-            return;
-
-        if (vendComponent.Ejecting || vendComponent.Broken || !Receiver.IsPowered(uid)) // Utopia-Tweak : Economy
-        {
-            return;
-        }
-
-        var entry = GetEntry(uid, itemId, type, vendComponent);
-
-        if (string.IsNullOrEmpty(entry?.ID))
-        {
-            Popup.PopupPredicted(Loc.GetString("vending-machine-component-try-eject-invalid-item"), uid, user); // Utopia-Tweak : Economy
-            Deny((uid, vendComponent));
-            return;
-        }
-
-        if (entry.Amount <= 0)
-        {
-            Popup.PopupPredicted(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid, user); // Utopia-Tweak : Economy
-            Deny((uid, vendComponent));
-            return;
-        }
-
-        // Start Ejecting, and prevent users from ordering while anim playing
-        vendComponent.EjectEnd = Timing.CurTime + vendComponent.EjectDelay;
-        vendComponent.NextItemToEject = entry.ID;
-        vendComponent.ThrowNextItem = throwItem;
-
-        if (TryComp(uid, out SpeakOnUIClosedComponent? speakComponent))
-            _speakOn.TrySetFlag((uid, speakComponent));
-
-        entry.Amount--;
-        Dirty(uid, vendComponent);
-        UpdateUI((uid, vendComponent));
-        TryUpdateVisualState((uid, vendComponent));
-        Audio.PlayPredicted(vendComponent.SoundVend, uid, user);
-    }
+    public virtual void TryEjectVendorItem(EntityUid uid, InventoryType type, string itemId, bool throwItem, EntityUid? user = null, VendingMachineComponent? vendComponent = null) { } // Utopia-Tweak : Economy (Content.Server/_Utopia/VendingMachines/VendingMachineSystem.Economy.cs)
 
     public void Deny(Entity<VendingMachineComponent?> entity, EntityUid? user = null)
     {
@@ -313,13 +270,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     /// <param name="type">The type of inventory the item is from</param>
     /// <param name="itemId">The prototype ID of the item</param>
     /// <param name="component"></param>
-    public virtual void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component) // Utopia-Tweak : Economy
-    {
-        if (IsAuthorized(uid, sender, component))
-        {
-            TryEjectVendorItem(uid, type, itemId, component.CanShoot, sender, component);
-        }
-    }
+    public virtual void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component) { } // Utopia-Tweak : Economy (Content.Server/_Utopia/VendingMachines/VendingMachineSystem.Economy.cs)
 
     public void RestockInventoryFromPrototype(EntityUid uid,
         VendingMachineComponent? component = null, float restockQuality = 1f)
@@ -437,12 +388,6 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         }
     }
 
-    // Utopia-Tweak : Economy
-    protected virtual int GetEntryPrice(EntityPrototype proto)
-    {
-        return 25;
-    }
-
     private void OnActivatableUIOpenAttempt(EntityUid uid, VendingMachineComponent component, ActivatableUIOpenAttemptEvent args)
     {
         if (component.Broken)
@@ -458,8 +403,17 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
         UISystem.CloseUi(uid, VendingMachineUiKey.Key);
     }
 
+    // Utopia-Tweak : Economy
+    protected virtual int GetEntryPrice(EntityPrototype proto)
+    {
+        return 25;
+    }
+
     protected int GetPrice(VendingMachineInventoryEntry entry, VendingMachineComponent comp)
     {
+        if (comp.AllForFree)
+            return 0;
+
         return (int)(entry.Price * comp.PriceMultiplier);
     }
     // Utopia-Tweak : Economy

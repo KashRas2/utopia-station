@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Access.Systems;
@@ -8,12 +7,12 @@ using Content.Server.Stack;
 using Content.Server.Store.Components;
 using Content.Server.Vocalization.Systems;
 using Content.Server.Utopia.Economy;
+using Content.Shared.Advertise.Components;
 using Content.Shared.Cargo;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Emp;
 using Content.Shared.Interaction;
-using Content.Shared.PDA;
 using Content.Shared.Power;
 using Content.Shared.Stacks;
 using Content.Shared.Tag;
@@ -23,7 +22,6 @@ using Content.Shared.VendingMachines;
 using Content.Shared.Wall;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using Robust.Shared.Toolshed.Commands.Values;
 
 namespace Content.Server.VendingMachines
 {
@@ -40,6 +38,7 @@ namespace Content.Server.VendingMachines
         // Utopia-Tweak : Economy
 
         private const float WallVendEjectDistanceFromWall = 1f;
+        private const string IgnoreBalanceCheck = "UtopiaIgnoreBalanceChecks"; // Utopia-Tweak : Economy
 
         public override void Initialize()
         {
@@ -275,43 +274,78 @@ namespace Content.Server.VendingMachines
 
             var entry = GetEntry(uid, itemId, type, component);
             if (entry == null)
-            {
-                base.AuthorizedVend(uid, sender, type, itemId, component);
                 return;
-            }
 
             if (entry.Amount <= 0)
             {
-                Popup.PopupClient(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid);
+                Popup.PopupEntity(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid);
                 Deny((uid, component));
                 return;
             }
 
             var price = GetPrice(entry, component);
-            var canVendForFree = component.AllForFree || _tag.HasTag(sender, "IgnoreBalanceChecks");
+            var canVendForFree = component.AllForFree || _tag.HasTag(sender, IgnoreBalanceCheck);
 
             if (price <= 0 || canVendForFree)
             {
-                base.AuthorizedVend(uid, sender, type, itemId, component);
+                TryEjectVendorItem(uid, type, itemId, component.CanShoot, sender, component);
                 return;
             }
 
             if (component.Credits >= price)
             {
                 component.Credits -= price;
-                base.AuthorizedVend(uid, sender, type, itemId, component);
-                Dirty(uid, component);
+                TryEjectVendorItem(uid, type, itemId, component.CanShoot, sender, component);
                 return;
             }
             else if (TryPayWithBankCard(sender, price))
             {
-                base.AuthorizedVend(uid, sender, type, itemId, component);
-                Dirty(uid, component);
+                TryEjectVendorItem(uid, type, itemId, component.CanShoot, sender, component);
                 return;
             }
 
             Popup.PopupEntity(Loc.GetString("vending-machine-component-no-balance"), uid);
             Deny((uid, component));
+        }
+
+        public override void TryEjectVendorItem(EntityUid uid, InventoryType type, string itemId, bool throwItem, EntityUid? user = null, VendingMachineComponent? vendComponent = null)
+        {
+            if (!Resolve(uid, ref vendComponent))
+                return;
+
+            if (vendComponent.Ejecting || vendComponent.Broken || !Receiver.IsPowered(uid))
+            {
+                return;
+            }
+
+            var entry = GetEntry(uid, itemId, type, vendComponent);
+
+            if (string.IsNullOrEmpty(entry?.ID))
+            {
+                Popup.PopupEntity(Loc.GetString("vending-machine-component-try-eject-invalid-item"), uid);
+                Deny((uid, vendComponent));
+                return;
+            }
+
+            if (entry.Amount <= 0)
+            {
+                Popup.PopupEntity(Loc.GetString("vending-machine-component-try-eject-out-of-stock"), uid);
+                Deny((uid, vendComponent));
+                return;
+            }
+
+            vendComponent.EjectEnd = Timing.CurTime + vendComponent.EjectDelay;
+            vendComponent.NextItemToEject = entry.ID;
+            vendComponent.ThrowNextItem = throwItem;
+
+            if (TryComp(uid, out SpeakOnUIClosedComponent? speakComponent))
+                SpeakOn.TrySetFlag((uid, speakComponent));
+
+            entry.Amount--;
+            Dirty(uid, vendComponent);
+            UpdateUI((uid, vendComponent));
+            TryUpdateVisualState((uid, vendComponent));
+            Audio.PlayPvs(vendComponent.SoundVend, uid);
         }
 
         private bool TryPayWithBankCard(EntityUid user, int amount)
@@ -327,6 +361,9 @@ namespace Content.Server.VendingMachines
 
         private void OnInteractUsing(EntityUid uid, VendingMachineComponent component, InteractUsingEvent args)
         {
+            if (component.AllForFree)
+                return;
+
             if (args.Handled)
                 return;
 

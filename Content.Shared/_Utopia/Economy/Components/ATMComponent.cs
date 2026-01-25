@@ -20,16 +20,16 @@ public sealed partial class ATMComponent : Component
     public ProtoId<StackPrototype> CreditStackPrototype = "Credit";
 
     [DataField]
-    public SoundSpecifier SoundInsertCurrency = new SoundPathSpecifier("/Audio/Utopia/Machines/polaroid2.ogg");
+    public SoundSpecifier SoundInsertCurrency = new SoundPathSpecifier("/Audio/_Utopia/Machines/polaroid2.ogg");
 
     [DataField]
-    public SoundSpecifier SoundWithdrawCurrency = new SoundPathSpecifier("/Audio/Utopia/Machines/polaroid1.ogg");
+    public SoundSpecifier SoundWithdrawCurrency = new SoundPathSpecifier("/Audio/_Utopia/Machines/polaroid1.ogg");
 
     [DataField]
-    public SoundSpecifier SoundApply = new SoundPathSpecifier("/Audio/Utopia/Machines/chime.ogg");
+    public SoundSpecifier SoundApply = new SoundPathSpecifier("/Audio/_Utopia/Machines/chime.ogg");
 
     [DataField]
-    public SoundSpecifier SoundDeny = new SoundPathSpecifier("/Audio/Utopia/Machines/buzz-sigh.ogg");
+    public SoundSpecifier SoundDeny = new SoundPathSpecifier("/Audio/_Utopia/Machines/buzz-sigh.ogg");
 
     [DataField]
     public float ErrorChance = 0.25f;

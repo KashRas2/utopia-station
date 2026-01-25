@@ -11,4 +11,7 @@
 
 # Economy
 - type: Tag
-  id: IgnoreBalanceChecks
+  id: UtopiaIgnoreBalanceChecks
+
+- type: Tag
+  id: UtopiaSpaceCash
