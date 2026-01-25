@@ -40,8 +40,10 @@ public sealed class BankCardSystem : SharedEconomySystem
     [Dependency] private readonly IConfigurationManager _configManager = default!;
 
     private SalaryPrototype _salaries = default!;
+    private SalaryPrototype _roundstart = default!;
 
     private const string Salaries = "Salaries";
+    private const string Roundstart = "Roundstart";
     private const int SalaryDelay = 2700;
 
     private float _salaryTimer;
@@ -49,6 +51,7 @@ public sealed class BankCardSystem : SharedEconomySystem
     public override void Initialize()
     {
         _salaries = _protoMan.Index<SalaryPrototype>(Salaries);
+        _roundstart = _protoMan.Index<SalaryPrototype>(Roundstart);
 
         SubscribeLocalEvent<BankCardComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -101,6 +104,14 @@ public sealed class BankCardSystem : SharedEconomySystem
         return salary;
     }
 
+    private int GetRoundstart(EntityUid? mind)
+    {
+        if (!_job.MindTryGetJob(mind, out var job) || !_roundstart.Salaries.TryGetValue(job.ID, out var roundstart))
+            return 0;
+
+        return roundstart;
+    }
+
     private void OnMapInit(EntityUid uid, BankCardComponent component, MapInitEvent args)
     {
         if (component.CommandBudgetCard)
@@ -147,10 +158,12 @@ public sealed class BankCardSystem : SharedEconomySystem
             accountNumber = Random.Next(100000, 999999);
         } while (AccountExist(accountNumber));
 
-        var account = new BankAccount(accountNumber, 0, Random);
-        account.AccountPrototype = departmentType;
-        account.CommandBudgetAccount = true;
-        account.Name = Loc.GetString($"command-budget-{departmentType}");
+        var account = new BankAccount(accountNumber, 0, Random)
+        {
+            AccountPrototype = departmentType,
+            CommandBudgetAccount = true,
+            Name = Loc.GetString($"command-budget-{departmentType}")
+        };
 
         Accounts.Add(account);
         return account;
@@ -216,7 +229,8 @@ public sealed class BankCardSystem : SharedEconomySystem
             if (!TryComp(mind.Mind, out MindComponent? mindComponent))
                 return;
 
-            bankAccount.Balance = GetSalary(mind.Mind) + 100;
+            var baseBalance = GetRoundstart(mind.Mind);
+            bankAccount.Balance = baseBalance > 0 ? baseBalance : 100;
             mindComponent.AddMemory(new Memory("PIN", bankAccount.AccountPin.ToString()));
             mindComponent.AddMemory(new Memory(Loc.GetString("character-info-memories-account-number"),
                 bankAccount.AccountId.ToString()));
