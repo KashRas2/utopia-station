@@ -12,11 +12,11 @@ public sealed partial class EftposComponent : Component
     [ViewVariables]
     public int Amount;
 
-    [DataField("soundApply")]
-    public SoundSpecifier SoundApply = new SoundPathSpecifier("/Audio/Utopia/Machines/chime.ogg");
+    [DataField]
+    public SoundSpecifier SoundApply = new SoundPathSpecifier("/Audio/_Utopia/Machines/chime.ogg");
 
-    [DataField("soundDeny")]
-    public SoundSpecifier SoundDeny = new SoundPathSpecifier("/Audio/Utopia/Machines/buzz-sigh.ogg");
+    [DataField]
+    public SoundSpecifier SoundDeny = new SoundPathSpecifier("/Audio/_Utopia/Machines/buzz-sigh.ogg");
 }
 
 [Serializable, NetSerializable]
