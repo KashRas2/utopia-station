@@ -1,6 +1,6 @@
 using System.Linq;
-using Content.Server.Utopia.Chat;
-using Content.Shared.Utopia.Language;
+using Content.Server._Utopia.Chat;
+using Content.Shared._Utopia.Language;
 using Content.Shared.Chat;
 using Content.Shared.Ghost;
 using Robust.Shared.Player;

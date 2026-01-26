@@ -1,6 +1,6 @@
 using Robust.Shared.GameStates;
 
-namespace Content.Shared.Utopia.CollectiveMind;
+namespace Content.Shared._Utopia.CollectiveMind;
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class CollectiveMindRankComponent : Component

@@ -3,7 +3,7 @@ using Content.Server.Power.Components;
 using Content.Shared.Construction.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
-namespace Content.Server.Utopia.Power.Components;
+namespace Content.Server._Utopia.Power.Components;
 
 /// <summary>
 /// This is used for machines whose power draw

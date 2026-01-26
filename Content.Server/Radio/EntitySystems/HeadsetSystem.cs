@@ -5,7 +5,7 @@ using Content.Shared.Radio.Components;
 using Content.Shared.Radio.EntitySystems;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
-using Content.Server.Utopia.Language;
+using Content.Server._Utopia.Language;
 
 namespace Content.Server.Radio.EntitySystems;
 

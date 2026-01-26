@@ -1,7 +1,7 @@
 using Content.Shared.Movement.Pulling.Components;
 using Robust.Shared.GameStates;
 
-namespace Content.Shared.Utopia.Grab;
+namespace Content.Shared._Utopia.Grab;
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class ModifyGrabStageTimeComponent : Component

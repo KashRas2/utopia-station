@@ -2,7 +2,7 @@ using Content.Shared.DisplacementMap;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.Inventory;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.SpeechBarks;
 using Robust.Shared.Enums;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;

@@ -1,7 +1,7 @@
 using System.Numerics;
 using Content.Server.Administration.Logs;
 using Content.Server.Popups;
-using Content.Shared.Utopia.Grab;
+using Content.Shared._Utopia.Grab;
 using Content.Shared.Database;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Movement.Pulling.Components;
@@ -16,7 +16,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 
-namespace Content.Server.Utopia.Pulling.Systems;
+namespace Content.Server._Utopia.Pulling.Systems;
 
 /// <summary>
 /// Allows one entity to pull another behind them via a physics distance joint.

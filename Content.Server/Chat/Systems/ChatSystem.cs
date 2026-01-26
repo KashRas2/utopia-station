@@ -33,8 +33,8 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Replays;
 using Robust.Shared.Utility;
-using Content.Server.Utopia.Language;
-using Content.Shared.Utopia.Language;
+using Content.Server._Utopia.Language;
+using Content.Shared._Utopia.Language;
 
 namespace Content.Server.Chat.Systems;
 

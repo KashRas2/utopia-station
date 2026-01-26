@@ -3,7 +3,7 @@ using Content.Client.UserInterface.Controls;
 using Content.Client._Utopia.Language;
 using Content.Client._Utopia.Language.UI;
 using Content.Shared.Input;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 using Robust.Client.Player;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;

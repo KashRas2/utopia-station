@@ -1,6 +1,6 @@
-using Content.Shared.Utopia.Grab;
+using Content.Shared._Utopia.Grab;
 
-namespace Content.Shared.Utopia.GrabProtection;
+namespace Content.Shared._Utopia.GrabProtection;
 
 public sealed class GrabProtectionSystem : EntitySystem
 {

@@ -1,7 +1,7 @@
 using Robust.Shared.Serialization;
 using Robust.Shared.Audio;
 
-namespace Content.Shared.Utopia.SpeechBarks;
+namespace Content.Shared._Utopia.SpeechBarks;
 
 [Serializable, NetSerializable]
 public sealed class PlaySpeechBarksEvent : EntityEventArgs

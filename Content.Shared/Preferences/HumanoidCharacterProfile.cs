@@ -15,8 +15,8 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
-using Content.Shared.Utopia.Language;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.Language;
+using Content.Shared._Utopia.SpeechBarks;
 
 namespace Content.Shared.Preferences
 {

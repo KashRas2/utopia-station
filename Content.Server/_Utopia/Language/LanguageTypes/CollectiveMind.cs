@@ -1,14 +1,14 @@
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
-using Content.Shared.Utopia.CollectiveMind;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.CollectiveMind;
+using Content.Shared._Utopia.Language;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.Utopia.Language;
+namespace Content.Server._Utopia.Language;
 
 [DataDefinition]
 public sealed partial class CollectiveMind : ILanguageType

@@ -20,8 +20,8 @@ using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Serialization.Markdown;
 using Robust.Shared.Utility;
 using YamlDotNet.RepresentationModel;
-using Content.Shared.Utopia.Language;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.Language;
+using Content.Shared._Utopia.SpeechBarks;
 
 namespace Content.Shared.Humanoid;
 

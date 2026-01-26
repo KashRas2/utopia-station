@@ -34,7 +34,7 @@ using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using Direction = Robust.Shared.Maths.Direction;
-using Content.Shared.Utopia.CCVar;
+using Content.Shared._Utopia.CCVar;
 
 namespace Content.Client.Lobby.UI
 {

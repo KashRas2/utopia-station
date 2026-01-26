@@ -1,6 +1,6 @@
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Utopia.Grab;
+namespace Content.Shared._Utopia.Grab;
 
 [DataDefinition]
 [Serializable, NetSerializable]

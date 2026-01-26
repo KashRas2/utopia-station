@@ -7,7 +7,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared;
 using Robust.Shared.Configuration;
-using Content.Shared.Utopia.CCVar;
+using Content.Shared._Utopia.CCVar;
 
 namespace Content.Client.Options.UI.Tabs;
 

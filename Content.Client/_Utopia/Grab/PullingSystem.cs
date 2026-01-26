@@ -8,7 +8,7 @@ using Robust.Client.Audio;
 using Robust.Shared.Audio;
 using Robust.Shared.Player;
 
-namespace Content.Client.Utopia.Pulling.Systems;
+namespace Content.Client._Utopia.Pulling.Systems;
 
 /// <summary>
 /// Allows one entity to pull another behind them via a physics distance joint.

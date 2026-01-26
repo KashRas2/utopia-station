@@ -1,6 +1,6 @@
 using Content.Shared.Construction.Components;
 
-namespace Content.Server.Utopia.Construction.Components
+namespace Content.Server._Utopia.Construction.Components
 {
     [RequiresExplicitImplementation]
     public interface IRefreshParts

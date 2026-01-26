@@ -1,6 +1,6 @@
 using Robust.Shared.Prototypes;
 using Robust.Shared.Localization;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 using System.Linq;
 using System.Collections.Generic;
 

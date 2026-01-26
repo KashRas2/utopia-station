@@ -1,10 +1,10 @@
 using JetBrains.Annotations;
 using Content.Server.Power.EntitySystems;
-using Content.Server.Utopia.Power.Components;
+using Content.Server._Utopia.Power.Components;
 using Content.Shared.Construction.Components;
 using Content.Shared.Power.Components;
 
-namespace Content.Server.Utopia.Power.EntitySystems;
+namespace Content.Server._Utopia.Power.EntitySystems;
 
 [UsedImplicitly]
 public sealed class UpgradeBatterySystem : EntitySystem

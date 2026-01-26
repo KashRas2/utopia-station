@@ -1,6 +1,6 @@
 using Robust.Shared.GameStates;
 
-namespace Content.Shared.Utopia.SpeechBarks;
+namespace Content.Shared._Utopia.SpeechBarks;
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class SpeechBarksComponent : Component

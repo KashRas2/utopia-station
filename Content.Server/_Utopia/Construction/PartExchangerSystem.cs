@@ -2,7 +2,7 @@ using Content.Server.Construction;
 using Content.Server.Construction.Components;
 using Content.Server.Stack;
 using Content.Server.Storage.EntitySystems;
-using Content.Server.Utopia.Construction.Components;
+using Content.Server._Utopia.Construction.Components;
 using Content.Shared.Construction.Components;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.DoAfter;
@@ -18,7 +18,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Collections;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.Utopia.Construction;
+namespace Content.Server._Utopia.Construction;
 
 public sealed class PartExchangerSystem : EntitySystem
 {

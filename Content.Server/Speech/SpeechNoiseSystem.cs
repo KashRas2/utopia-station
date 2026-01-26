@@ -6,7 +6,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Configuration;
-using Content.Shared.Utopia.CCVar;
+using Content.Shared._Utopia.CCVar;
 
 namespace Content.Server.Speech
 {

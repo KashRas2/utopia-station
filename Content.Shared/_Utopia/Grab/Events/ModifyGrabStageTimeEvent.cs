@@ -1,7 +1,7 @@
 using Content.Shared.Inventory;
 using Content.Shared.Movement.Pulling.Components;
 
-namespace Content.Shared.Utopia.Grab;
+namespace Content.Shared._Utopia.Grab;
 
 [ByRefEvent]
 public record struct ModifyGrabStageTimeEvent(GrabStage Stage, float Modifier = 1f) : IInventoryRelayEvent

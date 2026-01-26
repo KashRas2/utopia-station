@@ -1,6 +1,6 @@
 using Content.Server.Construction.Components;
 using Content.Server.Power.Components;
-using Content.Server.Utopia.Power.Components;
+using Content.Server._Utopia.Power.Components;
 using Content.Shared.Construction.Components;
 
 namespace Content.Server.Utopua.Power.EntitySystems;

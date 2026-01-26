@@ -1,6 +1,6 @@
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Utopia.Language;
+namespace Content.Shared._Utopia.Language;
 
 /// <summary>
 ///   Sent when a client wants to change its selected language.
