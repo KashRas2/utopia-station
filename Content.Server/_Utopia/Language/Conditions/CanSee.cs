@@ -2,7 +2,7 @@ using Content.Shared.Eye.Blinding.Systems;
 using Content.Shared.Utopia.Language;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.ADT.Language;
+namespace Content.Server.Utopia.Language;
 
 [DataDefinition]
 public sealed partial class CanSee : ILanguageCondition
