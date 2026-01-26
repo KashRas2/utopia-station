@@ -893,7 +893,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         }
 
         RaiseLocalEvent(target.Value, ref attemptEvent);
-        RaiseLocalEvent(user, ref attemptEvent); // Utopia-Tweal : Grab
+        RaiseLocalEvent(user, ref attemptEvent); // Utopia-Tweak : Grab
 
         if (attemptEvent.Cancelled)
             return false;
