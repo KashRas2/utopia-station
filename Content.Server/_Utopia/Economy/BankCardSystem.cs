@@ -43,7 +43,7 @@ public sealed class BankCardSystem : SharedEconomySystem
     private SalaryPrototype _roundstart = default!;
 
     private const string Salaries = "Salaries";
-    private const string Roundstart = "Roundstart";
+    private const string Roundstart = "RoundstartCash";
     private const int SalaryDelay = 2700;
 
     private float _salaryTimer;
@@ -74,18 +74,18 @@ public sealed class BankCardSystem : SharedEconomySystem
             return;
 
         _salaryTimer = 0f;
-        PaySalary();
+        PayAutomaticSalary();
     }
 
-    private void PaySalary()
+    private void PayAutomaticSalary()
     {
         if (!_configManager.GetCVar(UCCVars.PaySalary))
             return;
 
         foreach (var account in Accounts.Where(account =>
                      account.Mind is { Comp.UserId: not null, Comp.CurrentEntity: not null } &&
-                     _playerManager.TryGetSessionById(account.Mind.Value.Comp.UserId!.Value, out _) &&
-                     !_mobState.IsDead(account.Mind.Value.Comp.CurrentEntity!.Value)))
+                     _playerManager.TryGetSessionById(account.Mind.Value.Comp.UserId.Value, out _) &&
+                     !_mobState.IsDead(account.Mind.Value.Comp.CurrentEntity.Value)))
         {
             var salary = GetSalary(account.Mind);
             if (salary > 0)

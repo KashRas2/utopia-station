@@ -1,0 +1,29 @@
+<BoxContainer xmlns="https://spacestation14.io"
+            Orientation="Vertical"
+            HorizontalExpand="True"
+            Margin="0 2 0 2">
+    <BoxContainer
+        Orientation="Horizontal"
+        HorizontalExpand="True">
+        <Label
+            Name="NameLabel"
+            HorizontalExpand="True"/>
+        <Label
+            Name="JobLabel"
+            HorizontalAlignment="Right"/>
+    </BoxContainer>
+    <BoxContainer
+        Orientation="Horizontal"
+        HorizontalExpand="True"
+        Margin="5 2 0 2">
+        <LineEdit
+            Name="AmountEdit"
+            PlaceHolder="{Loc 'salary-console-amount-placeholder'}"
+            HorizontalExpand="True"
+            HorizontalAlignment="Left"/>
+        <Button
+            Name="PayButton"
+            Text="{Loc 'salary-console-pay-button'}"
+            HorizontalAlignment="Right"/>
+    </BoxContainer>
+</BoxContainer>

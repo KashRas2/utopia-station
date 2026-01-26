@@ -51,9 +51,7 @@ public sealed class ATMSystem : SharedATMSystem
     private void OnInteractUsing(EntityUid uid, ATMComponent component, InteractUsingEvent args)
     {
         if (!TryComp<CurrencyComponent>(args.Used, out var currency) || !currency.Price.Keys.Contains(component.CurrencyType))
-        {
             return;
-        }
 
         if (!component.IdCardSlot.Item.HasValue)
         {

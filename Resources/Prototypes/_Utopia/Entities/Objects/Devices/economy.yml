@@ -22,6 +22,10 @@
       state: budgetcard
     - type: BankCard
       commandBudgetType: Cargo
+      jobs:
+      - CargoTechnician
+      - SalvageSpecialist
+      - Captain
 
 - type: entity
   parent: Paper

@@ -1,5 +1,5 @@
 - type: salary
-  id: Roundstart
+  id: RoundstartCash
   salaries:
     # Главы
     ChiefEngineer: 660
@@ -19,7 +19,6 @@
     Librarian: 165
     Mime: 165
     Musician: 165
-    Passenger: 110
     Reporter: 165
     Zookeeper: 165
     ServiceWorker: 165

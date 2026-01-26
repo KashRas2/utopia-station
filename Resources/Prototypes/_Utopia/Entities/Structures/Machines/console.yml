@@ -1,0 +1,19 @@
+- type: entity
+  parent: BaseComputer
+  id: SalaryConsolee
+  name: salary console
+  description: test
+  components:
+  - type: ActivatableUI
+    key: enum.SalaryConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+        enum.SalaryConsoleUiKey.Key:
+          type: SalaryConsoleBui
+        enum.WiresUiKey.Key:
+          type: WiresBoundUserInterface
+  - type: SalaryConsole
+  - type: ItemSlots
+  - type: ContainerContainer
+    containers:
+      IdCardSlot: !type:ContainerSlot
