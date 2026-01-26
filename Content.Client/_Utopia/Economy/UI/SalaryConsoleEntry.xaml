@@ -5,24 +5,20 @@
     <BoxContainer
         Orientation="Horizontal"
         HorizontalExpand="True">
-        <Label
-            Name="NameLabel"
+        <Label Name="NameLabel"
             HorizontalExpand="True"/>
-        <Label
-            Name="JobLabel"
+        <Label Name="JobLabel"
             HorizontalAlignment="Right"/>
     </BoxContainer>
     <BoxContainer
         Orientation="Horizontal"
         HorizontalExpand="True"
         Margin="5 2 0 2">
-        <LineEdit
-            Name="AmountEdit"
+        <LineEdit Name="AmountEdit"
             PlaceHolder="{Loc 'salary-console-amount-placeholder'}"
             HorizontalExpand="True"
             HorizontalAlignment="Left"/>
-        <Button
-            Name="PayButton"
+        <Button Name="PayButton"
             Text="{Loc 'salary-console-pay-button'}"
             HorizontalAlignment="Right"/>
     </BoxContainer>
