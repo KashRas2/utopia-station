@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Numerics;
+using Content.Shared._Utopia.Grab;
+using Content.Shared._Utopia.GrabProtection;
 using Content.Shared.Actions.Events;
 using Content.Shared.Climbing.Events;
 using Content.Shared.CombatMode;
@@ -23,8 +25,6 @@ using Content.Shared.Pulling.Events;
 using Content.Shared.Standing;
 using Content.Shared.Stunnable;
 using Content.Shared.Throwing;
-using Content.Shared._Utopia.Grab;
-using Content.Shared._Utopia.GrabProtection;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;

@@ -1,9 +1,9 @@
+using Content.Shared._Utopia.Language;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
-using Content.Shared._Utopia.Language;
 
 namespace Content.Shared.Telephone;
 

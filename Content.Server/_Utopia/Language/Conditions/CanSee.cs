@@ -1,5 +1,5 @@
-using Content.Shared.Eye.Blinding.Systems;
 using Content.Shared._Utopia.Language;
+using Content.Shared.Eye.Blinding.Systems;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Utopia.Language;

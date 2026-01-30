@@ -84,10 +84,7 @@ public sealed class RespiratorSystem : EntitySystem
 
             UpdateSaturation(uid, -(float)respirator.UpdateInterval.TotalSeconds, respirator);
 
-            if (!_mobState.IsIncapacitated(uid) // cannot breathe in crit.
-                && !(TryComp<PullableComponent>(uid, out var pullable)
-                && TryComp<PullerComponent>(pullable.Puller, out var puller)
-                && puller.Stage == GrabStage.Choke)) // Utopia-Tweak : Grab
+            if (!_mobState.IsIncapacitated(uid) && !(TryComp<PullableComponent>(uid, out var pullable) && TryComp<PullerComponent>(pullable.Puller, out var puller) && puller.Stage == GrabStage.Choke)) // cannot breathe in crit. // Utopia-Tweak : Grab
             {
                 switch (respirator.Status)
                 {

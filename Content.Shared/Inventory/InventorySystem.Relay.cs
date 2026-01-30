@@ -1,3 +1,4 @@
+using Content.Shared._Utopia.Grab;
 using Content.Shared.Armor;
 using Content.Shared.Atmos;
 using Content.Shared.Chat;
@@ -26,7 +27,6 @@ using Content.Shared.Slippery;
 using Content.Shared.Standing;
 using Content.Shared.Strip.Components;
 using Content.Shared.Temperature;
-using Content.Shared._Utopia.Grab;
 using Content.Shared.Verbs;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Wieldable;

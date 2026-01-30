@@ -39,7 +39,7 @@ namespace Content.Shared.Movement.Pulling.Systems;
 /// <summary>
 /// Allows one entity to pull another behind them via a physics distance joint.
 /// </summary>
-public abstract partial class PullingSystem : EntitySystem // Utopia-Tweak : Grab
+public abstract partial class PullingSystem : EntitySystem // Utopia-Tweak : Grab (sealed -> abstract partial)
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
@@ -547,9 +547,9 @@ public abstract partial class PullingSystem : EntitySystem // Utopia-Tweak : Gra
         // Utopia-Tweak : Grab
         if (!TryComp<PullerComponent>(pullerUid, out var puller))
             return false;
-
-        return TryStartPullingOrGrab((pullerUid, puller), (pullable, pullable.Comp));
         // Utopia-Tweak : Grab
+
+        return TryStartPullingOrGrab((pullerUid, puller), (pullable, pullable.Comp)); // Utopia-Tweak : Grab
     }
 
     public bool TogglePull(EntityUid pullerUid, PullerComponent puller)

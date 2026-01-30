@@ -1,6 +1,8 @@
+using Content.Server._Utopia.Language;
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
 using Content.Server.Power.Components;
+using Content.Shared._Utopia.Language;
 using Content.Shared.Chat;
 using Content.Shared.Database;
 using Content.Shared.Radio;
@@ -13,8 +15,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Replays;
 using Robust.Shared.Utility;
-using Content.Server._Utopia.Language;
-using Content.Shared._Utopia.Language;
 
 namespace Content.Server.Radio.EntitySystems;
 

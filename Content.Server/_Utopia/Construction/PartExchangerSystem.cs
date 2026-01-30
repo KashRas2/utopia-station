@@ -1,8 +1,8 @@
+using Content.Server._Utopia.Construction.Components;
 using Content.Server.Construction;
 using Content.Server.Construction.Components;
 using Content.Server.Stack;
 using Content.Server.Storage.EntitySystems;
-using Content.Server._Utopia.Construction.Components;
 using Content.Shared.Construction.Components;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.DoAfter;

@@ -42,10 +42,14 @@ public sealed partial class ChatSystem
             if (TryComp<ChatModifierComponent>(playerEntity, out var modifier))
             {
                 if (modifier.Modifiers.ContainsKey(ChatModifierType.WhisperClear))
+                {
                     entClearRange = modifier.Modifiers[ChatModifierType.WhisperClear];
+                }
 
                 if (modifier.Modifiers.ContainsKey(ChatModifierType.WhisperMuffled))
+                {
                     entMuffledRange = modifier.Modifiers[ChatModifierType.WhisperMuffled];
+                }
             }
 
 
@@ -70,10 +74,10 @@ public sealed partial class ChatSystem
     }
 
     public void SendWhisper(
-                            EntityUid source, ProtoId<LanguagePrototype> language, ChatTransmitRange range,
-                            string message, string obfuscatedMessage,
-                            string wrappedMessage, string wrappedobfuscatedMessage, string wrappedUnknownMessage,
-                            string wrappedLanguageMessage, string wrappedobfuscatedLanguageMessage, string wrappedUnknownLanguageMessage)
+        EntityUid source, ProtoId<LanguagePrototype> language, ChatTransmitRange range,
+        string message, string obfuscatedMessage,
+        string wrappedMessage, string wrappedobfuscatedMessage, string wrappedUnknownMessage,
+        string wrappedLanguageMessage, string wrappedobfuscatedLanguageMessage, string wrappedUnknownLanguageMessage)
     {
         var lang = _prototypeManager.Index(language);
 
@@ -83,14 +87,18 @@ public sealed partial class ChatSystem
 
             if (session.AttachedEntity is not { Valid: true } playerEntity)
                 continue;
+
             listener = session.AttachedEntity.Value;
 
-            bool condition = true;
+            var condition = true;
             foreach (var item in lang.Conditions.Where(x => x.RaiseOnListener))
             {
                 if (!item.Condition(listener, source, EntityManager))
+                {
                     condition = false;
+                }
             }
+
             if (!condition)
                 continue;
 
@@ -103,15 +111,21 @@ public sealed partial class ChatSystem
                     (wrappedLanguageMessage, wrappedobfuscatedLanguageMessage, wrappedUnknownLanguageMessage);
 
             if (!data.Muffled)
+            {
                 _chatManager.ChatMessageToOne(ChatChannel.Whisper, message, langMessage, source, false, session.Channel);
+            }
 
             //If listener is too far, they only hear fragments of the message
             else if (_examineSystem.InRangeUnOccluded(source, listener, WhisperMuffledRange))
+            {
                 _chatManager.ChatMessageToOne(ChatChannel.Whisper, obfuscatedMessage, wrappedLangMessage, source, false, session.Channel);
+            }
 
             //If listener is too far and has no line of sight, they can't identify the whisperer's identity
             else
+            {
                 _chatManager.ChatMessageToOne(ChatChannel.Whisper, obfuscatedMessage, wrappedUnknownLangMessage, source, false, session.Channel);
+            }
         }
     }
 }

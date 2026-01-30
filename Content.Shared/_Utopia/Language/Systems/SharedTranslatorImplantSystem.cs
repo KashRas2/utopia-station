@@ -1,5 +1,5 @@
-using Content.Shared.Implants.Components;
 using Content.Shared._Utopia.Language;
+using Content.Shared.Implants.Components;
 using Robust.Shared.Containers;
 
 namespace Content.Shared.Implants;

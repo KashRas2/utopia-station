@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
-using Content.Server.Power.EntitySystems;
 using Content.Server._Utopia.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared.Construction.Components;
 using Content.Shared.Power.Components;
 
