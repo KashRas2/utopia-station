@@ -1,4 +1,4 @@
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 
 namespace Content.Shared.Speech;
 

@@ -9,6 +9,7 @@ using Content.Client.Players.PlayTimeTracking;
 using Content.Client.Stylesheets;
 using Content.Client.Sprite;
 using Content.Client.UserInterface.Systems.Guidebook;
+using Content.Shared._Utopia.CCVar;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing;
 using Content.Shared.GameTicking;
@@ -34,7 +35,6 @@ using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using Direction = Robust.Shared.Maths.Direction;
-using Content.Shared.Utopia.CCVar;
 
 namespace Content.Client.Lobby.UI
 {

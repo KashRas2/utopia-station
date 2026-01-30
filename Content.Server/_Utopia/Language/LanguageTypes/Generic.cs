@@ -1,12 +1,12 @@
 using Content.Server.Chat.Systems;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 
-namespace Content.Server.Utopia.Language;
+namespace Content.Server._Utopia.Language;
 
 [DataDefinition]
 public sealed partial class Generic : ILanguageType

@@ -1,8 +1,8 @@
+using Content.Shared._Utopia.Language;
 using Content.Shared.Inventory;
 using Content.Shared.Radio;
 using Content.Shared.Speech;
 using Robust.Shared.Prototypes;
-using Content.Shared.Utopia.Language;
 
 namespace Content.Shared.Chat;
 

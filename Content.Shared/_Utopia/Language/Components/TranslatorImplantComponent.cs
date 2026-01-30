@@ -1,4 +1,4 @@
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 using Robust.Shared.GameStates;
 
 namespace Content.Shared.Implants.Components;

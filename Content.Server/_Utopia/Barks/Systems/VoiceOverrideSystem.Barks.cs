@@ -1,5 +1,5 @@
 using Content.Server.Speech.Components;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.SpeechBarks;
 
 namespace Content.Server.Speech.EntitySystems;
 

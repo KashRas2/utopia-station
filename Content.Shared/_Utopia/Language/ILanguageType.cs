@@ -2,7 +2,7 @@ using Content.Shared.Chat;
 using Content.Shared.Speech;
 using Robust.Shared.Prototypes;
 
-namespace Content.Shared.Utopia.Language;
+namespace Content.Shared._Utopia.Language;
 
 [ImplicitDataDefinitionForInheritors]
 public partial interface ILanguageType

@@ -1,4 +1,4 @@
-namespace Content.Shared.Utopia.Language;
+namespace Content.Shared._Utopia.Language;
 
 [ByRefEvent]
 public record struct GetLanguagesEvent(EntityUid Uid)

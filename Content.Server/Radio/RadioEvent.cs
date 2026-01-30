@@ -1,6 +1,6 @@
 using Content.Shared.Chat;
 using Content.Shared.Radio;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 
 namespace Content.Server.Radio;
 

@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using System.Text.RegularExpressions;
+using Content.Shared._Utopia.Language;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Chat.Prototypes;
 using Content.Shared.Popups;
@@ -14,7 +15,6 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
-using Content.Shared.Utopia.Language;
 
 namespace Content.Shared.Chat;
 

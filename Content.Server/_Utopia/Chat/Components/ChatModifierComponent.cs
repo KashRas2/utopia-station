@@ -1,6 +1,6 @@
 using Content.Shared.Chat;
 
-namespace Content.Server.Utopia.Chat;
+namespace Content.Server._Utopia.Chat;
 
 /// <summary>
 /// Компонент, позволяющий модифицировать дальность слышимости речи

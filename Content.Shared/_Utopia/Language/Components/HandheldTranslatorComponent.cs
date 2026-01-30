@@ -3,7 +3,7 @@ using Content.Shared.Whitelist;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
-namespace Content.Shared.Utopia.Language;
+namespace Content.Shared._Utopia.Language;
 
 /// <summary>
 /// This component allows holding entity to understand given languages if it can understand any of "toSpeak" languages

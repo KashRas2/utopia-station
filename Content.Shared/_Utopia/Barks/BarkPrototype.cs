@@ -2,7 +2,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Audio;
 
-namespace Content.Shared.Utopia.SpeechBarks;
+namespace Content.Shared._Utopia.SpeechBarks;
 
 [Prototype("speechBark")]
 public sealed partial class BarkPrototype : IPrototype

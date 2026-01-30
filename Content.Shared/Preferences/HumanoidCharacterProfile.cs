@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
+using Content.Shared._Utopia.Language;
+using Content.Shared._Utopia.SpeechBarks;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
 using Content.Shared.Humanoid;
@@ -15,8 +17,6 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
-using Content.Shared.Utopia.Language;
-using Content.Shared.Utopia.SpeechBarks;
 
 namespace Content.Shared.Preferences
 {

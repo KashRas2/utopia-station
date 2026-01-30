@@ -4,7 +4,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Hands.Components;
 using Content.Shared.Toggleable;
 
-namespace Content.Shared.Utopia.Language;
+namespace Content.Shared._Utopia.Language;
 
 public abstract class SharedTranslatorSystem : EntitySystem
 {
