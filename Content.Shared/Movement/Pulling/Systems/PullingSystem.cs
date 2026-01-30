@@ -275,7 +275,10 @@ public abstract partial class PullingSystem : EntitySystem // Utopia-Tweak : Gra
         {
             // Utopia-Tweak : Grab
             if (_combat.IsInCombatMode(uid))
+            {
                 args.Cancel();
+            }
+
             TryLowerGrabStageOrStopPulling((uid, component), (args.BlockingEntity, comp));
             // Utopia-Tweak : Grab
         }
@@ -431,6 +434,7 @@ public abstract partial class PullingSystem : EntitySystem // Utopia-Tweak : Gra
                 }
             });
             pullerComp.VirtualItems.Clear();
+            pullerComp.Stage = GrabStage.None;
             // Utopia-Tweak : Grab
             Dirty(oldPuller.Value, pullerComp);
 

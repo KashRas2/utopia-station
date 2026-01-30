@@ -251,7 +251,6 @@ public abstract partial class PullingSystem
         var gettingPutOnTableName = Identity.Entity(uid, EntityManager);
         var puttingOnTableName = Identity.Entity(puller, EntityManager);
 
-
         _popup.PopupEntity(
             Loc.GetString("forced-bonkable-success-message",
                 ("bonker", puttingOnTableName),
@@ -373,15 +372,20 @@ public abstract partial class PullingSystem
 
         _stun.TryUpdateParalyzeDuration(uid, TimeSpan.FromSeconds(2));
         if (!_gravity.IsWeightless(uid))
+        {
             _physics.SetLinearVelocity(uid, Vector2.Zero);
+        }
         if (TryComp<ThrownItemComponent>(uid, out var thrown))
+        {
             _thrown.LandComponent(uid, thrown, Comp<PhysicsComponent>(uid), true);
+        }
     }
 
     private void OnThrownLand(EntityUid uid, GrabThrownComponent comp, LandEvent args)
     {
         RemComp(uid, comp);
     }
+
     public void Throw(
         EntityUid uid,
         Vector2 vector,
