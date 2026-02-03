@@ -14,7 +14,7 @@ public sealed partial class SalaryConsoleWindow : DefaultWindow
 {
     public Action<SalaryPaymentMessage>? OnPaymentRequested;
 
-    private static readonly Regex AmountPattern = new Regex("[^0-9-]");
+    private static readonly Regex OnlyNumbersAndMinus = new Regex("[^0-9-]");
     private readonly Dictionary<int, EmployeeEntry> _employeeEntries = new();
 
     public SalaryConsoleWindow()
@@ -25,165 +25,230 @@ public sealed partial class SalaryConsoleWindow : DefaultWindow
 
     public void UpdateState(BoundUserInterfaceState state)
     {
-        if (state is not SalaryConsoleBuiState cast)
+        if (state is not SalaryConsoleBuiState consoleState)
             return;
 
-        if (!cast.HasCard)
+        Title = Loc.GetString("salary-console-window-title");
+
+        if (!consoleState.HasCard)
         {
-            StatusLabel.Text = cast.InfoMessage;
-            BalanceLabel.Visible = false;
-            Divider.Visible = false;
-            StatusLabel.Visible = true;
-            EmployeesScrollContainer.Visible = false;
-            NoEmployeesLabel.Visible = false;
+            ShowCardMissingScreen(consoleState.InfoMessage);
             return;
         }
 
-        StatusLabel.Text = cast.InfoMessage;
-        BalanceLabel.Text = Loc.GetString("salary-console-balance", ("balance", cast.AccountBalance));
+        ShowCardInsertedScreen(consoleState);
+    }
+
+    private void ShowCardMissingScreen(string statusMessage)
+    {
+        StatusLabel.Text = statusMessage;
+
+        BalanceLabel.Visible = false;
+        Divider.Visible = false;
+        StatusLabel.Visible = true;
+        EmployeesScrollContainer.Visible = false;
+        NoEmployeesLabel.Visible = false;
+    }
+
+    private void ShowCardInsertedScreen(SalaryConsoleBuiState consoleState)
+    {
+        StatusLabel.Text = consoleState.InfoMessage;
+
+        BalanceLabel.Text = Loc.GetString("salary-console-balance", ("balance", consoleState.AccountBalance));
+
         BalanceLabel.Visible = true;
         Divider.Visible = true;
         StatusLabel.Visible = true;
 
-        if (cast.Employees.Count == 0)
+        if (consoleState.Employees.Count == 0)
         {
-            EmployeesScrollContainer.Visible = false;
-            NoEmployeesLabel.Visible = true;
+            ShowNoEmployeesMessage();
             return;
         }
 
+        ShowEmployeesList(consoleState.Employees);
+    }
+
+    private void ShowNoEmployeesMessage()
+    {
+        EmployeesScrollContainer.Visible = false;
+        NoEmployeesLabel.Text = Loc.GetString("salary-console-no-employees");
+        NoEmployeesLabel.Visible = true;
+    }
+
+    private void ShowEmployeesList(List<EmployeeData> employees)
+    {
         EmployeesScrollContainer.Visible = true;
         NoEmployeesLabel.Visible = false;
 
-        var currentAccountIds = cast.Employees.Select(e => e.AccountId).ToHashSet();
-        var toRemove = _employeeEntries.Keys.Where(id => !currentAccountIds.Contains(id)).ToList();
-        foreach (var accountId in toRemove)
+        var currentAccountIds = employees.Select(employee => employee.AccountId).ToHashSet();
+        var oldAccounts = _employeeEntries.Keys
+            .Where(accountId => !currentAccountIds.Contains(accountId))
+            .ToList();
+
+        foreach (var oldAccountId in oldAccounts)
         {
-            if (_employeeEntries.TryGetValue(accountId, out var entry))
+            if (_employeeEntries.Remove(oldAccountId, out var entry))
             {
                 entry.Container.Orphan();
-                _employeeEntries.Remove(accountId);
             }
         }
 
-        foreach (var employee in cast.Employees)
+        foreach (var employee in employees)
         {
             if (!_employeeEntries.TryGetValue(employee.AccountId, out var entry))
             {
-                entry = CreateEmployeeEntry(employee);
+                entry = CreateEmployeePanel(employee);
                 _employeeEntries[employee.AccountId] = entry;
                 EmployeesContainer.AddChild(entry.Container);
             }
             else
             {
-                UpdateEmployeeEntry(entry, employee);
+                UpdateEmployeePanel(entry, employee);
             }
         }
     }
 
-    private EmployeeEntry CreateEmployeeEntry(EmployeeData employee)
+    private EmployeeEntry CreateEmployeePanel(EmployeeData employee)
     {
-        var container = new BoxContainer
+        var mainPanel = new BoxContainer
         {
             Orientation = LayoutOrientation.Vertical,
             HorizontalExpand = true,
-            Margin = new Thickness(0, 2, 0, 2)
+            Margin = new Thickness(0, 4, 0, 4),
+            SeparationOverride = 2
         };
 
-        var infoContainer = new BoxContainer
-        {
-            Orientation = LayoutOrientation.Horizontal,
-            HorizontalExpand = true
-        };
-
-        var nameLabel = new Label
-        {
-            Text = employee.Name,
-            HorizontalExpand = true
-        };
-
-        var jobLabel = new Label
-        {
-            Text = employee.JobTitle,
-            HorizontalAlignment = HAlignment.Right
-        };
-
-        infoContainer.AddChild(nameLabel);
-        infoContainer.AddChild(jobLabel);
-        container.AddChild(infoContainer);
-
-        var paymentContainer = new BoxContainer
+        var infoRow = new BoxContainer
         {
             Orientation = LayoutOrientation.Horizontal,
             HorizontalExpand = true,
-            Margin = new Thickness(5, 2, 0, 2)
+            Margin = new Thickness(0, 0, 0, 2)
         };
 
-        var amountEdit = new LineEdit
+        var employeeName = new Label
+        {
+            Text = employee.Name,
+            HorizontalExpand = true,
+            ClipText = true
+        };
+
+        var jobTitle = new Label
+        {
+            Text = employee.JobTitle,
+            HorizontalAlignment = HAlignment.Right,
+            Align = Label.AlignMode.Right,
+            ClipText = true
+        };
+
+        infoRow.AddChild(employeeName);
+        infoRow.AddChild(jobTitle);
+        mainPanel.AddChild(infoRow);
+
+        var paymentRow = new BoxContainer
+        {
+            Orientation = LayoutOrientation.Horizontal,
+            HorizontalExpand = true,
+            SeparationOverride = 8
+        };
+
+        var amountInput = new LineEdit
         {
             PlaceHolder = Loc.GetString("salary-console-amount-placeholder"),
             HorizontalExpand = true,
             HorizontalAlignment = HAlignment.Left
         };
 
-        amountEdit.OnTextChanged += _ =>
-        {
-            ValidateAmount(amountEdit);
-        };
-
         var payButton = new Button
         {
             Text = Loc.GetString("salary-console-pay-button"),
-            HorizontalAlignment = HAlignment.Right
+            HorizontalAlignment = HAlignment.Right,
+            Disabled = true
+        };
+
+        amountInput.OnTextChanged += _ =>
+        {
+            CleanAmountInput(amountInput);
+            UpdatePayButton(amountInput, payButton);
         };
 
         payButton.OnPressed += _ =>
         {
-            if (int.TryParse(amountEdit.Text, out var amount) && amount != 0)
+            if (int.TryParse(amountInput.Text, out var amount) && amount != 0)
             {
                 OnPaymentRequested?.Invoke(new SalaryPaymentMessage(employee.AccountId, amount));
-                amountEdit.Text = string.Empty;
+                amountInput.Text = string.Empty;
+                payButton.Disabled = true;
             }
         };
 
-        paymentContainer.AddChild(amountEdit);
-        paymentContainer.AddChild(payButton);
-        container.AddChild(paymentContainer);
+        paymentRow.AddChild(amountInput);
+        paymentRow.AddChild(payButton);
+        mainPanel.AddChild(paymentRow);
 
         return new EmployeeEntry
         {
-            Container = container,
-            NameLabel = nameLabel,
-            JobLabel = jobLabel,
-            AmountEdit = amountEdit,
+            Container = mainPanel,
+            NameLabel = employeeName,
+            JobLabel = jobTitle,
+            AmountInput = amountInput,
             PayButton = payButton,
             AccountId = employee.AccountId
         };
     }
 
-    private static void UpdateEmployeeEntry(EmployeeEntry entry, EmployeeData employee)
+    private static void UpdateEmployeePanel(EmployeeEntry entry, EmployeeData employee)
     {
         entry.NameLabel.Text = employee.Name;
         entry.JobLabel.Text = employee.JobTitle;
     }
 
-    private static void ValidateAmount(LineEdit lineEdit)
+    private static void CleanAmountInput(LineEdit inputField)
     {
-        var amountText = AmountPattern.Replace(lineEdit.Text, string.Empty);
+        var originalText = inputField.Text;
+        var cursorPosition = inputField.CursorPosition;
 
-        if (amountText.StartsWith("-"))
+        var cleanedText = OnlyNumbersAndMinus.Replace(originalText, string.Empty);
+
+        if (cleanedText.StartsWith("-"))
         {
-            var rest = amountText[1..];
-            amountText = "-" + AmountPattern.Replace(rest, string.Empty);
+            var numbersAfterMinus = cleanedText[1..];
+            cleanedText = "-" + OnlyNumbersAndMinus.Replace(numbersAfterMinus, string.Empty);
+        }
+
+        if (cleanedText != originalText)
+        {
+            inputField.Text = cleanedText;
+
+            var newCursorPosition = Math.Max(0, Math.Min(cursorPosition - (originalText.Length - cleanedText.Length), cleanedText.Length));
+            inputField.CursorPosition = newCursorPosition;
+        }
+    }
+
+    private static void UpdatePayButton(LineEdit amountInput, Button payButton)
+    {
+        if (string.IsNullOrWhiteSpace(amountInput.Text) || amountInput.Text == "-")
+        {
+            payButton.Disabled = true;
+            return;
+        }
+
+        if (int.TryParse(amountInput.Text, out var amount) && amount != 0)
+        {
+            payButton.Disabled = false;
+
+            if (amount > 0)
+            {
+                payButton.Text = Loc.GetString("salary-console-pay-button");
+            }
+            else
+            {
+                payButton.Text = Loc.GetString("salary-console-deduct-button");
+            }
         }
         else
         {
-            amountText = AmountPattern.Replace(amountText, string.Empty);
-        }
-
-        if (amountText != lineEdit.Text)
-        {
-            lineEdit.Text = amountText;
+            payButton.Disabled = true;
         }
     }
 
@@ -192,7 +257,7 @@ public sealed partial class SalaryConsoleWindow : DefaultWindow
         public BoxContainer Container = default!;
         public Label NameLabel = default!;
         public Label JobLabel = default!;
-        public LineEdit AmountEdit = default!;
+        public LineEdit AmountInput = default!;
         public Button PayButton = default!;
         public int AccountId;
     }

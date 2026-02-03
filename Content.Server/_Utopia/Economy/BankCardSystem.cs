@@ -87,7 +87,7 @@ public sealed class BankCardSystem : SharedEconomySystem
                      _playerManager.TryGetSessionById(account.Mind.Value.Comp.UserId.Value, out _) &&
                      !_mobState.IsDead(account.Mind.Value.Comp.CurrentEntity.Value)))
         {
-            var salary = GetSalary(account.Mind);
+            var salary = GetSalary(account.Mind, _salaries);
             if (salary > 0)
                 TryChangeBalance(account.AccountId, salary);
         }
@@ -96,20 +96,12 @@ public sealed class BankCardSystem : SharedEconomySystem
             colorOverride: Color.FromHex("#18abf5"));
     }
 
-    private int GetSalary(EntityUid? mind)
+    private int GetSalary(EntityUid? mind, SalaryPrototype salaryProto)
     {
-        if (!_job.MindTryGetJob(mind, out var job) || !_salaries.Salaries.TryGetValue(job.ID, out var salary))
+        if (!_job.MindTryGetJob(mind, out var job) || !salaryProto.Salaries.TryGetValue(job.ID, out var salary))
             return 0;
 
         return salary;
-    }
-
-    private int GetRoundstart(EntityUid? mind)
-    {
-        if (!_job.MindTryGetJob(mind, out var job) || !_roundstart.Salaries.TryGetValue(job.ID, out var roundstart))
-            return 0;
-
-        return roundstart;
     }
 
     private void OnMapInit(EntityUid uid, BankCardComponent component, MapInitEvent args)
@@ -229,7 +221,7 @@ public sealed class BankCardSystem : SharedEconomySystem
             if (!TryComp(mind.Mind, out MindComponent? mindComponent))
                 return;
 
-            var baseBalance = GetRoundstart(mind.Mind);
+            var baseBalance = GetSalary(mind.Mind, _roundstart);
             bankAccount.Balance = baseBalance > 0 ? baseBalance : 100;
             mindComponent.AddMemory(new Memory("PIN", bankAccount.AccountPin.ToString()));
             mindComponent.AddMemory(new Memory(Loc.GetString("character-info-memories-account-number"),

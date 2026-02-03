@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Roles.Jobs;
 using Content.Shared.Roles;
 using Content.Shared.Utopia.Economy;
@@ -124,7 +125,11 @@ public sealed class SalaryConsoleSystem : SharedEconomySystem
             balance = _bankCardSystem.GetBalance(bankCard.AccountId!.Value);
             infoMessage = string.Empty;
             if (bankCard.Jobs != null && bankCard.Jobs.Count > 0)
+            {
                 employees = GetEmployeesForJobs(bankCard.Jobs);
+                Logger.DebugS("salary", $"UI должно показывать {bankCard.Jobs.Count} сотрудников");
+                Logger.DebugS("salary", $"UI будет показывать {employees.Count} сотрудников");
+            }
         }
 
         var state = new SalaryConsoleBuiState
@@ -148,20 +153,17 @@ public sealed class SalaryConsoleSystem : SharedEconomySystem
                 continue;
 
             var mind = account.Mind.Value;
-            if (!_job.MindTryGetJob(mind.Owner, out var jobPrototype))
+            if (!_job.MindTryGetJob(mind, out var jobPrototype))
                 continue;
 
             if (!jobPrototypes.Contains(jobPrototype.ID))
                 continue;
 
-            var name = account.Name;
-            if (string.IsNullOrEmpty(name) && mind.Comp.CharacterName != null)
+            var name = Loc.GetString("salary-console-unknown-employee");
+
+            if (mind.Comp.CharacterName != null)
             {
                 name = mind.Comp.CharacterName;
-            }
-            if (string.IsNullOrEmpty(name))
-            {
-                name = Loc.GetString("salary-console-unknown-employee");
             }
 
             employees.Add(new EmployeeData
