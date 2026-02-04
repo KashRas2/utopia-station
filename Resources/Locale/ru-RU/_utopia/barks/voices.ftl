@@ -1,3 +1,4 @@
+# Standart
 bark-human1-name = Стандарт 1
 bark-human2-name = Стандарт 2
 bark-human3-name = Стандарт 3
@@ -14,6 +15,8 @@ bark-weh-name = Вех!
 bark-merp-name = Мерп!
 bark-chrip-1-name = Чирикание
 bark-chrip-2-name = Тявканье
+
+# Undertale
 bark-flowey-name = Флауи (Undertale)
 bark-mettaton-name = Меттатон (Undertale)
 bark-papyrus-name = Папирус (Undertale)
@@ -24,7 +27,11 @@ bark-asgore-name = Азгор (Undertale)
 bark-gaster-name = Гастер (Undertale)
 bark-undyne-name = Андаин (Undertale)
 bark-temmie-name = Темми (Undertale)
+
+# Underswap
 bark-underswap-sans-name = Санс (Underswap)
+
+# Undertale Yellow
 bark-chujin-name = Чу-джин (Undertale Yellow)
 bark-axis-name = Аксис (Undertale Yellow)
 bark-ceroba-name = Цероба (Undertale Yellow)
@@ -34,6 +41,8 @@ bark-ed-name = Эд (Undertale Yellow)
 bark-marlet-name = Марлет (Undertale Yellow)
 bark-moray-name = Мюрей (Undertale Yellow)
 bark-starlo-name = Старло (Undertale Yellow)
+
+# Deltarune
 bark-susie-name = Сьюзи (Deltarune)
 bark-spamton-name = Спамтон Г. Спамтон (Deltarune)
 bark-rudolph-name = Рудольф (Deltarune)
@@ -48,9 +57,13 @@ bark-berdly-name = Бёрдли (Deltarune)
 bark-noellesmom-name = Мама Ноэлль (Deltarune)
 bark-gersonboom-name = Герсон Бум (Deltarune)
 bark-jackenstein-name = Джекинштейн (Deltarune)
+
+# Deltarune: Chapter REwritten
 bark-charkis-name = Чаркис (Deltarune: Chapter REwritten)
 bark-junkil-name = Джанкил Д. Джанкил (Deltarune: Chapter REwritten)
 bark-scampton-name = Скамптон Великий (Deltarune: Chapter REwritten)
+
+# TS!Underswap
 bark-TSUAlphys-name = Альфис (TS!Underswap)
 bark-bugerpant-name = Бугерпант (TS!Underswap)
 bark-CoffinK-name = Коффин-К (TS!Underswap)
@@ -60,6 +73,8 @@ bark-larry-name = Ларри (TS!Underswap)
 bark-mettalot-name = Метталот (TS!Underswap)
 bark-moldrick-name = Молдрик (TS!Underswap)
 bark-splosion-name = Сержант Взрывс (TS!Underswap)
+
+# Minecraft
 bark-minecraftbass-name = Басс (Minecraft)
 bark-minecraftbassattack-name = Ударный басс (Minecraft)
 bark-minecraftbell-name = Колокол (Minecraft)
@@ -73,4 +88,6 @@ bark-minecrafticechime-name = Ветряной колокольчик (Minecraft
 bark-minecraftironxylophone-name = Вибрафон (Minecraft)
 bark-minecraftpling-name = Синтезатор (Minecraft)
 bark-minecraftxylobone-name = Ксилофон (Minecraft)
+
+# Microsoft
 bark-sam-name = TTS Сэм (Microsoft)
