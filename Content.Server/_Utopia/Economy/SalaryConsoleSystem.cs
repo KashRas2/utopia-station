@@ -95,7 +95,8 @@ public sealed class SalaryConsoleSystem : SharedEconomySystem
             return;
         }
 
-        if (_bankCardSystem.TryChangeBalance(sourceAccountId, -amount) && _bankCardSystem.TryChangeBalance(targetAccountId, amount))
+        if (_bankCardSystem.TryChangeBalance(sourceAccountId, -amount)
+            && _bankCardSystem.TryChangeBalance(targetAccountId, amount))
         {
             UpdateUiState(uid, component);
         }
@@ -108,11 +109,10 @@ public sealed class SalaryConsoleSystem : SharedEconomySystem
         var hasCard = false;
 
         if (cardEntity != null
-            && TryComp<BankCardComponent>(cardEntity.Value, out var bankCardComp)
-            && bankCardComp.AccountId.HasValue
-            && bankCardComp.CommandBudgetCard)
+            && TryComp(cardEntity.Value, out bankCard)
+            && bankCard.AccountId.HasValue
+            && bankCard.CommandBudgetCard)
         {
-            bankCard = bankCardComp;
             hasCard = true;
         }
 
@@ -127,7 +127,6 @@ public sealed class SalaryConsoleSystem : SharedEconomySystem
             if (bankCard.Jobs != null && bankCard.Jobs.Count > 0)
             {
                 employees = GetEmployeesForJobs(bankCard.Jobs);
-                Logger.DebugS("salary", $"UI должно показывать {bankCard.Jobs.Count} сотрудников");
                 Logger.DebugS("salary", $"UI будет показывать {employees.Count} сотрудников");
             }
         }

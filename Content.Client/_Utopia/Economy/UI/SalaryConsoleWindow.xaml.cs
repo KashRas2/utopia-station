@@ -162,14 +162,7 @@ public sealed partial class SalaryConsoleWindow : DefaultWindow
         var payButton = new Button
         {
             Text = Loc.GetString("salary-console-pay-button"),
-            HorizontalAlignment = HAlignment.Right,
-            Disabled = true
-        };
-
-        amountInput.OnTextChanged += _ =>
-        {
-            CleanAmountInput(amountInput);
-            UpdatePayButton(amountInput, payButton);
+            HorizontalAlignment = HAlignment.Right
         };
 
         payButton.OnPressed += _ =>
@@ -177,8 +170,7 @@ public sealed partial class SalaryConsoleWindow : DefaultWindow
             if (int.TryParse(amountInput.Text, out var amount) && amount != 0)
             {
                 OnPaymentRequested?.Invoke(new SalaryPaymentMessage(employee.AccountId, amount));
-                amountInput.Text = string.Empty;
-                payButton.Disabled = true;
+                CleanAmountInput(amountInput);
             }
         };
 
@@ -222,33 +214,6 @@ public sealed partial class SalaryConsoleWindow : DefaultWindow
 
             var newCursorPosition = Math.Max(0, Math.Min(cursorPosition - (originalText.Length - cleanedText.Length), cleanedText.Length));
             inputField.CursorPosition = newCursorPosition;
-        }
-    }
-
-    private static void UpdatePayButton(LineEdit amountInput, Button payButton)
-    {
-        if (string.IsNullOrWhiteSpace(amountInput.Text) || amountInput.Text == "-")
-        {
-            payButton.Disabled = true;
-            return;
-        }
-
-        if (int.TryParse(amountInput.Text, out var amount) && amount != 0)
-        {
-            payButton.Disabled = false;
-
-            if (amount > 0)
-            {
-                payButton.Text = Loc.GetString("salary-console-pay-button");
-            }
-            else
-            {
-                payButton.Text = Loc.GetString("salary-console-deduct-button");
-            }
-        }
-        else
-        {
-            payButton.Disabled = true;
         }
     }
 
