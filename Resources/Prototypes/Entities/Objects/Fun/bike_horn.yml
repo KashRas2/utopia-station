@@ -6,7 +6,7 @@
   components:
   - type: Sprite
     sprite: Objects/Fun/bikehorn.rsi
-    state: iconn
+    state: icon
   - type: Item
     sprite: Objects/Fun/bikehorn.rsi
     size: Tiny
