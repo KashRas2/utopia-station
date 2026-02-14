@@ -25,6 +25,19 @@
       Ammonia: stationAmmonia
       NitrousOxide: stationNO
       Frezon: danger
+      # Utopia-Tweak : Gases
+      BZ: stationBZ
+      Pluoxium: stationPluoxium
+      Hydrogen: danger
+      Nitrium: voxNitrium
+      Healium: stationHealium
+      HyperNoblium: stationHyperNoblium
+      ProtoNitrate: danger
+      Zauker: danger
+      Halon: danger
+      Helium: unwanted
+      AntiNoblium: danger
+      # Utopia-Tweak : Gases
   - type: GuideHelp
     guides:
     - DeviceMonitoringAndControl
