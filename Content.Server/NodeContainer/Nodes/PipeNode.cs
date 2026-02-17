@@ -17,7 +17,7 @@ namespace Content.Server.NodeContainer.Nodes
     /// </summary>
     [DataDefinition]
     [Virtual]
-    public partial class PipeNode : Node, IGasMixtureHolder, IRotatableNode
+    public partial class PipeNode : Node, IGasMixtureHolder, IRotatableNode, IPipeNode // Utopia-Tweak : RPD
     {
         /// <summary>
         ///     The directions in which this pipe can connect to other pipes around it.
@@ -243,12 +243,10 @@ namespace Content.Server.NodeContainer.Nodes
             }
         }
 
-        private static readonly ProtoId<TagPrototype> HeatExchangerTag = "UtopiaHeatExchanger"; // Utopia-Tweak : HeatExchangerUpdt
-
         // Utopia-Tweak : HeatExchangerUpdt
-        private static readonly ProtoId<TagPrototype> HeatExchangerConnectionTag = "UtopiaHeatExchangerConnection"; // Utopia-Tweak : HeatExchangerUpdt
+        private static readonly ProtoId<TagPrototype> HeatExchangerTag = "UtopiaHeatExchanger";
+        private static readonly ProtoId<TagPrototype> HeatExchangerConnectionTag = "UtopiaHeatExchangerConnection";
 
-        // Utopia-Tweak : HeatExchangerUpdt
         private bool HeatExchangeCompatible(
             PipeNode other,
             PipeDirection connectionDir)
@@ -281,5 +279,10 @@ namespace Content.Server.NodeContainer.Nodes
             return true;
         }
         // Utopia-Tweak : HeatExchangerUpdt
+
+        // Utopia-Tweak : RPD
+        PipeDirection IPipeNode.Direction => OriginalPipeDirection;
+        AtmosPipeLayer IPipeNode.Layer => CurrentPipeLayer;
+        // Utopia-Tweak : RPD
     }
 }
