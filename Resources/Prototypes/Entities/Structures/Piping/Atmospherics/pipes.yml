@@ -70,7 +70,7 @@
     cost: 5
     delay: 2
     fx: EffectRCDDeconstruct2
-    rpd: true
+    rpdDeconstructable: true
   # Utopia-Add: RPD
 
 - type: entity
