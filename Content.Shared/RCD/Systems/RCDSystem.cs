@@ -410,7 +410,7 @@ public sealed partial class RCDSystem : EntitySystem // Utopia-Tweak : RPD
         if (charges == 0)
         {
             if (popMsgs)
-                _popup.PopupClient(Loc.GetString("rcd-component-no-ammo-message"), uid, user);
+                _popup.PopupClient(Loc.GetString("rcd-component-no-ammo-message", ("owner", uid)), uid, user); // Utopia-Tweak : RPD
 
             return false;
         }
@@ -418,7 +418,7 @@ public sealed partial class RCDSystem : EntitySystem // Utopia-Tweak : RPD
         if (prototype.Cost > charges)
         {
             if (popMsgs)
-                _popup.PopupClient(Loc.GetString("rcd-component-insufficient-ammo-message"), uid, user);
+                _popup.PopupClient(Loc.GetString("rcd-component-insufficient-ammo-message", ("owner", uid)), uid, user); // Utopia-Tweak : RPD
 
             return false;
         }

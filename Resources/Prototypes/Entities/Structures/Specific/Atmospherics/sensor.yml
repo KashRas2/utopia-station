@@ -42,6 +42,13 @@
     guides:
     - DeviceMonitoringAndControl
     - AtmosphericsSystems
+  # Utopia-Add: RPD
+  - type: RCDDeconstructable
+    cost: 10
+    delay: 2
+    fx: EffectRCDDeconstruct2
+    rpd: true
+  # Utopia-Add: RPD
 
 - type: entity
   id: AirSensor
