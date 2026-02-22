@@ -9,5 +9,15 @@ public sealed partial class SalaryPrototype : IPrototype
     public string ID { get; private set; } = default!;
 
     [DataField]
-    public Dictionary<string, int> Salaries = new();
+    public Dictionary<string, SalaryEntry> Salaries = new();
+}
+
+[DataDefinition, Serializable]
+public partial struct SalaryEntry
+{
+    [DataField]
+    public int? Roundstart { get; set; } = 0;
+
+    [DataField]
+    public int? Salary { get; set; } = 0;
 }

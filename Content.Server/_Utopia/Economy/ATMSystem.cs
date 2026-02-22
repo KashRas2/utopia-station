@@ -1,4 +1,3 @@
-using System.Linq;
 using Content.Server.Stack;
 using Content.Server.Store.Components;
 using Content.Shared.Emag.Components;
@@ -30,6 +29,7 @@ public sealed class ATMSystem : SharedATMSystem
     public override void Initialize()
     {
         base.Initialize();
+
         SubscribeLocalEvent<ATMComponent, EntInsertedIntoContainerMessage>(OnCardInserted);
         SubscribeLocalEvent<ATMComponent, EntRemovedFromContainerMessage>(OnCardRemoved);
         SubscribeLocalEvent<ATMComponent, ATMRequestWithdrawMessage>(OnWithdrawRequest);
@@ -69,7 +69,9 @@ public sealed class ATMSystem : SharedATMSystem
             Del(args.Used);
             args.Handled = true;
 
-            _stackSystem.SpawnAtPosition(amount, _prototypeManager.Index(component.CreditStackPrototype), Transform(uid).Coordinates);
+            _stackSystem.SpawnAtPosition(amount, _prototypeManager.Index(component.CreditStackPrototype),
+                Transform(uid).Coordinates);
+
             _audioSystem.PlayPvs(component.SoundWithdrawCurrency, uid);
             _popupSystem.PopupEntity(Loc.GetString("atm-error"), uid);
             return;
@@ -86,7 +88,8 @@ public sealed class ATMSystem : SharedATMSystem
         args.Handled = true;
 
         _audioSystem.PlayPvs(component.SoundInsertCurrency, uid);
-        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true, Loc.GetString("atm-ui-select-withdraw-amount"));
+        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true,
+            Loc.GetString("atm-ui-select-withdraw-amount"));
     }
 
     private void OnCardInserted(EntityUid uid, ATMComponent component, EntInsertedIntoContainerMessage args)
@@ -97,7 +100,8 @@ public sealed class ATMSystem : SharedATMSystem
             return;
         }
 
-        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true, Loc.GetString("atm-ui-select-withdraw-amount"));
+        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true,
+            Loc.GetString("atm-ui-select-withdraw-amount"));
     }
 
     private void OnCardRemoved(EntityUid uid, ATMComponent component, EntRemovedFromContainerMessage args)
@@ -107,15 +111,19 @@ public sealed class ATMSystem : SharedATMSystem
 
     private void OnWithdrawRequest(EntityUid uid, ATMComponent component, ATMRequestWithdrawMessage args)
     {
-        if (!TryComp<BankCardComponent>(component.IdCardSlot.Item, out var bankCard) || !bankCard.AccountId.HasValue)
+        if (!TryComp<BankCardComponent>(component.IdCardSlot.Item, out var bankCard)
+        || !bankCard.AccountId.HasValue)
         {
             if (component.IdCardSlot.ContainerSlot != null)
+            {
                 _container.EmptyContainer(component.IdCardSlot.ContainerSlot);
+            }
+
             return;
         }
 
-        if (!_bankCardSystem.TryGetAccount(bankCard.AccountId.Value, out var account) ||
-            account.AccountPin != args.Pin && !HasComp<EmaggedComponent>(uid))
+        if (!_bankCardSystem.TryGetAccount(bankCard.AccountId.Value, out var account)
+        || account.AccountPin != args.Pin && !HasComp<EmaggedComponent>(uid))
         {
             _popupSystem.PopupEntity(Loc.GetString("atm-wrong-pin"), uid);
             _audioSystem.PlayPvs(component.SoundDeny, uid);
@@ -129,7 +137,9 @@ public sealed class ATMSystem : SharedATMSystem
             return;
         }
 
-        _stackSystem.SpawnAtPosition(args.Amount, _prototypeManager.Index(component.CreditStackPrototype), Transform(uid).Coordinates);
+        _stackSystem.SpawnAtPosition(args.Amount, _prototypeManager.Index(component.CreditStackPrototype),
+            Transform(uid).Coordinates);
+
         _audioSystem.PlayPvs(component.SoundWithdrawCurrency, uid);
 
         UpdateUiState(uid, account.Balance, true, Loc.GetString("atm-ui-select-withdraw-amount"));

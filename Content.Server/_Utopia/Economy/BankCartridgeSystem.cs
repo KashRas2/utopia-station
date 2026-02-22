@@ -15,6 +15,7 @@ public sealed class BankCartridgeSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeMessageEvent>(OnUiMessage);
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeUiReadyEvent>(OnUiReady);
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeAddedEvent>(OnInstall);
@@ -33,8 +34,8 @@ public sealed class BankCartridgeSystem : EntitySystem
 
     private void OnAccountLink(EntityUid uid, BankCartridgeComponent component, BankAccountLinkMessage args)
     {
-        if (!_bankCardSystem.TryGetAccount(args.AccountId, out var account) || args.Pin != account.AccountPin ||
-            account.CommandBudgetAccount)
+        if (!_bankCardSystem.TryGetAccount(args.AccountId, out var account)
+        || args.Pin != account.AccountPin || account.CommandBudgetAccount)
         {
             component.AccountLinkResult = Loc.GetString("bank-program-ui-link-error");
             return;
@@ -44,9 +45,9 @@ public sealed class BankCartridgeSystem : EntitySystem
 
         if (args.AccountId != component.AccountId)
         {
-            if (component.AccountId != null &&
-                _bankCardSystem.TryGetAccount(component.AccountId.Value, out var oldAccount) &&
-                oldAccount.CartridgeUid == uid)
+            if (component.AccountId != null
+            && _bankCardSystem.TryGetAccount(component.AccountId.Value, out var oldAccount)
+            && oldAccount.CartridgeUid == uid)
                 oldAccount.CartridgeUid = null;
 
             if (account.CartridgeUid != null)
@@ -56,8 +57,8 @@ public sealed class BankCartridgeSystem : EntitySystem
             component.AccountId = args.AccountId;
         }
 
-        if (!TryComp(GetEntity(args.LoaderUid), out PdaComponent? pda) || !pda.ContainedId.HasValue ||
-            HasComp<BankCardComponent>(pda.ContainedId.Value))
+        if (!TryComp(GetEntity(args.LoaderUid), out PdaComponent? pda) || !pda.ContainedId.HasValue
+        || HasComp<BankCardComponent>(pda.ContainedId.Value))
             return;
 
         var bankCard = AddComp<BankCardComponent>(pda.ContainedId.Value);
@@ -66,7 +67,8 @@ public sealed class BankCartridgeSystem : EntitySystem
 
     private void OnTransfer(Entity<BankCartridgeComponent> bankCartridge, BankTransferMessage args)
     {
-        if (bankCartridge.Comp.AccountId == null || !_bankCardSystem.TryGetAccount(bankCartridge.Comp.AccountId.Value, out var senderAccount))
+        if (bankCartridge.Comp.AccountId == null
+        || !_bankCardSystem.TryGetAccount(bankCartridge.Comp.AccountId.Value, out var senderAccount))
         {
             bankCartridge.Comp.TransferResult = Loc.GetString("bank-program-ui-transfer-error-no-account");
             return;
@@ -99,10 +101,8 @@ public sealed class BankCartridgeSystem : EntitySystem
         senderAccount.Balance -= args.Amount;
         targetAccount.Balance += args.Amount;
 
-        if (senderAccount.History == null)
-            senderAccount.History = new List<TransactionsHistory>();
-        if (targetAccount.History == null)
-            targetAccount.History = new List<TransactionsHistory>();
+        senderAccount.History ??= new List<TransactionsHistory>();
+        targetAccount.History ??= new List<TransactionsHistory>();
 
         senderAccount.History.Add(new TransactionsHistory(
             -args.Amount,
@@ -122,10 +122,12 @@ public sealed class BankCartridgeSystem : EntitySystem
 
         if (senderAccount.CartridgeUid != null)
             UpdateUiState(senderAccount.CartridgeUid.Value, bankCartridge.Comp.Loader!.Value);
+
         if (targetAccount.CartridgeUid != null && targetAccount.CartridgeUid != senderAccount.CartridgeUid)
             UpdateUiState(targetAccount.CartridgeUid.Value, bankCartridge.Comp.Loader!.Value);
 
-        bankCartridge.Comp.TransferResult = Loc.GetString("bank-program-ui-transfer-success", ("amount", args.Amount), ("target", targetAccount.Name));
+        bankCartridge.Comp.TransferResult = Loc.GetString("bank-program-ui-transfer-success",
+            ("amount", args.Amount), ("target", targetAccount.Name));
     }
 
     private void OnUiReady(EntityUid uid, BankCartridgeComponent component, CartridgeUiReadyEvent args)
@@ -175,6 +177,7 @@ public sealed class BankCartridgeSystem : EntitySystem
             state.OwnerName = account.Name;
             state.History = account.History ?? new List<TransactionsHistory>();
         }
+
         _cartridgeLoaderSystem?.UpdateCartridgeUiState(loaderUid, state);
     }
 
