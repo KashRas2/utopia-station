@@ -1,5 +1,6 @@
 using Content.Server.Stack;
 using Content.Server.Store.Components;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Interaction;
@@ -15,8 +16,9 @@ using Robust.Shared.Random;
 
 namespace Content.Server.Utopia.Economy;
 
-public sealed class ATMSystem : SharedATMSystem
+public sealed class ATMSystem : EntitySystem
 {
+    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly BankCardSystem _bankCardSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
@@ -35,6 +37,7 @@ public sealed class ATMSystem : SharedATMSystem
         SubscribeLocalEvent<ATMComponent, ATMRequestWithdrawMessage>(OnWithdrawRequest);
         SubscribeLocalEvent<ATMComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<ATMComponent, ComponentStartup>(OnComponentStartup);
+        SubscribeLocalEvent<ATMComponent, ComponentRemove>(OnComponentRemoved);
         SubscribeLocalEvent<ATMComponent, GotEmaggedEvent>(OnEmag);
     }
 
@@ -48,12 +51,26 @@ public sealed class ATMSystem : SharedATMSystem
         UpdateUiState(uid, -1, false, Loc.GetString("atm-ui-insert-card"));
     }
 
+    private void OnComponentRemoved(EntityUid uid, ATMComponent component, ComponentRemove args)
+    {
+        if (!_itemSlots.TryGetSlot(uid, component.SlotId, out var slot))
+            return;
+
+        if (_itemSlots.TryEject(uid, slot, null, out _))
+        {
+            _itemSlots.RemoveItemSlot(uid, slot);
+        }
+    }
+
     private void OnInteractUsing(EntityUid uid, ATMComponent component, InteractUsingEvent args)
     {
+        if (!_itemSlots.TryGetSlot(uid, component.SlotId, out var slot))
+            return;
+
         if (!TryComp<CurrencyComponent>(args.Used, out var currency) || !currency.Price.Keys.Contains(component.CurrencyType))
             return;
 
-        if (!component.IdCardSlot.Item.HasValue)
+        if (!slot.Item.HasValue)
         {
             _popupSystem.PopupEntity(Loc.GetString("atm-trying-insert-cash-error"), args.Target, args.User, PopupType.Medium);
             _audioSystem.PlayPvs(component.SoundDeny, uid);
@@ -61,7 +78,7 @@ public sealed class ATMSystem : SharedATMSystem
         }
 
         var stack = Comp<StackComponent>(args.Used);
-        var bankCard = Comp<BankCardComponent>(component.IdCardSlot.Item.Value);
+        var bankCard = Comp<BankCardComponent>(slot.Item.Value);
         var amount = stack.Count;
 
         if (_random.Prob(component.ErrorChance))
@@ -95,10 +112,7 @@ public sealed class ATMSystem : SharedATMSystem
     private void OnCardInserted(EntityUid uid, ATMComponent component, EntInsertedIntoContainerMessage args)
     {
         if (!TryComp<BankCardComponent>(args.Entity, out var bankCard) || !bankCard.AccountId.HasValue)
-        {
-            _container.EmptyContainer(args.Container);
             return;
-        }
 
         UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true,
             Loc.GetString("atm-ui-select-withdraw-amount"));
@@ -111,12 +125,15 @@ public sealed class ATMSystem : SharedATMSystem
 
     private void OnWithdrawRequest(EntityUid uid, ATMComponent component, ATMRequestWithdrawMessage args)
     {
-        if (!TryComp<BankCardComponent>(component.IdCardSlot.Item, out var bankCard)
+        if (!_itemSlots.TryGetSlot(uid, component.SlotId, out var slot))
+            return;
+
+        if (!TryComp<BankCardComponent>(slot.Item, out var bankCard)
         || !bankCard.AccountId.HasValue)
         {
-            if (component.IdCardSlot.ContainerSlot != null)
+            if (slot.ContainerSlot != null)
             {
-                _container.EmptyContainer(component.IdCardSlot.ContainerSlot);
+                _container.EmptyContainer(slot.ContainerSlot);
             }
 
             return;

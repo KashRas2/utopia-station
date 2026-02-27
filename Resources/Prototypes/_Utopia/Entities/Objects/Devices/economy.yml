@@ -11,6 +11,9 @@
       state: budgetcard
     - type: Item
       storedRotation: 90
+    - type: Tag
+      tags:
+      - UtopiaDepartamentCard
 
 - type: entity
   parent: UtopiaBaseDepartmentBudgetCard
@@ -22,10 +25,6 @@
       state: budgetcard
     - type: BankCard
       commandBudgetType: Cargo
-      jobs:
-      - CargoTechnician
-      - SalvageSpecialist
-      - Captain
 
 - type: entity
   parent: Paper
@@ -163,7 +162,7 @@
     - type: UserInterface
       interfaces:
         enum.EftposKey.Key:
-          type: EftposBui
+          type: EftposBoundUserInterface
     - type: Anchorable
     - type: Clothing
       quickEquip: false

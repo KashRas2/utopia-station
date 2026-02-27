@@ -27,12 +27,13 @@ public sealed class EftposSystem : EntitySystem
 
     private void OnInteractUsing(EntityUid uid, EftposComponent component, InteractUsingEvent args)
     {
-        if (component.BankAccountId == null || !TryComp(args.Used, out BankCardComponent? bankCard) ||
-            bankCard.AccountId == component.BankAccountId || component.Amount <= 0 || bankCard.CommandBudgetCard)
+        if (component.BankAccountId == null || !TryComp(args.Used, out BankCardComponent? bankCard)
+        || bankCard.AccountId == null || bankCard.AccountId == component.BankAccountId
+        || component.Amount <= 0 || bankCard.CommandBudgetCard)
             return;
 
-        if (_bankCardSystem.TryChangeBalance(bankCard.AccountId!.Value, -component.Amount) &&
-            _bankCardSystem.TryChangeBalance(component.BankAccountId.Value, component.Amount))
+        if (_bankCardSystem.TryChangeBalance(bankCard.AccountId.Value, -component.Amount)
+        && _bankCardSystem.TryChangeBalance(component.BankAccountId.Value, component.Amount))
         {
             _popupSystem.PopupEntity(Loc.GetString("eftpos-transaction-success"), uid);
             _audioSystem.PlayPvs(component.SoundApply, uid);

@@ -3,11 +3,11 @@
 namespace Content.Client._Utopia.Economy.UI;
 
 [UsedImplicitly]
-public sealed class ATMBui : BoundUserInterface
+public sealed class ATMBoundUserInterface : BoundUserInterface
 {
     private AtmWindow _window;
 
-    public ATMBui(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    public ATMBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
         _window = new AtmWindow();
     }
@@ -15,7 +15,7 @@ public sealed class ATMBui : BoundUserInterface
     protected override void Open()
     {
         base.Open();
-        _window.OnClose += Close;
+
         _window.OnWithdrawAttempt += SendMessage;
 
         if (State != null)
@@ -23,6 +23,7 @@ public sealed class ATMBui : BoundUserInterface
             UpdateState(State);
         }
 
+        _window.OnClose += Close;
         _window.OpenCentered();
 
     }

@@ -28,13 +28,16 @@
       insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
       ejectOnBreak: true
       swap: false
-      whitelist:
-        components:
-        - BankCard
   - type: ItemSlots
+    slots:
+      BankCardSlot:
+        name: BankCard
+        whitelist:
+          components:
+          - BankCard
   - type: ContainerContainer
     containers:
-      IdCardSlot: !type:ContainerSlot
+      BankCardSlot: !type:ContainerSlot
   - type: Appearance
   - type: AmbientOnPowered
   - type: AmbientSound
@@ -50,7 +53,7 @@
   - type: UserInterface
     interfaces:
       enum.ATMUiKey.Key:
-        type: ATMBui
+        type: ATMBoundUserInterface
   - type: PointLight
     enabled: false
     castShadows: false

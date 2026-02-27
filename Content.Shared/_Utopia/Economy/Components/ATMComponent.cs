@@ -1,5 +1,4 @@
-﻿using Content.Shared.Containers.ItemSlots;
-using Content.Shared.Stacks;
+﻿using Content.Shared.Stacks;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -9,9 +8,6 @@ namespace Content.Shared.Utopia.Economy;
 [RegisterComponent]
 public sealed partial class ATMComponent : Component
 {
-    [DataField]
-    public ItemSlot IdCardSlot = new();
-
     [DataField]
     public string CurrencyType = "SpaceCash";
 
@@ -40,4 +36,10 @@ public sealed partial class ATMComponent : Component
 public enum ATMUiKey
 {
     Key
+}
+
+public enum ATMVisualLayers : byte
+{
+    Base,
+    BaseUnshaded
 }

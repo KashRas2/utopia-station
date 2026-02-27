@@ -3,11 +3,11 @@ using JetBrains.Annotations;
 namespace Content.Client._Utopia.Economy.UI;
 
 [UsedImplicitly]
-public sealed class EftposBui : BoundUserInterface
+public sealed class EftposBoundUserInterface : BoundUserInterface
 {
     private readonly EftposWindow _window;
 
-    public EftposBui(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    public EftposBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
         _window = new EftposWindow();
     }
@@ -15,7 +15,6 @@ public sealed class EftposBui : BoundUserInterface
     protected override void Open()
     {
         base.Open();
-        _window.OnClose += Close;
         _window.OnCardButtonPressed += SendMessage;
 
         if (State != null)
@@ -23,6 +22,7 @@ public sealed class EftposBui : BoundUserInterface
             UpdateState(State);
         }
 
+        _window.OnClose += Close;
         _window.OpenCentered();
     }
 

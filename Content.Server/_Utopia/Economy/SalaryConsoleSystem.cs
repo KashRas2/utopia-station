@@ -1,179 +1,174 @@
-using System.Linq;
-using Content.Server.Roles.Jobs;
-using Content.Shared.Roles;
 using Content.Shared.Utopia.Economy;
-using Robust.Server.Containers;
-using Robust.Server.GameObjects;
-using Robust.Shared.Containers;
 using Content.Shared.Containers.ItemSlots;
-using Robust.Shared.Prototypes;
+using Content.Server.Station.Systems;
+using Content.Server.StationRecords.Systems;
+using Content.Shared.StationRecords;
+using Robust.Shared.Containers;
 
 namespace Content.Server.Utopia.Economy;
 
-public sealed class SalaryConsoleSystem : SharedEconomySystem
+public sealed class SalaryConsoleSystem : EntitySystem
 {
-    [Dependency] private readonly ContainerSystem _container = default!;
-    [Dependency] private readonly BankCardSystem _bankCardSystem = default!;
-    [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly JobSystem _job = default!;
-    [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
+    [Dependency] private readonly StationSystem _station = default!;
+    [Dependency] private readonly BankCardSystem _bankCard = default!;
+    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
+    [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
+    [Dependency] private readonly StationRecordKeyStorageSystem _keyStorage = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<SalaryConsoleComponent, ComponentInit>(OnInit);
         SubscribeLocalEvent<SalaryConsoleComponent, ComponentRemove>(OnRemoved);
         SubscribeLocalEvent<SalaryConsoleComponent, EntInsertedIntoContainerMessage>(OnCardInserted);
         SubscribeLocalEvent<SalaryConsoleComponent, EntRemovedFromContainerMessage>(OnCardRemoved);
+        SubscribeLocalEvent<SalaryConsoleComponent, BoundUIOpenedEvent>(OnBuiOpened);
+        SubscribeLocalEvent<SalaryConsoleComponent, RecordModifiedEvent>(OnRecordModified);
 
         Subs.BuiEvents<SalaryConsoleComponent>(SalaryConsoleUiKey.Key, subs =>
         {
-            subs.Event<SalaryPaymentMessage>(OnPaymentRequested);
-            subs.Event<BoundUIOpenedEvent>(OnBoundUIOpened);
+            subs.Event<SalaryConsoleSelectRecordMessage>(OnSelectRecord);
+            subs.Event<SetStationRecordFilter>(OnFiltersChanged);
+            subs.Event<SalaryConsoleSendMoneyMessage>(OnSendMoney);
         });
     }
 
-    private void OnInit(EntityUid uid, SalaryConsoleComponent component, ComponentInit args)
+    private void OnRemoved(Entity<SalaryConsoleComponent> ent, ref ComponentRemove args)
     {
-        _itemSlotsSystem.AddItemSlot(uid, component.SlotId, component.IdCardSlot);
-    }
-
-    private void OnRemoved(EntityUid uid, SalaryConsoleComponent component, ComponentRemove args)
-    {
-        if (!_itemSlotsSystem.TryGetSlot(uid, component.SlotId, out var slot))
+        if (!_itemSlots.TryGetSlot(ent, SalaryConsoleComponent.BudgetCardSlotId, out var slot))
             return;
 
-        _itemSlotsSystem.TryEject(uid, slot, null, out _);
-        _itemSlotsSystem.RemoveItemSlot(uid, slot);
+        _itemSlots.TryEject(ent, slot, null, out _);
+        _itemSlots.RemoveItemSlot(ent, slot);
     }
 
-    private void OnCardInserted(EntityUid uid, SalaryConsoleComponent component, EntInsertedIntoContainerMessage args)
+    private void OnCardInserted(Entity<SalaryConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
-        if (args.Container.ID != component.SlotId)
+        UpdateUiState(ent);
+    }
+
+    private void OnCardRemoved(Entity<SalaryConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
+    {
+        UpdateUiState(ent);
+    }
+
+    private void OnBuiOpened(Entity<SalaryConsoleComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        if (args.UiKey is not SalaryConsoleUiKey.Key)
             return;
 
-        if (!TryComp<BankCardComponent>(args.Entity, out var bankCard) || !bankCard.AccountId.HasValue || !bankCard.CommandBudgetCard)
+        UpdateUiState(ent);
+    }
+
+    private void OnRecordModified(Entity<SalaryConsoleComponent> ent, ref RecordModifiedEvent args)
+    {
+        var station = _station.GetOwningStation(ent.Owner);
+        if (station != args.Key.OriginStation)
+            return;
+
+        UpdateUiState(ent);
+    }
+
+    private void OnSelectRecord(Entity<SalaryConsoleComponent> ent, ref SalaryConsoleSelectRecordMessage msg)
+    {
+        ent.Comp.ActiveKey = msg.SelectedKey;
+        Dirty(ent);
+        UpdateUiState(ent);
+    }
+
+    private void OnFiltersChanged(Entity<SalaryConsoleComponent> ent, ref SetStationRecordFilter msg)
+    {
+        if (ent.Comp.Filter == null ||
+            ent.Comp.Filter.Type != msg.Type || ent.Comp.Filter.Value != msg.Value)
         {
-            _container.EmptyContainer(args.Container);
-            return;
-        }
-
-        UpdateUiState(uid, component);
-    }
-
-    private void OnCardRemoved(EntityUid uid, SalaryConsoleComponent component, EntRemovedFromContainerMessage args)
-    {
-        if (args.Container.ID != component.SlotId)
-            return;
-
-        UpdateUiState(uid, component);
-    }
-
-    private void OnBoundUIOpened(EntityUid uid, SalaryConsoleComponent component, BoundUIOpenedEvent args)
-    {
-        UpdateUiState(uid, component);
-    }
-
-    private void OnPaymentRequested(EntityUid uid, SalaryConsoleComponent component, SalaryPaymentMessage args)
-    {
-        var cardEntity = _itemSlotsSystem.GetItemOrNull(uid, component.SlotId);
-        if (cardEntity == null || !TryComp<BankCardComponent>(cardEntity.Value, out var bankCard) || !bankCard.AccountId.HasValue || !bankCard.CommandBudgetCard)
-            return;
-
-        var sourceAccountId = bankCard.AccountId.Value;
-        var targetAccountId = args.TargetAccountId;
-        var amount = args.Amount;
-
-        if (amount == 0)
-            return;
-
-        var sourceBalance = _bankCardSystem.GetBalance(sourceAccountId);
-        if (sourceBalance + amount < 0)
-        {
-            UpdateUiState(uid, component);
-            return;
-        }
-
-        if (_bankCardSystem.TryChangeBalance(sourceAccountId, -amount)
-            && _bankCardSystem.TryChangeBalance(targetAccountId, amount))
-        {
-            UpdateUiState(uid, component);
+            ent.Comp.Filter = new StationRecordsFilter(msg.Type, msg.Value);
+            UpdateUiState(ent);
         }
     }
 
-    private void UpdateUiState(EntityUid uid, SalaryConsoleComponent component)
+    private void OnSendMoney(Entity<SalaryConsoleComponent> ent, ref SalaryConsoleSendMoneyMessage msg)
     {
-        var cardEntity = _itemSlotsSystem.GetItemOrNull(uid, component.SlotId);
-        BankCardComponent? bankCard = null;
-        var hasCard = false;
+        if (msg.Amount <= 0)
+            return;
 
-        if (cardEntity != null
-            && TryComp(cardEntity.Value, out bankCard)
-            && bankCard.AccountId.HasValue
-            && bankCard.CommandBudgetCard)
+        if (!_itemSlots.TryGetSlot(ent, SalaryConsoleComponent.BudgetCardSlotId, out var slot))
+            return;
+
+        var cardEntity = slot.Item;
+        if (cardEntity == null || !TryComp<BankCardComponent>(cardEntity, out var bankCard)
+        || !bankCard.CommandBudgetCard || !bankCard.AccountId.HasValue)
+            return;
+
+        var station = _station.GetOwningStation(ent.Owner);
+        if (station == null || !HasComp<StationRecordsComponent>(station))
+            return;
+
+        var key = new StationRecordKey(msg.RecordKey, station.Value);
+        if (!_keyStorage.TryGetEntityWithKey(key, out var idCardUid) || idCardUid == null)
+            return;
+
+        if (!TryComp<BankCardComponent>(idCardUid.Value, out var targetCard)
+        || !targetCard.AccountId.HasValue || targetCard.CommandBudgetCard)
+            return;
+
+        var budgetAccountId = bankCard.AccountId.Value;
+        var recipientAccountId = targetCard.AccountId.Value;
+
+        if (!_bankCard.TryChangeBalance(budgetAccountId, -msg.Amount))
+            return;
+
+        if (!_bankCard.TryChangeBalance(recipientAccountId, msg.Amount))
         {
-            hasCard = true;
+            _bankCard.TryChangeBalance(budgetAccountId, msg.Amount);
+            return;
         }
 
-        var balance = 0;
-        var infoMessage = Loc.GetString("salary-console-insert-card");
-        var employees = new List<EmployeeData>();
+        UpdateUiState(ent);
+    }
 
-        if (hasCard && bankCard != null)
+    private void UpdateUiState(Entity<SalaryConsoleComponent> ent)
+    {
+        var station = _station.GetOwningStation(ent.Owner);
+        Dictionary<uint, string>? listing = null;
+        GeneralStationRecord? record = null;
+
+        if (!_itemSlots.TryGetSlot(ent, SalaryConsoleComponent.BudgetCardSlotId, out var slot))
+            return;
+
+        if (station != null && TryComp<StationRecordsComponent>(station, out var stationRecords))
         {
-            balance = _bankCardSystem.GetBalance(bankCard.AccountId!.Value);
-            infoMessage = string.Empty;
-            if (bankCard.Jobs != null && bankCard.Jobs.Count > 0)
+            listing = _stationRecords.BuildListing((station.Value, stationRecords), ent.Comp.Filter);
+            if (ent.Comp.ActiveKey is { } keyId)
             {
-                employees = GetEmployeesForJobs(bankCard.Jobs);
-                Logger.DebugS("salary", $"UI будет показывать {employees.Count} сотрудников");
+                var key = new StationRecordKey(keyId, station.Value);
+                _stationRecords.TryGetRecord(key, out record, stationRecords);
             }
         }
 
-        var state = new SalaryConsoleBuiState
+        var budgetCardInserted = false;
+        int? budgetCardBalance = null;
+        string? budgetCardLabel = null;
+
+        if (slot.Item is { } card && TryComp<BankCardComponent>(card, out var bankCard)
+        && bankCard.CommandBudgetCard && bankCard.AccountId.HasValue
+        && _bankCard.TryGetAccount(bankCard.AccountId.Value, out var account))
         {
-            AccountBalance = balance,
-            HasCard = hasCard,
-            InfoMessage = infoMessage,
-            Employees = employees
-        };
-
-        _ui.SetUiState(uid, SalaryConsoleUiKey.Key, state);
-    }
-
-    private List<EmployeeData> GetEmployeesForJobs(List<ProtoId<JobPrototype>> jobPrototypes)
-    {
-        var employees = new List<EmployeeData>();
-
-        foreach (var account in Accounts)
-        {
-            if (account.Mind == null)
-                continue;
-
-            var mind = account.Mind.Value;
-            if (!_job.MindTryGetJob(mind, out var jobPrototype))
-                continue;
-
-            if (!jobPrototypes.Contains(jobPrototype.ID))
-                continue;
-
-            var name = Loc.GetString("salary-console-unknown-employee");
-
-            if (mind.Comp.CharacterName != null)
-            {
-                name = mind.Comp.CharacterName;
-            }
-
-            employees.Add(new EmployeeData
-            {
-                AccountId = account.AccountId,
-                Name = name,
-                JobTitle = jobPrototype.LocalizedName,
-                JobPrototype = jobPrototype.ID
-            });
+            budgetCardInserted = true;
+            budgetCardBalance = _bankCard.GetBalance(bankCard.AccountId.Value);
+            budgetCardLabel = account.Name;
         }
 
-        return employees;
+        var state = new SalaryConsoleUserInterfaceState(
+            listing,
+            ent.Comp.ActiveKey,
+            record,
+            ent.Comp.Filter,
+            budgetCardInserted,
+            budgetCardBalance,
+            budgetCardLabel
+        );
+
+        _ui.SetUiState(ent.Owner, SalaryConsoleUiKey.Key, state);
     }
 }

@@ -1,7 +1,6 @@
 using Content.Shared.Cargo.Prototypes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.GameStates;
-using Content.Shared.Roles;
 
 namespace Content.Shared.Utopia.Economy;
 
@@ -19,7 +18,4 @@ public sealed partial class BankCardComponent : Component
 
     [DataField]
     public ProtoId<CargoAccountPrototype>? CommandBudgetType;
-
-    [DataField]
-    public List<ProtoId<JobPrototype>> Jobs;
 }

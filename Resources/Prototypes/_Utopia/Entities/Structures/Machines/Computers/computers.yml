@@ -1,0 +1,38 @@
+- type: entity
+  parent: BaseComputer
+  id: UtopiaSalaryConsole
+  name: salary console
+  description: test
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+    - map: ["computerLayerScreen"]
+      sprite: _Utopia/Structures/Machines/computers.rsi
+      state: accounts
+  - type: ActivatableUI
+    key: enum.SalaryConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+        enum.SalaryConsoleUiKey.Key:
+          type: SalaryConsoleBoundUserInterface
+        enum.WiresUiKey.Key:
+          type: WiresBoundUserInterface
+  - type: SalaryConsole
+  - type: ItemSlots
+    slots:
+      BankCardSlot:
+        name: BankCard
+        whitelist:
+          tags:
+          - UtopiaDepartamentCard
+  - type: ContainerContainer
+    containers:
+      BankCardSlot: !type:ContainerSlot
