@@ -174,42 +174,42 @@ public sealed class BankCardSystem : SharedEconomySystem
         return account;
     }
 
-    private void OnMapInit(EntityUid uid, BankCardComponent component, MapInitEvent args)
+    private void OnMapInit(Entity<BankCardComponent> ent, ref MapInitEvent args)
     {
-        if (component.CommandBudgetCard)
+        if (ent.Comp.CommandBudgetCard)
         {
-            if (TryComp<StationBankAccountComponent>(_station.GetOwningStation(uid), out var stationBank)
-                && component.CommandBudgetType != null)
+            if (TryComp<StationBankAccountComponent>(_station.GetOwningStation(ent), out var stationBank)
+                && ent.Comp.CommandBudgetType != null)
             {
                 var existingAccount = Accounts.FirstOrDefault(acc =>
                     acc.CommandBudgetAccount &&
-                    acc.AccountPrototype == component.CommandBudgetType);
+                    acc.AccountPrototype == ent.Comp.CommandBudgetType);
 
                 if (existingAccount != null)
                 {
-                    component.AccountId = existingAccount.AccountId;
+                    ent.Comp.AccountId = existingAccount.AccountId;
                     return;
                 }
 
-                stationBank.BankAccounts.Add(component.CommandBudgetType.Value, CreateBudgetAccount(component.CommandBudgetType.Value));
-                stationBank.BankAccounts.TryGetValue(component.CommandBudgetType.Value, out var account);
+                stationBank.BankAccounts.Add(ent.Comp.CommandBudgetType.Value, CreateBudgetAccount(ent.Comp.CommandBudgetType.Value));
+                stationBank.BankAccounts.TryGetValue(ent.Comp.CommandBudgetType.Value, out var account);
 
                 if (account != null)
                 {
-                    component.AccountId = account.AccountId;
+                    ent.Comp.AccountId = account.AccountId;
                     return;
                 }
             }
         }
 
-        if (component.AccountId.HasValue)
+        if (ent.Comp.AccountId.HasValue)
         {
-            CreateAccount(component.AccountId.Value, component.StartingBalance);
+            CreateAccount(ent.Comp.AccountId.Value, ent.Comp.StartingBalance);
             return;
         }
 
-        var playerAccount = CreateAccount(default, component.StartingBalance);
-        component.AccountId = playerAccount.AccountId;
+        var playerAccount = CreateAccount(default, ent.Comp.StartingBalance);
+        ent.Comp.AccountId = playerAccount.AccountId;
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)

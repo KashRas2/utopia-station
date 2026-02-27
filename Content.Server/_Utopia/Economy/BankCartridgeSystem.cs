@@ -22,39 +22,39 @@ public sealed class BankCartridgeSystem : EntitySystem
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeRemovedEvent>(OnRemove);
     }
 
-    private void OnRemove(EntityUid uid, BankCartridgeComponent component, CartridgeRemovedEvent args)
+    private void OnRemove(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeRemovedEvent args)
     {
-        component.Loader = null;
+        bankCartridge.Comp.Loader = null;
     }
 
-    private void OnInstall(EntityUid uid, BankCartridgeComponent component, CartridgeAddedEvent args)
+    private void OnInstall(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeAddedEvent args)
     {
-        component.Loader = args.Loader;
+        bankCartridge.Comp.Loader = args.Loader;
     }
 
-    private void OnAccountLink(EntityUid uid, BankCartridgeComponent component, BankAccountLinkMessage args)
+    private void OnAccountLink(Entity<BankCartridgeComponent> bankCartridge, BankAccountLinkMessage args)
     {
         if (!_bankCardSystem.TryGetAccount(args.AccountId, out var account)
         || args.Pin != account.AccountPin || account.CommandBudgetAccount)
         {
-            component.AccountLinkResult = Loc.GetString("bank-program-ui-link-error");
+            bankCartridge.Comp.AccountLinkResult = Loc.GetString("bank-program-ui-link-error");
             return;
         }
 
-        component.AccountLinkResult = Loc.GetString("bank-program-ui-link-success");
+        bankCartridge.Comp.AccountLinkResult = Loc.GetString("bank-program-ui-link-success");
 
-        if (args.AccountId != component.AccountId)
+        if (args.AccountId != bankCartridge.Comp.AccountId)
         {
-            if (component.AccountId != null
-            && _bankCardSystem.TryGetAccount(component.AccountId.Value, out var oldAccount)
-            && oldAccount.CartridgeUid == uid)
+            if (bankCartridge.Comp.AccountId != null
+            && _bankCardSystem.TryGetAccount(bankCartridge.Comp.AccountId.Value, out var oldAccount)
+            && oldAccount.CartridgeUid == bankCartridge)
                 oldAccount.CartridgeUid = null;
 
             if (account.CartridgeUid != null)
                 Comp<BankCartridgeComponent>(account.CartridgeUid.Value).AccountId = null;
 
-            account.CartridgeUid = uid;
-            component.AccountId = args.AccountId;
+            account.CartridgeUid = bankCartridge;
+            bankCartridge.Comp.AccountId = args.AccountId;
         }
 
         if (!TryComp(GetEntity(args.LoaderUid), out PdaComponent? pda) || !pda.ContainedId.HasValue
@@ -130,20 +130,20 @@ public sealed class BankCartridgeSystem : EntitySystem
             ("amount", args.Amount), ("target", targetAccount.Name));
     }
 
-    private void OnUiReady(EntityUid uid, BankCartridgeComponent component, CartridgeUiReadyEvent args)
+    private void OnUiReady(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeUiReadyEvent args)
     {
-        UpdateUiState(uid, args.Loader, component);
+        UpdateUiState(bankCartridge, args.Loader, bankCartridge.Comp);
     }
 
-    private void OnUiMessage(EntityUid uid, BankCartridgeComponent component, CartridgeMessageEvent args)
+    private void OnUiMessage(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeMessageEvent args)
     {
         if (args is BankAccountLinkMessage message)
-            OnAccountLink(uid, component, message);
+            OnAccountLink(bankCartridge, message);
 
         if (args is BankTransferMessage transferMessage)
-            OnTransfer((uid, component), transferMessage);
+            OnTransfer(bankCartridge, transferMessage);
 
-        UpdateUiState(uid, GetEntity(args.LoaderUid), component);
+        UpdateUiState(bankCartridge, GetEntity(args.LoaderUid), bankCartridge.Comp);
     }
 
     private void UpdateUiState(EntityUid cartridgeUid, EntityUid loaderUid, BankCartridgeComponent? component = null)

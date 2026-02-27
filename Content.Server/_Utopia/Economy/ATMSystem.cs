@@ -41,39 +41,39 @@ public sealed class ATMSystem : EntitySystem
         SubscribeLocalEvent<ATMComponent, GotEmaggedEvent>(OnEmag);
     }
 
-    private void OnEmag(EntityUid uid, ATMComponent component, ref GotEmaggedEvent args)
+    private void OnEmag(Entity<ATMComponent> ent, ref GotEmaggedEvent args)
     {
         args.Handled = true;
     }
 
-    private void OnComponentStartup(EntityUid uid, ATMComponent component, ComponentStartup args)
+    private void OnComponentStartup(Entity<ATMComponent> ent, ref ComponentStartup args)
     {
-        UpdateUiState(uid, -1, false, Loc.GetString("atm-ui-insert-card"));
+        UpdateUiState(ent, -1, false, Loc.GetString("atm-ui-insert-card"));
     }
 
-    private void OnComponentRemoved(EntityUid uid, ATMComponent component, ComponentRemove args)
+    private void OnComponentRemoved(Entity<ATMComponent> ent, ref ComponentRemove args)
     {
-        if (!_itemSlots.TryGetSlot(uid, component.SlotId, out var slot))
+        if (!_itemSlots.TryGetSlot(ent, ent.Comp.SlotId, out var slot))
             return;
 
-        if (_itemSlots.TryEject(uid, slot, null, out _))
+        if (_itemSlots.TryEject(ent, slot, null, out _))
         {
-            _itemSlots.RemoveItemSlot(uid, slot);
+            _itemSlots.RemoveItemSlot(ent, slot);
         }
     }
 
-    private void OnInteractUsing(EntityUid uid, ATMComponent component, InteractUsingEvent args)
+    private void OnInteractUsing(Entity<ATMComponent> ent, ref InteractUsingEvent args)
     {
-        if (!_itemSlots.TryGetSlot(uid, component.SlotId, out var slot))
+        if (!_itemSlots.TryGetSlot(ent, ent.Comp.SlotId, out var slot))
             return;
 
-        if (!TryComp<CurrencyComponent>(args.Used, out var currency) || !currency.Price.Keys.Contains(component.CurrencyType))
+        if (!TryComp<CurrencyComponent>(args.Used, out var currency) || !currency.Price.Keys.Contains(ent.Comp.CurrencyType))
             return;
 
         if (!slot.Item.HasValue)
         {
             _popupSystem.PopupEntity(Loc.GetString("atm-trying-insert-cash-error"), args.Target, args.User, PopupType.Medium);
-            _audioSystem.PlayPvs(component.SoundDeny, uid);
+            _audioSystem.PlayPvs(ent.Comp.SoundDeny, ent);
             return;
         }
 
@@ -81,51 +81,51 @@ public sealed class ATMSystem : EntitySystem
         var bankCard = Comp<BankCardComponent>(slot.Item.Value);
         var amount = stack.Count;
 
-        if (_random.Prob(component.ErrorChance))
+        if (_random.Prob(ent.Comp.ErrorChance))
         {
             Del(args.Used);
             args.Handled = true;
 
-            _stackSystem.SpawnAtPosition(amount, _prototypeManager.Index(component.CreditStackPrototype),
-                Transform(uid).Coordinates);
+            _stackSystem.SpawnAtPosition(amount, _prototypeManager.Index(ent.Comp.CreditStackPrototype),
+                Transform(ent).Coordinates);
 
-            _audioSystem.PlayPvs(component.SoundWithdrawCurrency, uid);
-            _popupSystem.PopupEntity(Loc.GetString("atm-error"), uid);
+            _audioSystem.PlayPvs(ent.Comp.SoundWithdrawCurrency, ent);
+            _popupSystem.PopupEntity(Loc.GetString("atm-error"), ent);
             return;
         }
 
         if (!_bankCardSystem.TryChangeBalance(bankCard.AccountId!.Value, amount))
         {
-            _popupSystem.PopupEntity(Loc.GetString("atm-deposit-failed"), uid, args.User, PopupType.Medium);
-            _audioSystem.PlayPvs(component.SoundDeny, uid);
+            _popupSystem.PopupEntity(Loc.GetString("atm-deposit-failed"), ent, args.User, PopupType.Medium);
+            _audioSystem.PlayPvs(ent.Comp.SoundDeny, ent);
             return;
         }
 
         Del(args.Used);
         args.Handled = true;
 
-        _audioSystem.PlayPvs(component.SoundInsertCurrency, uid);
-        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true,
+        _audioSystem.PlayPvs(ent.Comp.SoundInsertCurrency, ent);
+        UpdateUiState(ent, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true,
             Loc.GetString("atm-ui-select-withdraw-amount"));
     }
 
-    private void OnCardInserted(EntityUid uid, ATMComponent component, EntInsertedIntoContainerMessage args)
+    private void OnCardInserted(Entity<ATMComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
         if (!TryComp<BankCardComponent>(args.Entity, out var bankCard) || !bankCard.AccountId.HasValue)
             return;
 
-        UpdateUiState(uid, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true,
+        UpdateUiState(ent, _bankCardSystem.GetBalance(bankCard.AccountId.Value), true,
             Loc.GetString("atm-ui-select-withdraw-amount"));
     }
 
-    private void OnCardRemoved(EntityUid uid, ATMComponent component, EntRemovedFromContainerMessage args)
+    private void OnCardRemoved(Entity<ATMComponent> ent, ref EntRemovedFromContainerMessage args)
     {
-        UpdateUiState(uid, -1, false, Loc.GetString("atm-ui-insert-card"));
+        UpdateUiState(ent, -1, false, Loc.GetString("atm-ui-insert-card"));
     }
 
-    private void OnWithdrawRequest(EntityUid uid, ATMComponent component, ATMRequestWithdrawMessage args)
+    private void OnWithdrawRequest(Entity<ATMComponent> ent, ref ATMRequestWithdrawMessage args)
     {
-        if (!_itemSlots.TryGetSlot(uid, component.SlotId, out var slot))
+        if (!_itemSlots.TryGetSlot(ent, ent.Comp.SlotId, out var slot))
             return;
 
         if (!TryComp<BankCardComponent>(slot.Item, out var bankCard)
@@ -140,26 +140,26 @@ public sealed class ATMSystem : EntitySystem
         }
 
         if (!_bankCardSystem.TryGetAccount(bankCard.AccountId.Value, out var account)
-        || account.AccountPin != args.Pin && !HasComp<EmaggedComponent>(uid))
+        || account.AccountPin != args.Pin && !HasComp<EmaggedComponent>(ent))
         {
-            _popupSystem.PopupEntity(Loc.GetString("atm-wrong-pin"), uid);
-            _audioSystem.PlayPvs(component.SoundDeny, uid);
+            _popupSystem.PopupEntity(Loc.GetString("atm-wrong-pin"), ent);
+            _audioSystem.PlayPvs(ent.Comp.SoundDeny, ent);
             return;
         }
 
         if (!_bankCardSystem.TryChangeBalance(account.AccountId, -args.Amount))
         {
-            _popupSystem.PopupEntity(Loc.GetString("atm-not-enough-cash"), uid);
-            _audioSystem.PlayPvs(component.SoundDeny, uid);
+            _popupSystem.PopupEntity(Loc.GetString("atm-not-enough-cash"), ent);
+            _audioSystem.PlayPvs(ent.Comp.SoundDeny, ent);
             return;
         }
 
-        _stackSystem.SpawnAtPosition(args.Amount, _prototypeManager.Index(component.CreditStackPrototype),
-            Transform(uid).Coordinates);
+        _stackSystem.SpawnAtPosition(args.Amount, _prototypeManager.Index(ent.Comp.CreditStackPrototype),
+            Transform(ent).Coordinates);
 
-        _audioSystem.PlayPvs(component.SoundWithdrawCurrency, uid);
+        _audioSystem.PlayPvs(ent.Comp.SoundWithdrawCurrency, ent);
 
-        UpdateUiState(uid, account.Balance, true, Loc.GetString("atm-ui-select-withdraw-amount"));
+        UpdateUiState(ent, account.Balance, true, Loc.GetString("atm-ui-select-withdraw-amount"));
     }
 
     private void UpdateUiState(EntityUid uid, int balance, bool hasCard, string infoMessage)

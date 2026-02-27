@@ -16,20 +16,20 @@ public sealed class CommandBudgetSystem : SharedEconomySystem
         SubscribeLocalEvent<CommandBudgetPinPaperComponent, MapInitEvent>(OnMapInit);
     }
 
-    private void OnMapInit(EntityUid uid, CommandBudgetPinPaperComponent component, MapInitEvent args)
+    private void OnMapInit(Entity<CommandBudgetPinPaperComponent> ent, ref MapInitEvent args)
     {
-        if (!TryComp(_station.GetOwningStation(uid), out StationBankAccountComponent? stationBank))
+        if (!TryComp(_station.GetOwningStation(ent), out StationBankAccountComponent? stationBank))
             return;
 
-        if (component.CommandBudgetType == null)
+        if (ent.Comp.CommandBudgetType == null)
             return;
 
-        stationBank.BankAccounts.TryGetValue(component.CommandBudgetType.Value, out var account);
+        stationBank.BankAccounts.TryGetValue(ent.Comp.CommandBudgetType.Value, out var account);
 
         if (account != null)
         {
             var pin = account.AccountPin;
-            _paper.SetContent((uid, EnsureComp<PaperComponent>(uid)), Loc.GetString("command-budget-pin-message", ("pin", pin)));
+            _paper.SetContent((ent, EnsureComp<PaperComponent>(ent)), Loc.GetString("command-budget-pin-message", ("pin", pin)));
         }
     }
 }

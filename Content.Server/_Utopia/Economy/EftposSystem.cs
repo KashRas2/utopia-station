@@ -25,48 +25,48 @@ public sealed class EftposSystem : EntitySystem
         SubscribeLocalEvent<EftposComponent, InteractUsingEvent>(OnInteractUsing);
     }
 
-    private void OnInteractUsing(EntityUid uid, EftposComponent component, InteractUsingEvent args)
+    private void OnInteractUsing(Entity<EftposComponent> ent, ref InteractUsingEvent args)
     {
-        if (component.BankAccountId == null || !TryComp(args.Used, out BankCardComponent? bankCard)
-        || bankCard.AccountId == null || bankCard.AccountId == component.BankAccountId
-        || component.Amount <= 0 || bankCard.CommandBudgetCard)
+        if (ent.Comp.BankAccountId == null || !TryComp(args.Used, out BankCardComponent? bankCard)
+        || bankCard.AccountId == null || bankCard.AccountId == ent.Comp.BankAccountId
+        || ent.Comp.Amount <= 0 || bankCard.CommandBudgetCard)
             return;
 
-        if (_bankCardSystem.TryChangeBalance(bankCard.AccountId.Value, -component.Amount)
-        && _bankCardSystem.TryChangeBalance(component.BankAccountId.Value, component.Amount))
+        if (_bankCardSystem.TryChangeBalance(bankCard.AccountId.Value, -ent.Comp.Amount)
+        && _bankCardSystem.TryChangeBalance(ent.Comp.BankAccountId.Value, ent.Comp.Amount))
         {
-            _popupSystem.PopupEntity(Loc.GetString("eftpos-transaction-success"), uid);
-            _audioSystem.PlayPvs(component.SoundApply, uid);
+            _popupSystem.PopupEntity(Loc.GetString("eftpos-transaction-success"), ent);
+            _audioSystem.PlayPvs(ent.Comp.SoundApply, ent);
         }
         else
         {
-            _popupSystem.PopupEntity(Loc.GetString("eftpos-transaction-error"), uid);
-            _audioSystem.PlayPvs(component.SoundDeny, uid);
+            _popupSystem.PopupEntity(Loc.GetString("eftpos-transaction-error"), ent);
+            _audioSystem.PlayPvs(ent.Comp.SoundDeny, ent);
         }
     }
 
-    private void OnLock(EntityUid uid, EftposComponent component, EftposLockMessage args)
+    private void OnLock(Entity<EftposComponent> ent, ref EftposLockMessage args)
     {
-        if (!TryComp(args.Actor, out HandsComponent? hands))
+        if (!HasComp<HandsComponent>(args.Actor))
             return;
 
         var held = _handsSystem.GetActiveItem(args.Actor);
         if (held == null || !TryComp<BankCardComponent>(held.Value, out var bankCard))
             return;
 
-        if (component.BankAccountId == null)
+        if (ent.Comp.BankAccountId == null)
         {
-            component.BankAccountId = bankCard.AccountId;
-            component.Amount = args.Amount;
+            ent.Comp.BankAccountId = bankCard.AccountId;
+            ent.Comp.Amount = args.Amount;
         }
-        else if (component.BankAccountId == bankCard.AccountId)
+        else if (ent.Comp.BankAccountId == bankCard.AccountId)
         {
-            component.BankAccountId = null;
-            component.Amount = 0;
+            ent.Comp.BankAccountId = null;
+            ent.Comp.Amount = 0;
         }
 
-        UpdateUiState(uid, component.BankAccountId != null, component.Amount,
-            GetOwner(held.Value, component.BankAccountId));
+        UpdateUiState(ent, ent.Comp.BankAccountId != null, ent.Comp.Amount,
+            GetOwner(held.Value, ent.Comp.BankAccountId));
     }
 
     private string GetOwner(EntityUid uid, int? bankAccountId)
