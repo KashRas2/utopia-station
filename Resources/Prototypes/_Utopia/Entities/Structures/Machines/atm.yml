@@ -23,15 +23,14 @@
       map: ["enum.ATMVisualLayers.BaseUnshaded"]
       shader: unshaded
   - type: ATM
-    idCardSlot:
-      ejectSound: /Audio/Machines/id_swipe.ogg
-      insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
-      ejectOnBreak: true
-      swap: false
   - type: ItemSlots
     slots:
       BankCardSlot:
         name: BankCard
+        ejectSound: /Audio/Machines/id_swipe.ogg
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectOnBreak: true
+        swap: false
         whitelist:
           components:
           - BankCard
