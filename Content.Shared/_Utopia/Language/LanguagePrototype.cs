@@ -1,7 +1,7 @@
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
 
-namespace Content.Shared.Utopia.Language;
+namespace Content.Shared._Utopia.Language;
 
 [Prototype]
 public sealed partial class LanguagePrototype : IPrototype, IInheritingPrototype

@@ -2,7 +2,7 @@ using Content.Server.Chat.Systems;
 using Content.Shared.Chat;
 using Content.Shared.Speech;
 using Content.Shared.Speech.Components;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 
 namespace Content.Server.Speech.EntitySystems;
 

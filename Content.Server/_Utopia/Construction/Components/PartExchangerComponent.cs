@@ -1,6 +1,6 @@
 using Robust.Shared.Audio;
 
-namespace Content.Server.Utopia.Construction.Components;
+namespace Content.Server._Utopia.Construction.Components;
 
 [RegisterComponent]
 public sealed partial class PartExchangerComponent : Component

@@ -1,5 +1,5 @@
-using Content.Shared.Utopia.CCVar;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.CCVar;
+using Content.Shared._Utopia.SpeechBarks;
 using Robust.Client.Audio;
 using Robust.Client.Player;
 using Robust.Shared.Audio;

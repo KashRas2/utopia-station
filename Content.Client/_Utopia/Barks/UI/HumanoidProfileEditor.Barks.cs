@@ -3,7 +3,7 @@ using System.Numerics;
 using Content.Client._Utopia.Barks;
 using Content.Client._Utopia.SpeechBarks;
 using Content.Client.UserInterface.Controls;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.SpeechBarks;
 
 namespace Content.Client.Lobby.UI;
 

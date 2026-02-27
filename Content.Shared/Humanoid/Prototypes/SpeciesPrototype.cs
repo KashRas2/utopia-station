@@ -1,8 +1,8 @@
+using Content.Shared._Utopia.Language;
 using Content.Shared.Dataset;
 using Content.Shared.Humanoid.Markings;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
-using Content.Shared.Utopia.Language;
 
 namespace Content.Shared.Humanoid.Prototypes;
 

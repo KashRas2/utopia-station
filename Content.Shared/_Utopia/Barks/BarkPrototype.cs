@@ -2,7 +2,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Audio;
 
-namespace Content.Shared.Utopia.SpeechBarks;
+namespace Content.Shared._Utopia.SpeechBarks;
 
 [Prototype("speechBark")]
 public sealed partial class BarkPrototype : IPrototype
@@ -17,7 +17,7 @@ public sealed partial class BarkPrototype : IPrototype
     public string Name = "Default";
 
     [DataField]
-    public string Category = "Standard_barks";
+    public string Category = "standard";
 
     [DataField(required: true)]
     public SoundSpecifier Sound { get; private set; } = default!;

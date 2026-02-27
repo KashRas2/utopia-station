@@ -1,12 +1,12 @@
 using Robust.Shared.Prototypes;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.SpeechBarks;
 using Content.Shared.Chat;
 using Robust.Shared.Configuration;
-using Content.Shared.Utopia.CCVar;
+using Content.Shared._Utopia.CCVar;
 using Content.Server.Mind;
 using Robust.Shared.Player;
 
-namespace Content.Server.Utopia.SpeechBarks;
+namespace Content.Server._Utopia.SpeechBarks;
 
 public sealed class SpeechBarksSystem : EntitySystem
 {

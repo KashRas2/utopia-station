@@ -1,7 +1,7 @@
 using Content.Shared.Construction.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
-namespace Content.Server.Utopia.Power.Components;
+namespace Content.Server._Utopia.Power.Components;
 
 [RegisterComponent]
 public sealed partial class UpgradeBatteryComponent : Component

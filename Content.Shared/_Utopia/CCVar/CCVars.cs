@@ -1,6 +1,6 @@
 using Robust.Shared.Configuration;
 
-namespace Content.Shared.Utopia.CCVar;
+namespace Content.Shared._Utopia.CCVar;
 
 [CVarDefs]
 public sealed class UCCVars

@@ -1,8 +1,8 @@
-using Content.Server.Utopia.Chat;
-using Content.Shared.Utopia.Language;
+using Content.Server._Utopia.Chat;
+using Content.Shared._Utopia.Language;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.Utopia.Language;
+namespace Content.Server._Utopia.Language;
 
 [DataDefinition]
 public sealed partial class CanHear : ILanguageCondition

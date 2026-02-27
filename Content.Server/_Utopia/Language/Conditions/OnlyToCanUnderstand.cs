@@ -1,7 +1,7 @@
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.Utopia.Language;
+namespace Content.Server._Utopia.Language;
 
 [DataDefinition]
 public sealed partial class OnlyToCanUnderstand : ILanguageCondition

@@ -1,5 +1,5 @@
 using Content.Shared.Speech;
-using Content.Shared.Utopia.SpeechBarks;
+using Content.Shared._Utopia.SpeechBarks;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.Speech.Components;

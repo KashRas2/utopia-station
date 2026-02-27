@@ -1,6 +1,6 @@
 using System.Linq;
 using Content.Client._Utopia.Language.UI;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 using Content.Shared.Humanoid.Prototypes;
 using Robust.Client.UserInterface.Controls;
 

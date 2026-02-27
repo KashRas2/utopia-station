@@ -3,9 +3,9 @@ using Content.Shared.Interaction;
 using Content.Shared.PowerCell;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Hands;
-using Content.Shared.Utopia.Language;
+using Content.Shared._Utopia.Language;
 
-namespace Content.Server.Utopia.Language;
+namespace Content.Server._Utopia.Language;
 
 public sealed class TranslatorSystem : SharedTranslatorSystem
 {

@@ -1,6 +1,6 @@
 using Content.Shared.Inventory;
 
-namespace Content.Shared.Utopia.SpeechBarks;
+namespace Content.Shared._Utopia.SpeechBarks;
 
 public sealed class TransformSpeakerBarkEvent : EntityEventArgs, IInventoryRelayEvent
 {
