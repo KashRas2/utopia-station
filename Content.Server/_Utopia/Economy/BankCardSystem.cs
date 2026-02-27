@@ -7,6 +7,8 @@ using Content.Server.Chat.Systems;
 using Content.Server.GameTicking;
 using Content.Server.Roles.Jobs;
 using Content.Server.Station.Systems;
+using Content.Shared._Utopia.CCVar;
+using Content.Shared._Utopia.Economy;
 using Content.Shared.Cargo.Components;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.GameTicking;
@@ -14,14 +16,12 @@ using Content.Shared.Inventory;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs.Systems;
-using Content.Shared.Utopia.CCVar;
-using Content.Shared.Utopia.Economy;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
-namespace Content.Server.Utopia.Economy;
+namespace Content.Server._Utopia.Economy;
 
 public sealed class BankCardSystem : SharedEconomySystem
 {

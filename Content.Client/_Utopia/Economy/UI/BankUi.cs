@@ -1,7 +1,7 @@
-using Content.Client.UserInterface.Fragments;
-using Content.Shared.Utopia.Economy;
-using Content.Shared.CartridgeLoader;
 using JetBrains.Annotations;
+using Content.Client.UserInterface.Fragments;
+using Content.Shared._Utopia.Economy;
+using Content.Shared.CartridgeLoader;
 using Robust.Client.UserInterface;
 
 namespace Content.Client._Utopia.Economy.UI;

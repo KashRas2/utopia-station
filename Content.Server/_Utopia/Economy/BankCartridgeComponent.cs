@@ -1,4 +1,4 @@
-namespace Content.Server.Utopia.Economy;
+namespace Content.Server._Utopia.Economy;
 
 [RegisterComponent]
 public sealed partial class BankCartridgeComponent : Component

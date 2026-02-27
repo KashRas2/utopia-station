@@ -3,7 +3,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Utopia.Economy;
+namespace Content.Shared._Utopia.Economy;
 
 [RegisterComponent]
 public sealed partial class ATMComponent : Component

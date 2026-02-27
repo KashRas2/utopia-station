@@ -1,6 +1,6 @@
 using Robust.Shared.Prototypes;
 
-namespace Content.Shared.Utopia.Economy;
+namespace Content.Shared._Utopia.Economy;
 
 [Prototype]
 public sealed partial class SalaryPrototype : IPrototype

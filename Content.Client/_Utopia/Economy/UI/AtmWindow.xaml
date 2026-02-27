@@ -3,7 +3,6 @@
                Title="{Loc 'atm-ui-name'}"
                SetSize="400 220"
                Resizable="False">
-
     <BoxContainer Name="AuthorizationPage" HorizontalExpand="True" VerticalExpand="True">
         <BoxContainer HorizontalAlignment="Center" HorizontalExpand="True" VerticalAlignment="Center" Orientation="Vertical" MinSize="325 160">
             <Label Text="{Loc 'atm-ui-nanotrasen-atm'}"/>

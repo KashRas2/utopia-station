@@ -1,11 +1,11 @@
-using Content.Shared.Utopia.Economy;
-using Content.Shared.Containers.ItemSlots;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords.Systems;
+using Content.Shared._Utopia.Economy;
+using Content.Shared.Containers.ItemSlots;
 using Content.Shared.StationRecords;
 using Robust.Shared.Containers;
 
-namespace Content.Server.Utopia.Economy;
+namespace Content.Server._Utopia.Economy;
 
 public sealed class SalaryConsoleSystem : EntitySystem
 {

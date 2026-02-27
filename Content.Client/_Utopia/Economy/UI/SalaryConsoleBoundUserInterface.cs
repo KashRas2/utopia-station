@@ -1,5 +1,5 @@
 using JetBrains.Annotations;
-using Content.Shared.Utopia.Economy;
+using Content.Shared._Utopia.Economy;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.StationRecords;
 

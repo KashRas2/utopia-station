@@ -1,13 +1,13 @@
 using Content.Server.Hands.Systems;
+using Content.Shared._Utopia.Economy;
 using Content.Shared.Access.Components;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
-using Content.Shared.Utopia.Economy;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 
-namespace Content.Server.Utopia.Economy;
+namespace Content.Server._Utopia.Economy;
 
 public sealed class EftposSystem : EntitySystem
 {

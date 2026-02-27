@@ -3,7 +3,7 @@ using Content.Shared.Mind;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
-namespace Content.Shared.Utopia.Economy;
+namespace Content.Shared._Utopia.Economy;
 
 public sealed class BankAccount
 {

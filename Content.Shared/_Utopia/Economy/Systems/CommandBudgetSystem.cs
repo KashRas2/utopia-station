@@ -2,7 +2,7 @@ using Content.Shared.Paper;
 using Content.Shared.Station;
 using Content.Shared.Cargo.Components;
 
-namespace Content.Shared.Utopia.Economy;
+namespace Content.Shared._Utopia.Economy;
 
 public sealed class CommandBudgetSystem : SharedEconomySystem
 {

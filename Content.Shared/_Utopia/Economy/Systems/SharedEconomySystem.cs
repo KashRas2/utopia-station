@@ -3,7 +3,7 @@ using System.Linq;
 using Content.Shared.Cargo.Components;
 using Robust.Shared.Random;
 
-namespace Content.Shared.Utopia.Economy;
+namespace Content.Shared._Utopia.Economy;
 
 public abstract partial class SharedEconomySystem : EntitySystem
 {

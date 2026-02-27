@@ -1,6 +1,6 @@
 using System.Linq;
+using Content.Shared._Utopia.Economy;
 using Content.Shared.Cargo.Prototypes;
-using Content.Shared.Utopia.Economy;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;

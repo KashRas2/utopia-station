@@ -1,6 +1,6 @@
 ﻿using Robust.Shared.Serialization;
 
-namespace Content.Shared.Utopia.Economy;
+namespace Content.Shared._Utopia.Economy;
 
 [Serializable, NetSerializable]
 public sealed class ATMRequestWithdrawMessage : BoundUserInterfaceMessage

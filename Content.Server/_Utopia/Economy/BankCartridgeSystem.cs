@@ -1,10 +1,10 @@
 using Content.Server.CartridgeLoader;
+using Content.Shared._Utopia.Economy;
 using Content.Shared.CartridgeLoader;
 using Content.Shared.PDA;
-using Content.Shared.Utopia.Economy;
 using Robust.Shared.Timing;
 
-namespace Content.Server.Utopia.Economy;
+namespace Content.Server._Utopia.Economy;
 
 public sealed class BankCartridgeSystem : EntitySystem
 {
