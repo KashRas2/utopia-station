@@ -20,7 +20,6 @@ public sealed class SalaryConsoleSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<SalaryConsoleComponent, ComponentRemove>(OnRemoved);
         SubscribeLocalEvent<SalaryConsoleComponent, EntInsertedIntoContainerMessage>(OnCardInserted);
         SubscribeLocalEvent<SalaryConsoleComponent, EntRemovedFromContainerMessage>(OnCardRemoved);
         SubscribeLocalEvent<SalaryConsoleComponent, BoundUIOpenedEvent>(OnBuiOpened);
@@ -32,15 +31,6 @@ public sealed class SalaryConsoleSystem : EntitySystem
             subs.Event<SetStationRecordFilter>(OnFiltersChanged);
             subs.Event<SalaryConsoleSendMoneyMessage>(OnSendMoney);
         });
-    }
-
-    private void OnRemoved(Entity<SalaryConsoleComponent> ent, ref ComponentRemove args)
-    {
-        if (!_itemSlots.TryGetSlot(ent, SalaryConsoleComponent.BudgetCardSlotId, out var slot))
-            return;
-
-        _itemSlots.TryEject(ent, slot, null, out _);
-        _itemSlots.RemoveItemSlot(ent, slot);
     }
 
     private void OnCardInserted(Entity<SalaryConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)

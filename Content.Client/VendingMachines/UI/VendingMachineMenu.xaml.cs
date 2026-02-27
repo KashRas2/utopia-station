@@ -217,7 +217,7 @@ namespace Content.Client.VendingMachines.UI
         }
     }
 
-    public record VendorItemsListData(EntProtoId ItemProtoID, int ItemIndex, int Price) : ListData
+    public record VendorItemsListData(EntProtoId ItemProtoID, int ItemIndex, int Price) : ListData // Utopia-Tweak : Economy
     {
         public string ItemText = string.Empty;
     }

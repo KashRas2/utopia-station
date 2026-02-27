@@ -36,3 +36,4 @@
   - type: ContainerContainer
     containers:
       BankCardSlot: !type:ContainerSlot
+      board: !type:Container

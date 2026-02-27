@@ -37,7 +37,6 @@ public sealed class ATMSystem : EntitySystem
         SubscribeLocalEvent<ATMComponent, ATMRequestWithdrawMessage>(OnWithdrawRequest);
         SubscribeLocalEvent<ATMComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<ATMComponent, ComponentStartup>(OnComponentStartup);
-        SubscribeLocalEvent<ATMComponent, ComponentRemove>(OnComponentRemoved);
         SubscribeLocalEvent<ATMComponent, GotEmaggedEvent>(OnEmag);
     }
 
@@ -49,17 +48,6 @@ public sealed class ATMSystem : EntitySystem
     private void OnComponentStartup(Entity<ATMComponent> ent, ref ComponentStartup args)
     {
         UpdateUiState(ent, -1, false, Loc.GetString("atm-ui-insert-card"));
-    }
-
-    private void OnComponentRemoved(Entity<ATMComponent> ent, ref ComponentRemove args)
-    {
-        if (!_itemSlots.TryGetSlot(ent, ent.Comp.SlotId, out var slot))
-            return;
-
-        if (_itemSlots.TryEject(ent, slot, null, out _))
-        {
-            _itemSlots.RemoveItemSlot(ent, slot);
-        }
     }
 
     private void OnInteractUsing(Entity<ATMComponent> ent, ref InteractUsingEvent args)
