@@ -314,9 +314,7 @@ namespace Content.Server.VendingMachines
                 return;
 
             if (vendComponent.Ejecting || vendComponent.Broken || !Receiver.IsPowered(uid))
-            {
                 return;
-            }
 
             var entry = GetEntry(uid, itemId, type, vendComponent);
 
@@ -354,6 +352,9 @@ namespace Content.Server.VendingMachines
                 return false;
 
             if (!TryComp<BankCardComponent>(idCard.Owner, out var bankCard) || bankCard.AccountId == null)
+                return false;
+
+            if (!_bankCard.TryGetAccount(bankCard.AccountId.Value, out var account) || account.IsBlocked)
                 return false;
 
             return _bankCard.TryChangeBalance(bankCard.AccountId.Value, -amount);

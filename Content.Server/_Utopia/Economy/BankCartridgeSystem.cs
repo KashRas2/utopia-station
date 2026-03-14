@@ -19,6 +19,7 @@ public sealed class BankCartridgeSystem : EntitySystem
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeMessageEvent>(OnUiMessage);
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeUiReadyEvent>(OnUiReady);
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeAddedEvent>(OnInstall);
+        SubscribeLocalEvent<BankCartridgeComponent, CartridgeActivatedEvent>(OnActivate);
         SubscribeLocalEvent<BankCartridgeComponent, CartridgeRemovedEvent>(OnRemove);
     }
 
@@ -30,6 +31,22 @@ public sealed class BankCartridgeSystem : EntitySystem
     private void OnInstall(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeAddedEvent args)
     {
         bankCartridge.Comp.Loader = args.Loader;
+    }
+
+    private void OnActivate(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeActivatedEvent args)
+    {
+        if (!TryComp(args.Loader, out PdaComponent? pda) || pda.ContainedId is not { } id)
+            return;
+
+        if (TryComp<BankCardComponent>(id, out var bankCardComp) && bankCartridge.Comp.AccountId == null)
+        {
+            if (bankCardComp.AccountId.HasValue
+            && _bankCardSystem.TryGetAccount(bankCardComp.AccountId.Value, out var bankAccount))
+            {
+                bankCartridge.Comp.AccountId = bankAccount.AccountId;
+                bankAccount.CartridgeUid = bankCartridge;
+            }
+        }
     }
 
     private void OnAccountLink(Entity<BankCartridgeComponent> bankCartridge, BankAccountLinkMessage args)
@@ -132,7 +149,7 @@ public sealed class BankCartridgeSystem : EntitySystem
 
     private void OnUiReady(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeUiReadyEvent args)
     {
-        UpdateUiState(bankCartridge, args.Loader, bankCartridge.Comp);
+        UpdateUiState(bankCartridge);
     }
 
     private void OnUiMessage(Entity<BankCartridgeComponent> bankCartridge, ref CartridgeMessageEvent args)
@@ -143,7 +160,7 @@ public sealed class BankCartridgeSystem : EntitySystem
         if (args is BankTransferMessage transferMessage)
             OnTransfer(bankCartridge, transferMessage);
 
-        UpdateUiState(bankCartridge, GetEntity(args.LoaderUid), bankCartridge.Comp);
+        UpdateUiState(bankCartridge);
     }
 
     private void UpdateUiState(EntityUid cartridgeUid, EntityUid loaderUid, BankCartridgeComponent? component = null)
@@ -176,6 +193,7 @@ public sealed class BankCartridgeSystem : EntitySystem
             state.AccountId = account.AccountId;
             state.OwnerName = account.Name;
             state.History = account.History ?? new List<TransactionsHistory>();
+            state.IsBlocked = account.IsBlocked;
         }
 
         _cartridgeLoaderSystem?.UpdateCartridgeUiState(loaderUid, state);
@@ -183,7 +201,7 @@ public sealed class BankCartridgeSystem : EntitySystem
 
     public void UpdateUiState(EntityUid cartridgeUid)
     {
-        if (!TryComp(cartridgeUid, out BankCartridgeComponent? component) || component.Loader == null)
+        if (!TryComp<BankCartridgeComponent>(cartridgeUid, out var component) || component.Loader == null)
             return;
 
         UpdateUiState(cartridgeUid, component.Loader.Value, component);

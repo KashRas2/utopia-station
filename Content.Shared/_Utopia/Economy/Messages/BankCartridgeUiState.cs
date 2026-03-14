@@ -13,6 +13,7 @@ public sealed class BankCartridgeUiState : BoundUserInterfaceState
     public string AccountLinkResult = string.Empty;
     public string TransferResult = string.Empty;
     public List<TransactionsHistory> History = new();
+    public bool IsBlocked;
 }
 
 [Serializable, NetSerializable]

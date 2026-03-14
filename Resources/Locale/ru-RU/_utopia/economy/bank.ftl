@@ -1,10 +1,11 @@
 bank-program-name = Виртуальный кошелёк
 bank-program-ui-account-number = Номер аккаунта
-bank-program-ui-account-number-text = Аккаунт №{ $account }
+bank-program-ui-account-number-text = Номер аккаунта: №{ $account }
 bank-program-ui-account-owner-text = Владелец аккаунта: { $owner }
-bank-program-ui-transaction-history = История операций
+bank-program-ui-transaction-history = История операций:
 
 bank-program-ui-no-account = [color=red]Аккаунт не привязан.[/color]
+bank-program-ui-blocked-account = [color=red]Ваш аккаунт заблокирован.[/color]
 bank-program-ui-link-account = Привязать аккаунт
 bank-program-ui-link-program = Аккаунт будет привязан к приложению.
 bank-program-ui-link-id-card = Аккаунт будет привязан к ID карте.
@@ -33,3 +34,5 @@ bank-deposit = Пополнение
 bank-withdrawal = Снятие
 bank-transfer = Перевод
 bank-system = Система
+
+bank-operation-error = Операция отклонена.
