@@ -89,6 +89,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
             DenyEnd = component.DenyEnd,
             DispenseOnHitEnd = component.DispenseOnHitEnd,
             Broken = component.Broken,
+            Credits = component.Credits, // Utopia-Tweak : Economy
         };
     }
 
