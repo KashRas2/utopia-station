@@ -13,6 +13,7 @@ public sealed partial class BankUiFragment : BoxContainer
 {
     public Action<BankAccountLinkMessage>? OnLinkAttempt;
     public Action<BankTransferMessage>? OnTransferAttempt;
+    public Action? OnNotificationSet;
 
     private bool _accountLinkActive;
     private bool _transferActive;
@@ -20,6 +21,12 @@ public sealed partial class BankUiFragment : BoxContainer
     public BankUiFragment()
     {
         RobustXamlLoader.Load(this);
+
+
+        NotificationSwitch.OnPressed += _ =>
+        {
+            OnNotificationSet?.Invoke();
+        };
 
         AccountLinkButton.OnPressed += _ =>
         {
@@ -52,41 +59,50 @@ public sealed partial class BankUiFragment : BoxContainer
             var accountId = int.Parse(AccountLineEdit.Text);
             var pin = int.Parse(PinLineEdit.Text);
             AccountLinkResultLabel.Visible = true;
+
             _accountLinkActive = false;
             OnLinkAttempt?.Invoke(new BankAccountLinkMessage(accountId, pin));
+        };
+
+        TransferPinLineEdit.OnTextChanged += _ =>
+        {
+            UtopiaHelper.ValidateLineEditNumbers(TransferPinLineEdit, 4);
+        };
+
+        TargetAccountLineEdit.OnTextChanged += _ =>
+        {
+            UtopiaHelper.ValidateLineEditNumbers(TargetAccountLineEdit, 6);
         };
 
         TransferButton.OnPressed += _ =>
         {
             _transferActive = true;
-            TransferButton.Visible = false;
+            TransferResultLabel.Visible = false;
             UpdateTransferUi();
         };
 
         TransferCancelButton.OnPressed += _ =>
         {
             _transferActive = false;
-            TransferButton.Visible = true;
             UpdateTransferUi();
         };
 
         TransferConfirmButton.OnPressed += _ =>
         {
-            if (string.IsNullOrWhiteSpace(TargetAccountLineEdit.Text)
-            || string.IsNullOrWhiteSpace(TransferAmountLineEdit.Text) || string.IsNullOrWhiteSpace(TransferPinLineEdit.Text))
-                return;
-
             if (TargetAccountLineEdit.Text.Length != 6 || TransferPinLineEdit.Text.Length != 4)
                 return;
 
-            if (!int.TryParse(TargetAccountLineEdit.Text, out var targetAccount)
-            || !int.TryParse(TransferAmountLineEdit.Text, out var amount) || !int.TryParse(TransferPinLineEdit.Text, out var pin))
+            var targetAccount = int.Parse(TargetAccountLineEdit.Text);
+            var pin = int.Parse(TransferPinLineEdit.Text);
+
+            if (!int.TryParse(TransferAmountLineEdit.Text, out var amount))
                 return;
 
             if (amount <= 0)
                 return;
 
             OnTransferAttempt?.Invoke(new BankTransferMessage(targetAccount, pin, amount));
+            TransferResultLabel.Visible = true;
 
             _transferActive = false;
             UpdateTransferUi();
@@ -100,16 +116,10 @@ public sealed partial class BankUiFragment : BoxContainer
 
         RichTextLabelExt.SetMarkup(AccountLinkMessageLabel, state.AccountLinkMessage);
         RichTextLabelExt.SetMarkup(AccountLinkResultLabel, state.AccountLinkResult);
+        RichTextLabelExt.SetMarkup(TransferResultLabel, state.TransferResult);
 
-        if (!string.IsNullOrEmpty(state.TransferResult))
-        {
-            RichTextLabelExt.SetMarkup(TransferResultLabel, state.TransferResult);
-            TransferResultLabel.Visible = true;
-        }
-        else
-        {
-            TransferResultLabel.Visible = false;
-        }
+        NotificationSwitch.Text = Loc.GetString(state.NotificationOn ? "news-read-ui-notification-on"
+            : "news-read-ui-notification-off");
 
         LinkedAccount.Visible = accountLinked || !isBlocked;
         NoLinkedAccountLabel.Visible = !accountLinked || isBlocked;
@@ -121,7 +131,8 @@ public sealed partial class BankUiFragment : BoxContainer
             RichTextLabelExt.SetMarkup(LinkedAccountNameLabel, Loc.GetString("bank-program-ui-account-owner-text",
                 ("owner", state.OwnerName)));
 
-            RichTextLabelExt.SetMarkup(LinkedAccountBalanceLabel, Loc.GetString("atm-ui-balance", ("balance", state.Balance)));
+            RichTextLabelExt.SetMarkup(LinkedAccountBalanceLabel, Loc.GetString("atm-ui-balance",
+                ("balance", state.Balance)));
 
             HistoryHeader.Text = Loc.GetString("bank-program-ui-transaction-history");
             TransactionHistoryList.RemoveAllChildren();
@@ -176,5 +187,7 @@ public sealed partial class BankUiFragment : BoxContainer
     {
         base.FrameUpdate(args);
         LinkConfirmButton.Disabled = PinLineEdit.Text.Length != 4 || AccountLineEdit.Text.Length != 6;
+        TransferConfirmButton.Disabled = TransferPinLineEdit.Text.Length != 4 || TargetAccountLineEdit.Text.Length != 6
+            || TransferAmountLineEdit.Text.Length <= 0;
     }
 }

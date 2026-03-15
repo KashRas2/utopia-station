@@ -127,18 +127,25 @@ public sealed class BankCardSystem : SharedEconomySystem
         if (account.Balance + amount < 0)
             return false;
 
+        var operationType = amount > 0 ? Loc.GetString("bank-deposit") : Loc.GetString("bank-withdrawal");
+
         account.Balance += amount;
         account.History ??= new List<TransactionsHistory>();
         account.History.Add(new TransactionsHistory(
             amount,
             _timing.CurTime,
-            amount > 0 ? Loc.GetString("bank-deposit") : Loc.GetString("bank-withdrawal"),
+            operationType,
             Loc.GetString("bank-system"),
             null
         ));
 
         if (account.CartridgeUid != null)
+        {
+            var args = new EconomyBalanceChangedEvent(operationType);
+            RaiseLocalEvent(account.CartridgeUid.Value, ref args);
+
             _bankCartridge.UpdateUiState(account.CartridgeUid.Value);
+        }
 
         return true;
     }

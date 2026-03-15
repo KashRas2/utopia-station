@@ -14,6 +14,7 @@ public sealed class BankCartridgeUiState : BoundUserInterfaceState
     public string TransferResult = string.Empty;
     public List<TransactionsHistory> History = new();
     public bool IsBlocked;
+    public bool NotificationOn;
 }
 
 [Serializable, NetSerializable]
@@ -28,6 +29,9 @@ public sealed class BankAccountLinkMessage : CartridgeMessageEvent
         Pin = pin;
     }
 }
+
+[Serializable, NetSerializable]
+public sealed class SetNotificationMessage : CartridgeMessageEvent { }
 
 [Serializable, NetSerializable]
 public sealed class BankTransferMessage : CartridgeMessageEvent

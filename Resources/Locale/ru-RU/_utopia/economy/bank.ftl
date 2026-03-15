@@ -4,6 +4,8 @@ bank-program-ui-account-number-text = Номер аккаунта: №{ $account
 bank-program-ui-account-owner-text = Владелец аккаунта: { $owner }
 bank-program-ui-transaction-history = История операций:
 
+bank-program-notification-header = Обновление банковского счёта
+
 bank-program-ui-no-account = [color=red]Аккаунт не привязан.[/color]
 bank-program-ui-blocked-account = [color=red]Ваш аккаунт заблокирован.[/color]
 bank-program-ui-link-account = Привязать аккаунт
@@ -27,6 +29,7 @@ bank-program-ui-transfer-cancel = Отмена
 bank-program-ui-transfer-error-no-account = [color=red]Ошибка: аккаунт не найден[/color]
 bank-program-ui-transfer-error-pin = [color=red]Ошибка: неверный PIN[/color]
 bank-program-ui-transfer-error-target = [color=red]Ошибка: счёт получателя не найден[/color]
+bank-program-ui-transfer-error-sender = [color=red]Ошибка: перевод на собственный счёт запрещён[/color]
 bank-program-ui-transfer-error-funds = [color=red]Ошибка: недостаточно средств[/color]
 bank-program-ui-transfer-success = [color=green]Переведено {$amount}$ для {$target}[/color]
 

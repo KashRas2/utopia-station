@@ -93,3 +93,6 @@ public abstract partial class SharedEconomySystem : EntitySystem
         return !bankAccount.IsBlocked;
     }
 }
+
+[ByRefEvent]
+public record struct EconomyBalanceChangedEvent(string OperationType);

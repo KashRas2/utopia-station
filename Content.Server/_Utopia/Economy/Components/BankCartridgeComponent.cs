@@ -3,11 +3,14 @@ namespace Content.Server._Utopia.Economy;
 [RegisterComponent]
 public sealed partial class BankCartridgeComponent : Component
 {
-    [ViewVariables(VVAccess.ReadOnly)]
+    [ViewVariables]
     public int? AccountId;
 
-    [ViewVariables(VVAccess.ReadOnly)]
+    [ViewVariables]
     public EntityUid? Loader;
+
+    [ViewVariables(VVAccess.ReadWrite)]
+    public bool NotificationOn = true;
 
     public string AccountLinkResult = string.Empty;
 

@@ -9,10 +9,10 @@ public sealed partial class SalaryConsoleComponent : Component
 {
     public const string BudgetCardSlotId = "BankCardSlot";
 
-    [ViewVariables(VVAccess.ReadOnly)]
+    [ViewVariables]
     public uint? ActiveKey;
 
-    [ViewVariables(VVAccess.ReadOnly)]
+    [ViewVariables]
     public StationRecordsFilter? Filter;
 
     [DataField]

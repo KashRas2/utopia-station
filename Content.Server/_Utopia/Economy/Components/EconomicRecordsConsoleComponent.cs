@@ -5,10 +5,10 @@ namespace Content.Server._Utopia.Economy;
 [RegisterComponent, Access(typeof(EconomicRecordsConsoleSystem))]
 public sealed partial class EconomicRecordsConsoleComponent : Component
 {
-    [DataField]
+    [ViewVariables]
     public uint? ActiveKey;
 
-    [DataField]
+    [ViewVariables]
     public StationRecordsFilter? Filter;
 }
 
