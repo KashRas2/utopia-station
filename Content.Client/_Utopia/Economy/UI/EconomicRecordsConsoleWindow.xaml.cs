@@ -212,9 +212,5 @@ public sealed partial class EconomicRecordsConsoleWindow : FancyWindow
 
             PopulateRecordContainer(state.Record, state.AccountId, state.Balance, state.History);
         }
-        else
-        {
-            RecordContainer.Visible = false;
-        }
     }
 }

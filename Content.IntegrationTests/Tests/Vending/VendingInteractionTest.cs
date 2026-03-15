@@ -20,6 +20,9 @@ public sealed class VendingInteractionTest : InteractionTest
     private const string RestockBoxProtoId = "InteractionTestRestockBox";
 
     private const string RestockBoxOtherProtoId = "InteractionTestRestockBoxOther";
+
+    private const string PaidVendingMachineProtoId = "InteractionTestVendingInventoryPaid"; // Utopia-Tweak : Economy
+
     private static readonly ProtoId<DamageTypePrototype> TestDamageType = "Blunt";
 
     [TestPrototypes]
@@ -61,6 +64,16 @@ public sealed class VendingInteractionTest : InteractionTest
   components:
   - type: VendingMachine
     pack: InteractionTestVendingInventory
+    ejectDelay: 0 # no delay to speed up tests
+  - type: Sprite
+    sprite: error.rsi
+
+- type: entity
+  id: {PaidVendingMachineProtoId}
+  parent: VendingMachine
+  components:
+  - type: VendingMachine
+    pack: InteractionTestVendingInventoryPaid
     ejectDelay: 0 # no delay to speed up tests
   - type: Sprite
     sprite: error.rsi
@@ -135,6 +148,56 @@ public sealed class VendingInteractionTest : InteractionTest
             (VendedItemProtoId, 1)
         );
     }
+
+    // Utopia-Tweak : Economy
+    [Test]
+    public async Task DispensePaidItemTest()
+    {
+        await SpawnTarget(PaidVendingMachineProtoId);
+        var vendorEnt = SEntMan.GetEntity(Target.Value);
+
+        var vendingSystem = SEntMan.System<VendingMachineSystem>();
+        var items = vendingSystem.GetAllInventory(vendorEnt);
+
+        // Verify initial item count
+        Assert.That(items, Is.Not.Empty, $"{VendingMachineProtoId} spawned with no items.");
+        Assert.That(items.First().Amount, Is.EqualTo(5), $"{VendingMachineProtoId} spawned with unexpected item count.");
+
+        // Power the vending machine
+        await SpawnEntity("APCBasic", SEntMan.GetCoordinates(TargetCoords));
+        await RunTicks(1);
+
+        // Insert cash
+        await InteractUsing("SpaceCash", 500);
+        await RunTicks(1);
+
+        // Open the BUI
+        await Activate();
+        Assert.That(IsUiOpen(VendingMachineUiKey.Key), "BUI failed to open.");
+
+        // Request an item be dispensed
+        var ev = new VendingMachineEjectMessage(InventoryType.Regular, VendedItemProtoId);
+        await SendBui(VendingMachineUiKey.Key, ev);
+
+        // Make sure the stock decreased
+        Assert.That(items.First().Amount, Is.EqualTo(4), "Stocked item count did not decrease.");
+
+        // Request an item be dispensed
+        await SendBui(VendingMachineUiKey.Key, ev);
+        Assert.That(items.First().Amount, Is.EqualTo(4), "Stocked item count decrease despite lack of money.");
+
+        // Request an cash be dispensed
+        var ev2 = new VendingMachineWithdrawMessage();
+        await SendBui(VendingMachineUiKey.Key, ev2);
+
+        // Make sure the dispensed item was spawned in to the world
+        await AssertEntityLookup(
+            ("APCBasic", 1),
+            (VendedItemProtoId, 1),
+            ("SpaceCash", 100)
+        );
+    }
+    // Utopia-Tweak : Economy
 
     [Test]
     public async Task RestockTest()

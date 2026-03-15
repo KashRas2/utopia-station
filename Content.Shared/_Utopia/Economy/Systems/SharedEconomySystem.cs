@@ -2,8 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Cargo.Components;
 using Content.Shared.Cargo.Prototypes;
-using Robust.Shared.Random;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Shared._Utopia.Economy;
 
