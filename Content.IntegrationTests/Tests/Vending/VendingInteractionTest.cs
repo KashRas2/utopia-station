@@ -20,7 +20,6 @@ public sealed class VendingInteractionTest : InteractionTest
     private const string RestockBoxProtoId = "InteractionTestRestockBox";
 
     private const string RestockBoxOtherProtoId = "InteractionTestRestockBoxOther";
-
     private static readonly ProtoId<DamageTypePrototype> TestDamageType = "Blunt";
 
     [TestPrototypes]

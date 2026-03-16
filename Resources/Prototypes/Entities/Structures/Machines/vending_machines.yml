@@ -948,7 +948,6 @@
     ejectState: eject-unshaded
     denyState: deny-unshaded
     ejectDelay: 0.6
-    priceMultiplier: 0.3
   - type: DatasetVocalizer
     dataset: NanoMedAds
   - type: SpeakOnUIClosed
