@@ -66,4 +66,4 @@
         type: WiresBoundUserInterface
   - type: EconomicRecordsConsole
   - type: AccessReader
-    access: [["HeadCommand"]]
+    access: [ [ "Captain" ], [ "HeadOfPersonnel" ] ]
