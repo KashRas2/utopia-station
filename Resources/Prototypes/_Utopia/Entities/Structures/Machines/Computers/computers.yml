@@ -65,3 +65,5 @@
       enum.WiresUiKey.Key:
         type: WiresBoundUserInterface
   - type: EconomicRecordsConsole
+  - type: AccessReader
+    access: [["HeadCommand"]]
