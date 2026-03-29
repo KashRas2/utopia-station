@@ -375,6 +375,7 @@ public abstract partial class PullingSystem
         {
             _physics.SetLinearVelocity(uid, Vector2.Zero);
         }
+
         if (TryComp<ThrownItemComponent>(uid, out var thrown))
         {
             _thrown.LandComponent(uid, thrown, Comp<PhysicsComponent>(uid), true);

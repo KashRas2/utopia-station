@@ -133,6 +133,11 @@ public abstract partial class SharedStaminaSystem : EntitySystem
 
     private void OnDisarmed(EntityUid uid, StaminaComponent component, ref DisarmedEvent args)
     {
+        // Utopia-Tweak : Combat
+        if (args.Source == uid)
+            return;
+        // Utopia-Tweak : Combat
+
         if (args.Handled)
             return;
 
