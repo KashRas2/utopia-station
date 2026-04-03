@@ -112,7 +112,27 @@ namespace Content.Server.Kitchen.EntitySystems
             SubscribeLocalEvent<MicrowaveComponent, RefreshPartsEvent>(OnRefreshParts);
             SubscribeLocalEvent<MicrowaveComponent, UpgradeExamineEvent>(OnUpgradeExamine);
             // Utopia-Tweak : Machine Parts
+
+            // Utopia-Tweak : Microwave
+            SubscribeLocalEvent<MicrowaveComponent, BoundUIOpenedEvent>(OnBuiOpened);
+            SubscribeLocalEvent<MicrowaveComponent, BoundUIClosedEvent>(OnBuiClosed);
+            // Utopia-Tweak : Microwave
         }
+
+        // Utopia-Tweak : Microwave
+        private void OnBuiOpened(EntityUid uid, MicrowaveComponent component, BoundUIOpenedEvent args)
+        {
+            if (HasComp<ActiveMicrowaveComponent>(uid) || component.Broken)
+                return;
+
+            SetAppearance(uid, null, component, opened: true);
+        }
+
+        private void OnBuiClosed(EntityUid uid, MicrowaveComponent component, BoundUIClosedEvent args)
+        {
+            SetAppearance(uid, null, component, opened: false);
+        }
+        // Utopia-Tweak : Microwave
 
         private void OnCookStart(Entity<ActiveMicrowaveComponent> ent, ref ComponentStartup args)
         {
@@ -475,10 +495,22 @@ namespace Content.Server.Kitchen.EntitySystems
             ));
         }
 
-        public void SetAppearance(EntityUid uid, MicrowaveVisualState state, MicrowaveComponent? component = null, AppearanceComponent? appearanceComponent = null)
+        public void SetAppearance(EntityUid uid, MicrowaveVisualState? state = null, MicrowaveComponent? component = null, AppearanceComponent? appearanceComponent = null, bool? opened = null) // Utopia-Tweak : Microwave
         {
             if (!Resolve(uid, ref component, ref appearanceComponent, false))
                 return;
+
+            // Utopia-Tweak : Microwave
+            if (opened != null)
+            {
+                var openedState = opened.Value ? OpenableMicrowave.Opened : OpenableMicrowave.Closed;
+                _appearance.SetData(uid, PowerDeviceVisuals.VisualState, openedState, appearanceComponent);
+            }
+
+            if (state == null)
+                return;
+            // Utopia-Tweak : Microwave
+
             var display = component.Broken ? MicrowaveVisualState.Broken : state;
             _appearance.SetData(uid, PowerDeviceVisuals.VisualState, display, appearanceComponent);
         }
@@ -527,7 +559,7 @@ namespace Content.Server.Kitchen.EntitySystems
             }
 
             if (_random.Prob(ent.Comp2.LightningChance))
-                _lightning.ShootRandomLightnings(ent, 1.0f, 2, lightningPrototype:MalfunctionSpark, triggerLightningEvents: false); // Utopia-Tweak : Lightning-Update
+                _lightning.ShootRandomLightnings(ent, 1.0f, 2, lightningPrototype: MalfunctionSpark, triggerLightningEvents: false); // Utopia-Tweak : Lightning-Update
         }
 
         /// <summary>
@@ -558,6 +590,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
                 if (ev.Handled)
                 {
+                    SetAppearance(uid, null, component, opened: false); // Utopia-Tweak : Microwave
                     UpdateUserInterfaceState(uid, component);
                     return;
                 }

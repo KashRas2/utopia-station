@@ -8,28 +8,25 @@ using Robust.Shared.Timing;
 
 namespace Content.Shared._Utopia.Combat;
 
-public sealed class SharedWeaponComboSystem : EntitySystem
+public abstract class SharedWeaponComboSystem : EntitySystem
 {
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<ComboWeaponComponent, UniqueActionEvent>(OnUniqueAction);
         SubscribeLocalEvent<ComboWeaponComponent, MeleeHitEvent>(OnHeavyHit);
     }
 
-    public static WeaponCombatAction GetWeaponAction(bool isWide, ComboWeaponStand stance)
+    private static WeaponCombatAction GetWeaponAction(bool isWide, ComboWeaponStand stance)
     {
         var index = ((isWide ? 1 : 0) << 1) | (int)stance;
         return (WeaponCombatAction)index;
     }
 
-    private void OnHeavyHit(EntityUid uid, ComboWeaponComponent comp, MeleeHitEvent args)
+    private void OnHeavyHit(Entity<ComboWeaponComponent> entity, ref MeleeHitEvent args)
     {
         if (!_timing.IsFirstTimePredicted)
             return;
@@ -40,42 +37,15 @@ public sealed class SharedWeaponComboSystem : EntitySystem
         if (!HasComp<HumanoidAppearanceComponent>(args.HitEntities[0]))
             return;
 
-        var move = GetWeaponAction(args.Iswide, comp.CurrentStand);
-        comp.CurrestActions.Add(move);
+        var move = GetWeaponAction(args.Iswide, entity.Comp.CurrentStand);
+        entity.Comp.CurrestActions.Add(move);
 
-        if (comp.CurrestActions.Count >= 5 && comp.CurrestActions != null)
+        if (entity.Comp.CurrestActions.Count >= 5 && entity.Comp.CurrestActions != null)
         {
-            comp.CurrestActions.RemoveAt(0);
+            entity.Comp.CurrestActions.RemoveAt(0);
         }
 
-        comp.Target = args.HitEntities[0];
-        TryDoCombo(args.User, args.HitEntities[0], comp);
-    }
-
-    private void OnUniqueAction(Entity<ComboWeaponComponent> entity, ref UniqueActionEvent args)
-    {
-        if (!_timing.IsFirstTimePredicted)
-            return;
-
-        entity.Comp.CurrentStand = entity.Comp.CurrentStand switch
-        {
-            ComboWeaponStand.Protective => ComboWeaponStand.Offensive,
-            ComboWeaponStand.Offensive => ComboWeaponStand.Protective,
-            _ => entity.Comp.CurrentStand
-        };
-
-        if (!TryComp<AppearanceComponent>(entity, out var appearanceComponent))
-            return;
-
-        _appearance.SetData(entity, ComboWeaponState.State, entity.Comp.CurrentStand == ComboWeaponStand.Offensive,
-            appearanceComponent);
-
-        Dirty(entity);
-
-        if (entity.Comp.SwapSound != null)
-        {
-            _audio.PlayPredicted(entity.Comp.SwapSound, entity, args.UserUid);
-        }
+        TryDoCombo(args.User, args.HitEntities[0], entity.Comp);
     }
 
     private bool TryDoCombo(EntityUid user, EntityUid target, ComboWeaponComponent comp)
