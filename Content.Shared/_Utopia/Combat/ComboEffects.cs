@@ -274,7 +274,7 @@ public sealed partial class ComboMoreStaminaDamageToDownedEffect : IComboEffect
     }
 }
 
-[Serializable]
+[Serializable, NetSerializable]
 public sealed partial class ComboFlashEffect : IComboEffect
 {
     [DataField]
@@ -293,7 +293,7 @@ public sealed partial class ComboFlashEffect : IComboEffect
     }
 }
 
-[Serializable]
+[Serializable, NetSerializable]
 public sealed partial class ComboStopGrabEffect : IComboEffect
 {
     public void DoEffect(EntityUid user, EntityUid target, IEntityManager entMan)
@@ -313,7 +313,7 @@ public sealed partial class ComboStopGrabEffect : IComboEffect
     }
 }
 
-[Serializable]
+[Serializable, NetSerializable]
 public sealed partial class ComboStopTargetGrabEffect : IComboEffect
 {
     public void DoEffect(EntityUid user, EntityUid target, IEntityManager entMan)
@@ -332,7 +332,7 @@ public sealed partial class ComboStopTargetGrabEffect : IComboEffect
     }
 }
 
-[Serializable]
+[Serializable, NetSerializable]
 public sealed partial class ComboThrowTargetEffect : IComboEffect
 {
     [DataField]
@@ -350,7 +350,7 @@ public sealed partial class ComboThrowTargetEffect : IComboEffect
     }
 }
 
-[Serializable]
+[Serializable, NetSerializable]
 public sealed partial class ComboThrowOnUserEffect : IComboEffect
 {
     [DataField]
@@ -581,6 +581,30 @@ public sealed partial class ComboEffectToStanding : IComboEffect
 
 [Serializable]
 public sealed partial class ComboEffectToUserPuller : IComboEffect
+{
+    [DataField(required: true)]
+    public List<IComboEffect> ComboEvents = new();
+
+    public void DoEffect(EntityUid user, EntityUid target, IEntityManager entMan)
+    {
+        if (!entMan.TryGetComponent<PullableComponent>(user, out var pullable))
+            return;
+
+        if (pullable.Puller == null || pullable.Puller != target)
+            return;
+
+        if (ComboEvents == null)
+            return;
+
+        foreach (var comboEvent in ComboEvents)
+        {
+            comboEvent?.DoEffect(user, target, entMan);
+        }
+    }
+}
+
+[Serializable]
+public sealed partial class ComboEffectByUserPuller : IComboEffect
 {
     [DataField(required: true)]
     public List<IComboEffect> ComboEvents = new();

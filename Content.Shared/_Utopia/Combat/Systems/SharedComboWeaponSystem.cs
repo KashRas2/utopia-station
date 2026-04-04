@@ -1,8 +1,6 @@
 using System.Linq;
-using Content.Shared._RMC14.Weapons.Common;
 using Content.Shared.Humanoid;
 using Content.Shared.Weapons.Melee.Events;
-using Robust.Shared.Audio.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 

@@ -38,7 +38,7 @@
    - OffensiveWideHit
    - ProtectiveHit
   comboEvent:
-    - !type:ComboEffectToUserPuller
+    - !type:ComboEffectByUserPuller
       comboEvents:
       - !type:ComboDamageToUserEffect
         damage:
