@@ -55,7 +55,8 @@ public sealed class LanguageMenuUIController : UIController, IOnStateEntered<Gam
         if (LangMenu == null)
         {
             var lang = _entMan.System<LanguageSystem>();
-            if (!lang.GetLanguages(player, out _, out var translator, out var current) || !lang.GetLanguagesKnowledged(player, LanguageKnowledge.Understand, out var langs, out _))
+            if (!lang.GetLanguages(player, out _, out var translator, out var current)
+            || !lang.GetLanguagesKnowledged(player, LanguageKnowledge.Understand, out var langs))
                 return;
 
             // setup window
@@ -77,8 +78,7 @@ public sealed class LanguageMenuUIController : UIController, IOnStateEntered<Gam
             LangMenu.OnOpen -= OnWindowOpen;
             LangMenu.OnLanguageSelected -= OnLanguageSelected;
 
-            if (LanguagesButton != null)
-                LanguagesButton.SetClickPressed(false);
+            LanguagesButton?.SetClickPressed(false);
 
             CloseMenu();
         }

@@ -10,16 +10,14 @@ namespace Content.Shared._Utopia.Language;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class LanguageSpeakerComponent : Component
 {
-    [DataField, ViewVariables(VVAccess.ReadWrite)]
-    [AutoNetworkedField]
+    [DataField, AutoNetworkedField]
     public string? CurrentLanguage = default!;
 
     /// <summary>
     /// Список языков, которые знает сущность. Писать в компонентах как:
     /// Прототип: Understand/BadSpeak/Speak
     /// </summary>
-    [DataField("languages"), ViewVariables(VVAccess.ReadWrite)]
-    [AutoNetworkedField]
+    [DataField, AutoNetworkedField]
     public Dictionary<string, LanguageKnowledge> Languages = new();
 }
 
