@@ -29,7 +29,8 @@ public sealed class MutationParanoiaSystem : EntitySystem
         var query = EntityQueryEnumerator<MutationParanoiaComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
-            if (_timing.CurTime < comp.NextCheck) continue;
+            if (_timing.CurTime < comp.NextCheck)
+                continue;
 
             comp.NextCheck = _timing.CurTime + TimeSpan.FromSeconds(_random.NextFloat(0.8f * comp.Interval, 1.2f * comp.Interval));
 

@@ -22,7 +22,6 @@ public sealed class MutationTailSwapSystem : EntitySystem
         if (!TryComp<HumanoidAppearanceComponent>(ent, out var humanoid))
             return;
 
-        // Save all original tail markings and colors
         var originalTailMarkings = new List<(string, List<Color>)>();
         if (humanoid.MarkingSet.Markings.TryGetValue(MarkingCategories.Tail, out var currentTails))
         {
@@ -33,20 +32,24 @@ public sealed class MutationTailSwapSystem : EntitySystem
                 {
                     colors.Add(marking.MarkingColors[i]);
                 }
+
                 originalTailMarkings.Add((marking.MarkingId, colors));
             }
         }
+
         comp.OriginalTailMarkings = originalTailMarkings;
 
-        // Remove all existing tails
         humanoid.MarkingSet.RemoveCategory(MarkingCategories.Tail);
 
-        // Determine the color to use for the new tail
         Color tailColor;
         if (comp.TailColor is { } customColor)
+        {
             tailColor = customColor;
+        }
         else
+        {
             tailColor = humanoid.SkinColor;
+        }
 
         if (_proto.TryIndex<MarkingPrototype>(comp.NewTailMarking, out var markingProto))
         {
@@ -58,12 +61,10 @@ public sealed class MutationTailSwapSystem : EntitySystem
                 colors.Add(tailColor);
             }
 
-            // Add the new tail with the chosen color
             _humanoid.AddMarking(ent, comp.NewTailMarking, colors, forced: true);
         }
         else
         {
-            // just add without color if prototype not found (should never happen)
             _humanoid.AddMarking(ent, comp.NewTailMarking, forced: true);
         }
 

@@ -45,8 +45,6 @@ public sealed class GeneticShuffleSystem : EntitySystem
         return _currentMapping.TryGetValue(mutationId, out slot);
     }
 
-    public IReadOnlyDictionary<string, GeneticBlock> CurrentMapping() => _currentMapping;
-
     public GeneticBlock GetOrAssignSlot(string mutationId)
     {
         if (_currentMapping.TryGetValue(mutationId, out var existing))
@@ -72,8 +70,8 @@ public sealed class GeneticShuffleSystem : EntitySystem
     private string GenerateUniqueSequence()
     {
         Span<char> buffer = stackalloc char[32];
-
         string seq;
+
         do
         {
             for (var i = 0; i < 32; i += 2)

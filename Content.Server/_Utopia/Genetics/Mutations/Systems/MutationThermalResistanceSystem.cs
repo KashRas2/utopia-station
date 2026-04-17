@@ -36,15 +36,9 @@ public sealed class MutationThermalResistanceSystem : EntitySystem
 }
 
 [ByRefEvent]
-public struct GetThermalInsulationEvent
+public struct GetThermalInsulationEvent(float coefficient)
 {
-    public float Coefficient;
+    public float Coefficient = coefficient;
 
-    public float TemperatureDelta;
-
-    public GetThermalInsulationEvent(float coefficient)
-    {
-        Coefficient = coefficient;
-        TemperatureDelta = 0f;
-    }
+    public float TemperatureDelta = 0f;
 }

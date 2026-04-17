@@ -40,9 +40,7 @@ public sealed class MutationRadioSystem : EntitySystem
 
     private void OnShutdown(Entity<MutationRadioComponent> ent, ref ComponentShutdown args)
     {
-        var mob = ent.Owner;
-
-        if (TryComp<ActiveRadioComponent>(mob, out var activeRadio))
+        if (TryComp<ActiveRadioComponent>(ent.Owner, out var activeRadio))
         {
             foreach (var channel in ent.Comp.ActiveAddedChannels)
             {
@@ -53,28 +51,28 @@ public sealed class MutationRadioSystem : EntitySystem
 
             if (activeRadio.Channels.Count == 0)
             {
-                RemCompDeferred<ActiveRadioComponent>(mob);
+                RemCompDeferred<ActiveRadioComponent>(ent.Owner);
             }
         }
 
-        if (TryComp<IntrinsicRadioTransmitterComponent>(mob, out var transmitter))
+        if (TryComp<IntrinsicRadioTransmitterComponent>(ent.Owner, out var transmitter))
         {
             foreach (var channel in ent.Comp.TransmitterAddedChannels)
             {
                 transmitter.Channels.Remove(channel);
             }
+
             ent.Comp.TransmitterAddedChannels.Clear();
 
             if (transmitter.Channels.Count == 0)
             {
-                RemCompDeferred<IntrinsicRadioTransmitterComponent>(mob);
+                RemCompDeferred<IntrinsicRadioTransmitterComponent>(ent.Owner);
             }
         }
 
-        if (TryComp<IntrinsicRadioReceiverComponent>(mob, out _) &&
-        !HasComp<ActiveRadioComponent>(mob))
+        if (!HasComp<ActiveRadioComponent>(ent.Owner))
         {
-            RemCompDeferred<IntrinsicRadioReceiverComponent>(mob);
+            RemCompDeferred<IntrinsicRadioReceiverComponent>(ent.Owner);
         }
     }
 }

@@ -61,6 +61,7 @@ public sealed class MutationInstabilityPolymorphSystem : EntitySystem
 
         var newGenetics = EnsureComp<GeneticsComponent>(newUid.Value);
         newGenetics.Mutations.Clear();
+
         foreach (var entry in mutationSnapshot)
         {
             newGenetics.Mutations.Add(entry);

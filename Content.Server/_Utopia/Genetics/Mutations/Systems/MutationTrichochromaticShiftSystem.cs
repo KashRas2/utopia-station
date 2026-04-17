@@ -34,7 +34,6 @@ public sealed class MutationTrichochromaticShiftSystem : EntitySystem
         var originalHair = new List<(string, List<Color>)>();
         var originalFacial = new List<(string, List<Color>)>();
 
-        // Save hair
         if (humanoid.MarkingSet.Markings.TryGetValue(MarkingCategories.Hair, out var hairMarkings))
         {
             foreach (var marking in hairMarkings)
@@ -43,7 +42,6 @@ public sealed class MutationTrichochromaticShiftSystem : EntitySystem
             }
         }
 
-        // Save facial hair
         if (humanoid.MarkingSet.Markings.TryGetValue(MarkingCategories.FacialHair, out var facialMarkings))
         {
             foreach (var marking in facialMarkings)
@@ -60,16 +58,16 @@ public sealed class MutationTrichochromaticShiftSystem : EntitySystem
     private void OnShutdown(EntityUid uid, MutationTrichochromaticShiftComponent comp, ref ComponentShutdown args)
     {
         if (comp.GrantedAction is { Valid: true } action)
+        {
             _actions.RemoveAction(action);
+        }
 
         if (!TryComp<HumanoidAppearanceComponent>(uid, out var humanoid))
             return;
 
-        // Remove current markings
         humanoid.MarkingSet.RemoveCategory(MarkingCategories.Hair);
         humanoid.MarkingSet.RemoveCategory(MarkingCategories.FacialHair);
 
-        // Restore original hair
         if (comp.OriginalHairMarkings is { } hair)
         {
             foreach (var (id, colors) in hair)
@@ -78,7 +76,6 @@ public sealed class MutationTrichochromaticShiftSystem : EntitySystem
             }
         }
 
-        // Restore original facial hair
         if (comp.OriginalFacialHairMarkings is { } facial)
         {
             foreach (var (id, colors) in facial)
@@ -97,7 +94,6 @@ public sealed class MutationTrichochromaticShiftSystem : EntitySystem
 
         if (comp.UsesSinceOriginal == 3)
         {
-            // Restore both categories using their saved original colors
             humanoid.MarkingSet.RemoveCategory(MarkingCategories.Hair);
             humanoid.MarkingSet.RemoveCategory(MarkingCategories.FacialHair);
 
@@ -119,25 +115,22 @@ public sealed class MutationTrichochromaticShiftSystem : EntitySystem
         }
         else
         {
-            // Random color for first 3 uses
-            float hue = _random.NextFloat(0f, 1f);
-            float saturation = _random.NextFloat(0f, 1f);
-            float value = _random.NextFloat(0f, 1f);
+            var hue = _random.NextFloat(0f, 1f);
+            var saturation = _random.NextFloat(0f, 1f);
+            var value = _random.NextFloat(0f, 1f);
             var randomColor = Color.FromHsv(new Vector4(hue, saturation, value, 1f));
 
-            // Change color of ALL existing hair markings
             if (humanoid.MarkingSet.Markings.TryGetValue(MarkingCategories.Hair, out var hairMarkings))
             {
-                for (int i = 0; i < hairMarkings.Count; i++)
+                for (var i = 0; i < hairMarkings.Count; i++)
                 {
                     _humanoid.SetMarkingColor(uid, MarkingCategories.Hair, i, new List<Color> { randomColor });
                 }
             }
 
-            // Also set facial hair to match
             if (humanoid.MarkingSet.Markings.TryGetValue(MarkingCategories.FacialHair, out var facialMarkings))
             {
-                for (int i = 0; i < facialMarkings.Count; i++)
+                for (var i = 0; i < facialMarkings.Count; i++)
                 {
                     _humanoid.SetMarkingColor(uid, MarkingCategories.FacialHair, i, new List<Color> { randomColor });
                 }

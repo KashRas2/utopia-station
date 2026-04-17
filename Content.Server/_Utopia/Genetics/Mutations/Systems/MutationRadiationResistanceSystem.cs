@@ -4,9 +4,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Utopia.Genetics.Mutations.Systems;
 
-/// <remarks>
-///     This has been copied from RadiationProtectionSystem to prevent component conflicts with mutation enabling/disabling
-/// </remarks>
 public sealed class MutationRadiationResistanceSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;

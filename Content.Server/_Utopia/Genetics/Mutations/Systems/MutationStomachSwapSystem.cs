@@ -22,24 +22,20 @@ public sealed class MutationStomachSwapSystem : EntitySystem
 
     private void OnStartup(Entity<MutationStomachSwapComponent> ent, ref ComponentStartup args)
     {
-        var comp = ent.Comp;
         var hiddenContainer = _container.EnsureContainer<ContainerSlot>(ent.Owner, HiddenStorageContainerId);
 
-        // Find current stomach
         if (!TryGetStomachOrgan(ent.Owner, out var originalStomachNullable) || originalStomachNullable is not { } originalStomach)
         {
             RemComp<MutationStomachSwapComponent>(ent.Owner);
             return;
         }
 
-        comp.OriginalStomach = originalStomach;
+        ent.Comp.OriginalStomach = originalStomach;
         _container.Insert(originalStomach, hiddenContainer);
 
-        // Spawn new stomach
-        var newStomach = Spawn(comp.NewStomachPrototype, Transform(ent.Owner).Coordinates);
-        comp.SwappedStomach = newStomach;
+        var newStomach = Spawn(ent.Comp.NewStomachPrototype, Transform(ent.Owner).Coordinates);
+        ent.Comp.SwappedStomach = newStomach;
 
-        // Transfer solutions (stomach, food, organ)
         TransferOrganSolutions(originalStomach, newStomach);
 
         if (!TryGetStomachSlot(ent.Owner, out var stomachSlot) || stomachSlot is null)
@@ -110,6 +106,7 @@ public sealed class MutationStomachSwapSystem : EntitySystem
                 return true;
             }
         }
+
         return false;
     }
 
@@ -119,14 +116,12 @@ public sealed class MutationStomachSwapSystem : EntitySystem
 
         foreach (var name in solutionNames)
         {
-            // Get source solution
-            if (!_solution.TryGetSolution(from, name, out var fromSolEntNullable, out var fromSol) ||
-                fromSolEntNullable is not { } fromSolEnt)
+            if (!_solution.TryGetSolution(from, name, out var fromSolEntNullable, out var fromSol)
+            || fromSolEntNullable is not { } fromSolEnt)
                 continue;
 
-            // Get target solution
-            if (!_solution.TryGetSolution(to, name, out var toSolEntNullable, out var toSol) ||
-                toSolEntNullable is not { } toSolEnt)
+            if (!_solution.TryGetSolution(to, name, out var toSolEntNullable, out var _)
+            || toSolEntNullable is not { } toSolEnt)
                 continue;
 
             if (fromSol.Volume > 0)

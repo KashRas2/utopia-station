@@ -39,7 +39,6 @@ public sealed class MutationStupefactionSystem : EntitySystem
             if (_timing.CurTime < comp.NextDrainTime)
                 continue;
 
-            // Only affect entities with stamina
             if (!TryComp<StaminaComponent>(uid, out var stamina))
             {
                 ScheduleNextDrain(comp);
