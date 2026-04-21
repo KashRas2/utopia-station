@@ -266,13 +266,13 @@ public sealed partial class GunComponent : Component
 
     // Utopia-Tweak : Gun Shoot Effect
     [DataField, AutoNetworkedField]
-    public bool ShowGunIcon = true;
+    public bool ShowGunEffect = false;
 
     [DataField, AutoNetworkedField]
-    public float GunIconScale = 0.8f;
+    public float GunEffectScale = 0.8f;
 
     [DataField]
-    public int IconAngle = 83;
+    public int EffectAngle = 83;
     // Utopia-Tweak : Gun Shoot Effect
 }
 

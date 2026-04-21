@@ -284,7 +284,7 @@ public sealed partial class GunSystem : SharedGunSystem
         }
 
         // Utopia-Tweak : Gun Shoot Effect
-        if (success && gun.Comp.ShowGunIcon)
+        if (success && gun.Comp.ShowGunEffect)
         {
             TryGunShootEffect(gun, worldAngle, user);
         }
@@ -444,10 +444,10 @@ public sealed partial class GunSystem : SharedGunSystem
 
         _sprite.CopySprite((gun.Owner, gunSprite), (effect, spriteComp));
 
-        var scale = gun.Comp.GunIconScale;
+        var scale = gun.Comp.GunEffectScale;
         _sprite.SetScale((effect, spriteComp), new Vector2(scale, scale));
 
-        _sprite.SetRotation((effect, spriteComp), worldAngle - Angle.FromDegrees(gun.Comp.IconAngle));
+        _sprite.SetRotation((effect, spriteComp), worldAngle - Angle.FromDegrees(gun.Comp.EffectAngle));
         _xform.SetWorldRotationNoLerp(effect, worldAngle);
 
         var track = EnsureComp<TrackUserComponent>(effect);
