@@ -434,11 +434,16 @@ public sealed partial class GunSystem : SharedGunSystem
 
         var xform = Transform(user.Value);
 
+        if (!TryComp<SpriteComponent>(gun.Owner, out var gunSprite))
+            return;
+
         var effect = Spawn(GunIconEffectProto, xform.Coordinates);
 
-        if (!TryComp<SpriteComponent>(gun.Owner, out var gunSprite)
-        || !TryComp<SpriteComponent>(effect, out var spriteComp))
+        if (!TryComp<SpriteComponent>(effect, out var spriteComp))
+        {
+            QueueDel(effect);
             return;
+        }
 
         spriteComp.NoRotation = true;
 
