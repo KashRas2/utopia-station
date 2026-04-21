@@ -491,5 +491,6 @@ public sealed partial class GunSystem : SharedGunSystem
     }
     // Utopia-Tweak : Gun Shoot Effect
 
+    // TODO: Move RangedDamageSoundComponent to shared so this can be predicted.
     public override void PlayImpactSound(EntityUid otherEntity, DamageSpecifier? modifiedDamage, SoundSpecifier? weaponSound, bool forceWeaponSound) { }
 }
