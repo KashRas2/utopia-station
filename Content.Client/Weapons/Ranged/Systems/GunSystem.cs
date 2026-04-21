@@ -45,6 +45,11 @@ public sealed partial class GunSystem : SharedGunSystem
 
     public static readonly EntProtoId HitscanProto = "HitscanEffect";
 
+    // Utopia-Tweak : Gun Shoot Effect
+    public static readonly EntProtoId GunIconEffectProto = "GunShootEffect";
+    private const string GunIconAnimationKey = "gun-shoot-effect";
+    // Utopia-Tweak : Gun Shoot Effect
+
     public bool SpreadOverlay
     {
         get => _spreadOverlay;
@@ -221,6 +226,7 @@ public sealed partial class GunSystem : SharedGunSystem
         // This also means any ammo specific stuff can be grabbed as necessary.
         var direction = TransformSystem.ToMapCoordinates(fromCoordinates).Position - TransformSystem.ToMapCoordinates(toCoordinates).Position;
         var worldAngle = direction.ToAngle().Opposite();
+        var success = false; // Utopia-Tweak : Gun Shoot Effect
 
         foreach (var (ent, shootable) in ammo)
         {
@@ -247,6 +253,7 @@ public sealed partial class GunSystem : SharedGunSystem
                         // TODO: Can't predict entity deletions.
                         //if (cartridge.DeleteOnSpawn)
                         //    Del(cartridge.Owner);
+                        success = true; // Utopia-Tweak : Gun Shoot Effect
                     }
                     else
                     {
@@ -262,6 +269,7 @@ public sealed partial class GunSystem : SharedGunSystem
                     MuzzleFlash(gun, newAmmo, worldAngle, user);
                     Audio.PlayPredicted(gun.Comp.SoundGunshotModified, gun, user);
                     Recoil(user, direction, gun.Comp.CameraRecoilScalarModified);
+                    success = true; // Utopia-Tweak : Gun Shoot Effect
                     if (IsClientSide(ent!.Value))
                         Del(ent.Value);
                     else
@@ -270,9 +278,17 @@ public sealed partial class GunSystem : SharedGunSystem
                 case HitscanAmmoComponent:
                     Audio.PlayPredicted(gun.Comp.SoundGunshotModified, gun, user);
                     Recoil(user, direction, gun.Comp.CameraRecoilScalarModified);
+                    success = true; // Utopia-Tweak : Gun Shoot Effect
                     break;
             }
         }
+
+        // Utopia-Tweak : Gun Shoot Effect
+        if (success && gun.Comp.ShowGunIcon)
+        {
+            TryGunShootEffect(gun, worldAngle, user);
+        }
+        // Utopia-Tweak : Gun Shoot Effect
     }
 
     private void Recoil(EntityUid? user, Vector2 recoil, float recoilScalar)
@@ -406,6 +422,74 @@ public sealed partial class GunSystem : SharedGunSystem
         _animPlayer.Play((gunUid, uidPlayer), animTwo, "muzzle-flash-light");
     }
 
-    // TODO: Move RangedDamageSoundComponent to shared so this can be predicted.
+    // Utopia-Tweak : Gun Shoot Effect
+    private void TryGunShootEffect(Entity<GunComponent> gun, Angle worldAngle, EntityUid? user)
+    {
+        const float fadeInTime = 0.07f;
+        const float holdTime = 0.20f;
+        const float fadeOutTime = 0.45f;
+
+        if (!Timing.IsFirstTimePredicted || user == null)
+            return;
+
+        var xform = Transform(user.Value);
+
+        var effect = Spawn(GunIconEffectProto, xform.Coordinates);
+
+        if (!TryComp<SpriteComponent>(gun.Owner, out var gunSprite)
+        || !TryComp<SpriteComponent>(effect, out var spriteComp))
+            return;
+
+        spriteComp.NoRotation = true;
+
+        _sprite.CopySprite((gun.Owner, gunSprite), (effect, spriteComp));
+
+        var scale = gun.Comp.GunIconScale;
+        _sprite.SetScale((effect, spriteComp), new Vector2(scale, scale));
+
+        _sprite.SetRotation((effect, spriteComp), worldAngle - Angle.FromDegrees(gun.Comp.IconAngle));
+        _xform.SetWorldRotationNoLerp(effect, worldAngle);
+
+        var track = EnsureComp<TrackUserComponent>(effect);
+        track.User = user.Value;
+        track.Offset = new Vector2(0.75f, 0f);
+
+        var animation = new Animation
+        {
+            Length = TimeSpan.FromSeconds(fadeOutTime),
+            AnimationTracks =
+            {
+                new AnimationTrackComponentProperty
+                {
+                    ComponentType = typeof(SpriteComponent),
+                    Property = nameof(SpriteComponent.Offset),
+                    InterpolationMode = AnimationInterpolationMode.Linear,
+                    KeyFrames =
+                    {
+                        new AnimationTrackProperty.KeyFrame(new Vector2(-0.2f, 0f), 0f),
+                        new AnimationTrackProperty.KeyFrame(new Vector2(0.1f,  0f), holdTime),
+                        new AnimationTrackProperty.KeyFrame(new Vector2(0.1f,  0f), holdTime + 0.05f),
+                    }
+                },
+                new AnimationTrackComponentProperty
+                {
+                    ComponentType = typeof(SpriteComponent),
+                    Property = nameof(SpriteComponent.Color),
+                    InterpolationMode = AnimationInterpolationMode.Linear,
+                    KeyFrames =
+                    {
+                        new AnimationTrackProperty.KeyFrame(Color.White.WithAlpha(0f), 0f),
+                        new AnimationTrackProperty.KeyFrame(Color.White.WithAlpha(1f), fadeInTime),
+                        new AnimationTrackProperty.KeyFrame(Color.White.WithAlpha(1f), holdTime),
+                        new AnimationTrackProperty.KeyFrame(Color.White.WithAlpha(0f), fadeOutTime),
+                    }
+                }
+            }
+        };
+
+        _animPlayer.Play(effect, animation, GunIconAnimationKey);
+    }
+    // Utopia-Tweak : Gun Shoot Effect
+
     public override void PlayImpactSound(EntityUid otherEntity, DamageSpecifier? modifiedDamage, SoundSpecifier? weaponSound, bool forceWeaponSound) { }
 }
