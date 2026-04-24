@@ -1,0 +1,71 @@
+  - node: heradiator
+    entity: HeatExchangingPipe
+    edges:
+    - to: start
+      conditions:
+      - !type:EntityAnchored
+        anchored: false
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:DeleteEntity
+      steps:
+      - tool: Screwing
+        doAfter: 1
+      - tool: Welding
+        doAfter: 1
+
+  - node: hebendradiator
+    entity: HeatExchangingPipeBend
+    edges:
+    - to: start
+      conditions:
+      - !type:EntityAnchored
+        anchored: false
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:DeleteEntity
+      steps:
+      - tool: Screwing
+        doAfter: 1
+      - tool: Welding
+        doAfter: 1
+
+  - node: hefourwayradiator
+    entity: HeatExchangingPipeFourway
+    edges:
+    - to: start
+      conditions:
+      - !type:EntityAnchored
+        anchored: false
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:DeleteEntity
+      steps:
+      - tool: Screwing
+        doAfter: 1
+      - tool: Welding
+        doAfter: 1
+
+  - node: hetjuncradiator
+    entity: HeatExchangingPipeTJunction
+    edges:
+    - to: start
+      conditions:
+      - !type:EntityAnchored
+        anchored: false
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:DeleteEntity
+      steps:
+      - tool: Screwing
+        doAfter: 1
+      - tool: Welding
+        doAfter: 1

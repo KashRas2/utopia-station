@@ -2,8 +2,8 @@
   abstract: true
   parent: BaseItem
   id: UtopiaBaseHeatExchangerPipe
-  name: gas pipe
-  description: Holds gas.
+  name: radiator
+  description: Transfers heat between the pipe and its surroundings.
   placement:
     mode: SnapgridCenter
   components:
@@ -57,6 +57,7 @@
   - type: Tag
     tags:
     - Pipe
+  - type: HeatExchangingPipe
   - type: Physics
     canCollide: false
     bodyType: static
@@ -102,7 +103,7 @@
         pipeDirection: Longitudinal
   - type: Construction
     graph: GasBinary
-    node: radiator
+    node: heradiator
   - type: AtmosMonitoringConsoleDevice
     navMapBlip: Thermoregulator
   - type: GuideHelp
@@ -131,7 +132,7 @@
           pipeDirection: SWBend
     - type: Construction
       graph: GasBinary
-      node: bendradiator
+      node: hebendradiator
 
 - type: entity
   parent: HeatExchangingPipe
@@ -150,3 +151,57 @@
       map: [ "enum.PipeVisualLayers.Pipe" ]
     - state: heConnection
       map: [ "enum.SubfloorLayers.FirstLayer" ]
+
+- type: entity
+  parent: HeatExchangingPipe
+  id: HeatExchangingPipeFourway
+  suffix: Fourway
+  placement:
+    mode: SnapgridCenter
+  components:
+    - type: Tag
+      tags:
+        - UtopiaHeatExchangerConnection
+    - type: Sprite
+      sprite: _Utopia/Structures/Piping/Atmospherics/heatexchanger.rsi
+      layers:
+      - state: pipeStraight
+        map: [ "enum.PipeVisualLayers.Pipe" ]
+      - state: heFourway
+        map: [ "enum.SubfloorLayers.FirstLayer" ]
+    - type: NodeContainer
+      nodes:
+        pipe:
+          !type:PipeNode
+          nodeGroupID: Pipe
+          pipeDirection: Fourway
+    - type: Construction
+      graph: GasBinary
+      node: hefourwayradiator
+
+- type: entity
+  parent: HeatExchangingPipe
+  id: HeatExchangingPipeTJunction
+  suffix: TJunction
+  placement:
+    mode: SnapgridCenter
+  components:
+    - type: Tag
+      tags:
+        - UtopiaHeatExchangerConnection
+    - type: Sprite
+      sprite: _Utopia/Structures/Piping/Atmospherics/heatexchanger.rsi
+      layers:
+      - state: pipeStraight
+        map: [ "enum.PipeVisualLayers.Pipe" ]
+      - state: heTJunc
+        map: [ "enum.SubfloorLayers.FirstLayer" ]
+    - type: NodeContainer
+      nodes:
+        pipe:
+          !type:PipeNode
+          nodeGroupID: Pipe
+          pipeDirection: TNorth
+    - type: Construction
+      graph: GasBinary
+      node: hetjuncradiator

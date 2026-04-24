@@ -1,0 +1,17 @@
+ent-UtopiaBaseHeatExchangerPipe = радиатор
+    .desc = Переносит тепло между трубой и окружающей средой.
+ent-HeatExchangingPipe = { ent-HeatExchangingPipe }
+    .desc = { ent-HeatExchangingPipe.desc }
+    .suffix = Прямая
+ent-HeatExchangingPipeBend = { ent-HeatExchangingPipe }
+    .desc = { ent-HeatExchangingPipe.desc }
+    .suffix = Угловая
+ent-HeatExchangingPipeConnector = { ent-HeatExchangingPipe }
+    .desc = { ent-HeatExchangingPipe.desc }
+    .suffix = Конектор
+ent-HeatExchangingPipeFourway = { ent-HeatExchangingPipe }
+    .desc = { ent-HeatExchangingPipe.desc }
+    .suffix = Четверная
+ent-HeatExchangingPipeTJunction = { ent-HeatExchangingPipe }
+    .desc = { ent-HeatExchangingPipe.desc }
+    .suffix = Т-образная
