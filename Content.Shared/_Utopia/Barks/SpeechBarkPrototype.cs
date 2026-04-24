@@ -13,9 +13,6 @@ public sealed partial class SpeechBarkPrototype : IPrototype
     [DataField]
     public bool RoundStart = true;
 
-    [DataField]
-    public string Name = default!;
-
     public string LocName => Loc.GetString("bark-" + ID + "-name");
 
     [DataField]
