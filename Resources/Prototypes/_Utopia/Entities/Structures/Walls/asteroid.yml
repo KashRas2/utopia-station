@@ -15,12 +15,10 @@
     oreChance: 1.0
     currentOre: UtopiaOreCopper
   - type: Icon
-    sprite: _Utopia/Structures/Walls/rock.rsi
+    sprite: Structures/Walls/rock.rsi
   - type: Sprite
-    sprite: _Utopia/Structures/Walls/rock.rsi
+    sprite: Structures/Walls/rock.rsi
     layers:
-      - state: rock_copper
-        map: [ "enum.MiningScannerVisualLayers.Overlay" ]
       - state: rock
       - map: [ "enum.EdgeLayer.South" ]
         state: rock_south
@@ -30,6 +28,7 @@
         state: rock_north
       - map: [ "enum.EdgeLayer.West" ]
         state: rock_west
+      - state: rock_copper
 
 - type: entity
   id: UtopiaAsteroidRockCopper
@@ -41,12 +40,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
-          map: [ "enum.MiningScannerVisualLayers.Overlay" ]
         - state: rock_asteroid
         - map: [ "enum.EdgeLayer.South" ]
           state: rock_asteroid_south
@@ -56,6 +53,7 @@
           state: rock_asteroid_north
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_asteroid_west
+        - state: rock_copper
 
 - type: entity
   id: UtopiaMeteorRockCopper
@@ -67,11 +65,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
         - state: rock_asteroid
         - map: [ "enum.EdgeLayer.South" ]
           state: rock_asteroid_south
@@ -81,6 +78,7 @@
           state: rock_asteroid_north
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_asteroid_west
+        - state: rock_copper
 
 - type: entity
   id: UtopiaIronRockCopper
@@ -92,12 +90,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
-          map: [ "enum.MiningScannerVisualLayers.Overlay" ]
         - state: ironrock
         - map: [ "enum.EdgeLayer.South" ]
           state: ironrock_south
@@ -107,6 +103,7 @@
           state: ironrock_north
         - map: [ "enum.EdgeLayer.West" ]
           state: ironrock_west
+        - state: rock_copper
 
 - type: entity
   id: UtopiaWallRockBasaltCopper
@@ -118,12 +115,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
-          map: [ "enum.MiningScannerVisualLayers.Overlay" ]
         - state: rock_wall
         - map: [ "enum.EdgeLayer.South" ]
           state: rock_wall_south
@@ -133,6 +128,7 @@
           state: rock_wall_north
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_wall_west
+        - state: rock_copper
 
 - type: entity
   id: UtopiaWallRockSnowCopper
@@ -144,12 +140,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
-          map: [ "enum.MiningScannerVisualLayers.Overlay" ]
         - state: rock_snow
         - map: [ "enum.EdgeLayer.South" ]
           state: rock_snow_south
@@ -159,6 +153,7 @@
           state: rock_snow_north
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_snow_west
+        - state: rock_copper
 
 - type: entity
   id: UtopiaWallRockSandCopper
@@ -170,12 +165,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
-          map: [ "enum.MiningScannerVisualLayers.Overlay" ]
         - state: rock_sand
         - map: [ "enum.EdgeLayer.South" ]
           state: rock_sand_south
@@ -185,6 +178,7 @@
           state: rock_sand_north
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_sand_west
+        - state: rock_copper
 
 - type: entity
   id: UtopiaWallRockChromiteCopper
@@ -196,12 +190,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
-          map: [ "enum.MiningScannerVisualLayers.Overlay" ]
         - state: rock_chromite
         - map: [ "enum.EdgeLayer.South" ]
           state: rock_chromite_south
@@ -211,6 +203,7 @@
           state: rock_chromite_north
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_chromite_west
+        - state: rock_copper
 
 - type: entity
   id: UtopiaWallRockAndesiteCopper
@@ -222,12 +215,10 @@
       oreChance: 1.0
       currentOre: UtopiaOreCopper
     - type: Icon
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
     - type: Sprite
-      sprite: _Utopia/Structures/Walls/rock.rsi
+      sprite: Structures/Walls/rock.rsi
       layers:
-        - state: rock_copper
-          map: [ "enum.MiningScannerVisualLayers.Overlay" ]
         - state: rock_andesite
         - map: [ "enum.EdgeLayer.South" ]
           state: rock_andesite_south
@@ -237,3 +228,4 @@
           state: rock_andesite_north
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_andesite_west
+        - state: rock_copper

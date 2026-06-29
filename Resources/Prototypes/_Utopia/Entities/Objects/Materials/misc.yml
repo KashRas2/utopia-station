@@ -1,43 +1,50 @@
 - type: entity
   parent: MaterialBase
   id: UtopiaMaterialBluespaceCrystal
-  name: Bluespace crystal
-  description: Just a bluespace crystal that was not combined with plasma and diamond. It has limited functionality, but with a certain manipulation of the crystal it can distort space, expanding, for example, it inside small objects, and also move jumps shuttles into bluespace
+  name: bluespace crystal
+  description: Crystal of concentrated Bluespace energy. Extremely rare.
   suffix: Full
   components:
   - type: PhysicalComposition
     materialComposition:
-      BluespaceCrystal: 100
+      BluespaceCrystal: 33
   - type: Material
   - type: Sprite
-    sprite: ADT/Objects/Materials/crystal.rsi
+    sprite: _Utopia/Objects/Materials/crystal.rsi
     layers:
-    - state: crystal
+    - state: crystal_3
       map: [ "base" ]
   - type: StackPrice
     price: 200
   - type: Appearance
   - type: Stack
-    count: 10
     stackType: BluespaceCrystal
     baseLayer: base
     layerStates:
     - crystal
+    - crystal
     - crystal_2
     - crystal_3
+    count: 3
+  - type: RandomTeleportOnUse
+  - type: BluespaceCrystal
   - type: Item
-    size: Small
-    heldPrefix: crystal
-    sprite: ADT/Objects/Materials/crystal.rsi
+    size: Tiny
+    sprite: _Utopia/Objects/Materials/crystal.rsi
   - type: Tag
     tags:
     - UtopiaBluespaceCrystal
+    - RawMaterial
 
 - type: entity
-  parent: ADTMaterialBScrystal
-  id: ADTMaterialBScrystal1
-  name: Bluespace crystal
-  suffix: 1
+  parent: UtopiaMaterialBluespaceCrystal
+  id: UtopiaMaterialBluespaceCrystal1
+  name: bluespace crystal
+  suffix: Single
   components:
+  - type: Sprite
+    layers:
+    - state: crystal
+      map: ["base"]
   - type: Stack
     count: 1
