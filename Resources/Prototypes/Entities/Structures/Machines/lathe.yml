@@ -263,6 +263,9 @@
     - CargoBoardsStatic
     - MedicalBoardsStatic
     - EngineeringBoardsStatic
+    # Utopia-Tweak : Research
+    - EconomyBoardsStatic
+    # Utopia-Tweak : Research
     dynamicPacks:
     - EngineeringBoards
     - CargoBoards
@@ -272,9 +275,9 @@
     - CameraBoards
     - MechBoards
     - ShuttleBoards
-    # Utopia-Tweak-Research
+    # Utopia-Tweak : Research
     - MedicalBoardsDynamic
-    # Utopia-Tweak-Research
+    # Utopia-Tweak : Research
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - SecurityBoards
@@ -481,6 +484,9 @@
     - SurgeryStatic
     dynamicPacks:
     - Chemistry
+    # Utopia-Tweak : Research
+    - MedicalDynamic
+    # Utopia-Tweak : Research
   - type: Machine
     board: MedicalTechFabCircuitboard
   - type: StealTarget

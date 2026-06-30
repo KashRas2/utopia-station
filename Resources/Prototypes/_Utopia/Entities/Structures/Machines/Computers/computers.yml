@@ -17,6 +17,8 @@
     - map: ["computerLayerScreen"]
       sprite: _Utopia/Structures/Machines/computers.rsi
       state: salary
+  - type: Computer
+    board: UtopiaSalaryConsoleCircuitboard
   - type: ActivatableUI
     key: enum.SalaryConsoleUiKey.Key
   - type: UserInterface
@@ -56,6 +58,8 @@
     - map: ["computerLayerScreen"]
       sprite: _Utopia/Structures/Machines/computers.rsi
       state: accounts
+  - type: Computer
+    board: UtopiaEconomicRecordsConsoleCircuitboard
   - type: ActivatableUI
     key: enum.EconomicRecordsConsoleKey.Key
   - type: UserInterface

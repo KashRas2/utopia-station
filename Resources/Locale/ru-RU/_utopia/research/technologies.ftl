@@ -4,6 +4,7 @@ research-discipline-biochemical = Биохимия
 research-technology-chemistry = Химия
 research-technology-surgical-tools = Хирургические инструменты
 research-technology-virology = Вирусология
+research-technology-basic-genetics = Основы генетики
 research-technology-cryogenics = Криогеника
 research-technology-chemical-dispensary = Промышленная химия
 research-technology-separation-units = Сепарационные установки
