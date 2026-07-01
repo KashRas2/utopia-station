@@ -14,9 +14,9 @@
 
 - type: latheRecipe
   id: MaterialBluespaceCrystal
-  result: UtopiaMaterialBluespaceCrystal
+  result: UtopiaMaterialBluespaceCrystal1
   applyMaterialDiscount: false
   maxProductionAmount: 1
   completetime: 1
   materials:
-    RawBluespaceCrystal: 3000
+    RawBluespaceCrystal: 1000

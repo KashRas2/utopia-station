@@ -7,7 +7,7 @@
   components:
   - type: PhysicalComposition
     materialComposition:
-      BluespaceCrystal: 33
+      BluespaceCrystal: 50
   - type: Material
   - type: Sprite
     sprite: _Utopia/Objects/Materials/crystal.rsi
