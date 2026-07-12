@@ -137,6 +137,7 @@
     dynamicPacks:
     - AdvancedMachineParts
     - SuperMachineParts
+    - BluespaceMachineParts
     # Utopia-Tweak : Research
   - type: EmagLatheRecipes
     emagStaticPacks:

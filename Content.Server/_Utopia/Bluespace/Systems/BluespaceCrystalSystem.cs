@@ -11,7 +11,6 @@ public sealed class BluespaceCrystalSystem : EntitySystem
     [Dependency] private readonly StackSystem _stacks = default!;
     [Dependency] private readonly TeleportSystem _teleport = default!;
 
-
     public override void Initialize()
     {
         SubscribeLocalEvent<BluespaceCrystalComponent, ThrowDoHitEvent>(OnThrowInMob);

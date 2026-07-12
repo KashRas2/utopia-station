@@ -21,6 +21,7 @@ public sealed partial class TechnologyInfoPanel : Control
 
     public TechnologyPrototype Prototype;
     public Action<TechnologyPrototype>? BuyAction;
+
     public TechnologyInfoPanel(TechnologyPrototype proto, SpriteSystem sprite, bool hasAccess, ResearchAvailablity availablity)
     {
         RobustXamlLoader.Load(this);
@@ -55,7 +56,9 @@ public sealed partial class TechnologyInfoPanel : Control
         }
 
         if (!hasAccess)
+        {
             ResearchButton.ToolTip = Loc.GetString("research-console-no-access-popup");
+        }
 
         Color? color = null;
         switch (availablity)
@@ -85,13 +88,6 @@ public sealed partial class TechnologyInfoPanel : Control
     protected override void ExitedTree()
     {
         base.ExitedTree();
-
-        ResearchButton.OnPressed -= Bought;
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
 
         ResearchButton.OnPressed -= Bought;
     }
