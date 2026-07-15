@@ -26,8 +26,7 @@
     PR_NUM="${{ github.event.pull_request.number }}"
     AVATAR="${{ github.event.pull_request.user.avatar_url }}"
 
-    # Безопасно собираем JSON через jq
-    PAYLOAD=$(jq -n       --arg title "🟣 PR #$PR_NUM успешно слит в репозиторий!"       --arg desc "**[$PR_TITLE]($PR_URL)**"       --arg author_name "$AUTHOR"       --arg author_icon "$AVATAR"       --arg repo "Utopia-Station-14/utopia-station"       --arg merged "@$MERGED_BY"       '{
+    PAYLOAD=$(jq -n       --arg title "🟣 PR #$PR_NUM Обновление успешно добавлено!"       --arg desc "**[$PR_TITLE]($PR_URL)**"       --arg author_name "$AUTHOR"       --arg author_icon "$AVATAR"       --arg repo "Utopia-Station-14/utopia-station"       --arg merged "@$MERGED_BY"       '{
         embeds: [{
           title: $title,
           description: $desc,
@@ -38,10 +37,9 @@
           },
           fields: [
             { name: "Репозиторий", value: $repo, inline: true },
-            { name: "Кто слил", value: $merged, inline: true }
+            { name: "Автор обновления: ", value: $merged, inline: true }
           ]
         }]
       }')
 
-    # Отправляем в Discord по твоему адресу
     curl -H "Content-Type: application/json"          -X POST          -d "$PAYLOAD"          "$MERGED_PR_WEBHOOK"
