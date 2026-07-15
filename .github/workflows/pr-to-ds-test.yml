@@ -1,45 +1,66 @@
-- name: Send Discord Notification
-  env:
-    MERGED_PR_WEBHOOK: ${{ secrets.MERGED_PR_WEBHOOK }}
-  run: |
-    if [ -z "$MERGED_PR_WEBHOOK" ]; then
-      echo "Error: MERGED_PR_WEBHOOK is not set!"
-      exit 1
-    fi
+name: Pull Request Merged Notification
 
-    PR_TITLE=$(cat << 'EOF'
-    ${{ github.event.pull_request.title }}
-    EOF
-    )
+on:
+  pull_request:
+    types: [closed]
 
-    AUTHOR=$(cat << 'EOF'
-    ${{ github.event.pull_request.user.login }}
-    EOF
-    )
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Notification
+        env:
+          MERGED_PR_WEBHOOK: ${{ secrets.MERGED_PR_WEBHOOK }}
+        run: |
+          if [ -z "$MERGED_PR_WEBHOOK" ]; then
+            echo "Error: MERGED_PR_WEBHOOK is not set!"
+            exit 1
+          fi
 
-    MERGED_BY=$(cat << 'EOF'
-    ${{ github.event.pull_request.merged_by.login }}
-    EOF
-    )
+          PR_TITLE=$(cat << 'EOF'
+          ${{ github.event.pull_request.title }}
+          EOF
+          )
 
-    PR_URL="${{ github.event.pull_request.html_url }}"
-    PR_NUM="${{ github.event.pull_request.number }}"
-    AVATAR="${{ github.event.pull_request.user.avatar_url }}"
+          AUTHOR=$(cat << 'EOF'
+          ${{ github.event.pull_request.user.login }}
+          EOF
+          )
 
-    PAYLOAD=$(jq -n       --arg title "🟣 PR #$PR_NUM Обновление успешно добавлено!"       --arg desc "**[$PR_TITLE]($PR_URL)**"       --arg author_name "$AUTHOR"       --arg author_icon "$AVATAR"       --arg repo "Utopia-Station-14/utopia-station"       --arg merged "@$MERGED_BY"       '{
-        embeds: [{
-          title: $title,
-          description: $desc,
-          color: 10181046,
-          author: {
-            name: $author_name,
-            icon_url: $author_icon
-          },
-          fields: [
-            { name: "Репозиторий", value: $repo, inline: true },
-            { name: "Автор обновления: ", value: $merged, inline: true }
-          ]
-        }]
-      }')
+          MERGED_BY=$(cat << 'EOF'
+          ${{ github.event.pull_request.merged_by.login }}
+          EOF
+          )
 
-    curl -H "Content-Type: application/json"          -X POST          -d "$PAYLOAD"          "$MERGED_PR_WEBHOOK"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_NUM="${{ github.event.pull_request.number }}"
+          AVATAR="${{ github.event.pull_request.user.avatar_url }}"
+
+          PAYLOAD=$(jq -n \
+            --arg title "🟣 PR #$PR_NUM Обновление успешно принято!" \
+            --arg desc "**[$PR_TITLE]($PR_URL)**" \
+            --arg author_name "$AUTHOR" \
+            --arg author_icon "$AVATAR" \
+            --arg repo "Utopia-Station-14/utopia-station" \
+            --arg merged "@$MERGED_BY" \
+            '{
+              embeds: [{
+                title: $title,
+                description: $desc,
+                color: 10181046,
+                author: {
+                  name: $author_name,
+                  icon_url: $author_icon
+                },
+                fields: [
+                  { name: "Репозиторий", value: $repo, inline: true },
+                  { name: "Автор обновления: ", value: $merged, inline: true }
+                ]
+              }]
+            }')
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "$PAYLOAD" \
+               "$MERGED_PR_WEBHOOK"
