@@ -49,7 +49,7 @@ jobs:
           MERGED_DATE=$(date -d "$MERGED_ISO" +"%d.%m.%Y %H:%M")
 
           CHANGELOG=$(echo "$PR_BODY" | awk '/:cl:/{flag=1} flag')
-          EMBED_DESC=$(printf "**%s**\n\n%s" "$PR_TITLE" "$CHANGELOG")
+          EMBED_DESC=$(printf "%s\n\n%s" "**$PR_TITLE**" "$CHANGELOG")
 
           PAYLOAD=$(jq -n \
             --arg title "🟣 PR #$PR_NUM | Обновление успешно принято!" \
@@ -76,11 +76,4 @@ jobs:
               }]
             }')
 
-          curl -H "Content-Type: application/json" \
-               -X POST \
-               -d "$PAYLOAD" \
-
-          curl -H "Content-Type: application/json" \
-               -X POST \
-               -d "$PAYLOAD" \
-               "$MERGED_PR_WEBHOOK"
+          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "$MERGED_PR_WEBHOOK"
