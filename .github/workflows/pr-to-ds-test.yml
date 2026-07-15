@@ -1,0 +1,46 @@
+name: Notify Discord on PR Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Notification
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_NUM="${{ github.event.pull_request.number }}"
+          AUTHOR="${{ github.event.pull_request.user.login }}"
+          AVATAR="${{ github.event.pull_request.user.avatar_url }}"
+          MERGED_BY="${{ github.event.pull_request.merged_by.login }}"
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                 "embeds": [{
+                   "title": "🟣 PR #"'"$PR_NUM"'" Обновление добавлено!",
+                   "description": "**['"$PR_TITLE"']('"$PR_URL"')**",
+                   "color": 10181046,
+                   "author": {
+                     "name": "'"$AUTHOR"'",
+                     "icon_url": "'"$AVATAR"'"
+                   },
+                   "fields": [
+                     {
+                       "name": "Репозиторий",
+                       "value": "`Utopia-Station-14/utopia-station`",
+                       "inline": true
+                     },
+                     {
+                       "name": "Автор обновления: ",
+                       "value": "@'"$MERGED_BY"'",
+                       "inline": true
+                     }
+                   ]
+                 }]
+               }' \
+               ${{ secrets.DISCORD_WEBHOOK_URL }}
