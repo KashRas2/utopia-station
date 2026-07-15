@@ -18,6 +18,16 @@ jobs:
             exit 1
           fi
 
+          PR_BODY=$(cat << 'EOF'
+          ${{ github.event.pull_request.body }}
+          EOF
+          )
+
+          if ! echo "$PR_BODY" | grep -q ":cl:"; then
+            echo "В описании PR отсутствует тег :cl:. Уведомление в Discord отправлено не будет."
+            exit 0
+          fi
+
           PR_TITLE=$(cat << 'EOF'
           ${{ github.event.pull_request.title }}
           EOF
@@ -28,35 +38,29 @@ jobs:
           EOF
           )
 
-          MERGED_BY=$(cat << 'EOF'
-          ${{ github.event.pull_request.merged_by.login }}
-          EOF
-          )
-
           PR_URL="${{ github.event.pull_request.html_url }}"
           PR_NUM="${{ github.event.pull_request.number }}"
           AVATAR="${{ github.event.pull_request.user.avatar_url }}"
 
+          CHANGELOG=$(echo "$PR_BODY" | awk '/:cl:/{flag=1} flag')
+          EMBED_DESC=$(printf "%s\n\n%s" "$PR_TITLE" "$CHANGELOG")
+
           PAYLOAD=$(jq -n \
-            --arg title "🟣 PR #$PR_NUM Обновление успешно принято!" \
-            --arg desc "**[$PR_TITLE]($PR_URL)**" \
+            --arg title "🟣 PR #$PR_NUM | Обновление успешно принято!" \
+            --arg url "$PR_URL" \
+            --arg desc "$EMBED_DESC" \
             --arg author_name "$AUTHOR" \
             --arg author_icon "$AVATAR" \
-            --arg repo "Utopia-Station-14/utopia-station" \
-            --arg merged "@$MERGED_BY" \
             '{
               embeds: [{
                 title: $title,
+                url: $url,
                 description: $desc,
                 color: 10181046,
                 author: {
                   name: $author_name,
                   icon_url: $author_icon
-                },
-                fields: [
-                  { name: "Репозиторий", value: $repo, inline: true },
-                  { name: "Автор обновления: ", value: $merged, inline: true }
-                ]
+                }
               }]
             }')
 
