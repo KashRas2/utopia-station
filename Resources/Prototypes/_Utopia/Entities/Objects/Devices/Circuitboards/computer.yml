@@ -40,4 +40,4 @@
   - type: Sprite
     state: cpu_science
   - type: ComputerBoard
-    prototype: UtopiaComputerTelesciConsole
+    prototype: UtopiaComputerTelescienceConsole
