@@ -1,5 +1,5 @@
-using Content.Shared._Utopia.Telescience;
 using Content.Shared._Utopia.Telescience.Components;
+using Content.Shared._Utopia.Telescience.Messages;
 
 namespace Content.Client._Utopia.Telescience.UI;
 
