@@ -64,6 +64,9 @@
   - type: WiresVisuals
   - type: WiresPanel
     openingTool: Screwing
+  - type: UpgradePowerDraw
+    powerDrawMultiplier: 0.85
+    scaling: Linear
   - type: GenericVisualizer
     visuals:
       enum.PowerDeviceVisuals.Powered:

@@ -16,7 +16,7 @@ public sealed partial class TelescienceTeleporterComponent : Component
     public float TeleportSize = 0.5f;
 
     [ViewVariables, AutoNetworkedField]
-    public TimeSpan Cooldown = TimeSpan.Zero;
+    public TimeSpan Cooldown;
 
     [DataField, AutoNetworkedField]
     public TimeSpan CooldownInterval = TimeSpan.FromSeconds(10);
@@ -41,33 +41,3 @@ public sealed partial class TelescienceTeleporterComponent : Component
     [DataField]
     public float PartTierAddDistanceMultiplier = 1.25f;
 }
-
-#region events
-
-[Serializable, NetSerializable]
-public sealed class TelescienceSendEvent(Vector2 coordinates) : EntityEventArgs
-{
-    public Vector2 Coordinates = coordinates;
-}
-
-[Serializable, NetSerializable]
-public sealed class TelescienceRetrieveEvent(Vector2 coordinates) : EntityEventArgs
-{
-    public Vector2 Coordinates = coordinates;
-}
-
-[Serializable, NetSerializable]
-public sealed class TelescienceOpenPortalEvent(Vector2 coordinates) : EntityEventArgs
-{
-    public Vector2 Coordinates = coordinates;
-}
-
-[Serializable, NetSerializable]
-public sealed class TelescienceClosePortalEvent : EntityEventArgs;
-
-[Serializable, NetSerializable]
-public sealed class TelescienceCooldownEvent(TimeSpan time) : EntityEventArgs
-{
-    public TimeSpan Cooldown = time;
-}
-#endregion

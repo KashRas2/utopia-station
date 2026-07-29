@@ -1,6 +1,8 @@
 using System.Numerics;
 using Content.Shared_Utopia.Effects;
 using Content.Shared._Utopia.Telescience.Components;
+using Content.Shared._Utopia.Telescience.Messages;
+using Content.Shared.Construction.Components;
 using Content.Shared.DeviceLinking;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Power.EntitySystems;
@@ -8,7 +10,6 @@ using Content.Shared.Teleportation.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
-using Content.Shared.Construction.Components;
 
 namespace Content.Shared._Utopia.Telescience.Systems;
 
@@ -22,7 +23,6 @@ public sealed class TelescienceTeleporterSystem : EntitySystem
     [Dependency] private readonly SharedPowerReceiverSystem _power = default!;
     [Dependency] private readonly LinkedEntitySystem _link = default!;
     [Dependency] private readonly SparksSystem _sparks = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
 
     public override void Initialize()
     {

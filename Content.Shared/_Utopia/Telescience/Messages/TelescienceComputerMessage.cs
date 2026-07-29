@@ -1,7 +1,7 @@
 using System.Numerics;
 using Robust.Shared.Serialization;
 
-namespace Content.Shared._Utopia.Telescience
+namespace Content.Shared._Utopia.Telescience.Messages
 {
     [Serializable, NetSerializable]
     public enum TelescienceUiKey

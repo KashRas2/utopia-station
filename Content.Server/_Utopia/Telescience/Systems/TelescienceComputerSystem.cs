@@ -1,15 +1,18 @@
 using Content.Shared._Utopia.Teleportation;
-using Content.Shared._Utopia.Telescience;
 using Content.Shared._Utopia.Telescience.Components;
+using Content.Shared._Utopia.Telescience.Messages;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
+using Content.Shared.Popups;
 using Content.Shared.Stacks;
 
 namespace Content.Server._Utopia.Telescience.Systems;
 
 public sealed class TelescienceComputerSystem : EntitySystem
 {
+    [Dependency] private readonly SharedPopupSystem _sharedPopupSystem = default!;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -156,7 +159,10 @@ public sealed class TelescienceComputerSystem : EntitySystem
     private bool TryConsumeCrystal(Entity<TelescienceComputerComponent> ent)
     {
         if (ent.Comp.Crystals <= 0)
+        {
+            _sharedPopupSystem.PopupEntity(Loc.GetString("teleporter-computer-no-crystals"), ent);
             return false;
+        }
 
         ent.Comp.Crystals--;
         Dirty(ent);
