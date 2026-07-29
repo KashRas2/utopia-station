@@ -13,11 +13,6 @@ jobs:
         env:
           MERGED_PR_WEBHOOK: ${{ secrets.MERGED_PR_WEBHOOK }}
         run: |
-          if [ -z "$MERGED_PR_WEBHOOK" ]; then
-            echo "Error: MERGED_PR_WEBHOOK is not set!"
-            exit 1
-          fi
-
           PR_BODY=$(cat << 'EOF'
           ${{ github.event.pull_request.body }}
           EOF
