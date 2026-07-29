@@ -1,9 +1,12 @@
 using Content.Shared._Utopia.Teleportation;
+using Content.Shared._Utopia.Telescience;
 using Content.Shared._Utopia.Telescience.Components;
 using Content.Shared.DeviceLinking.Events;
+using Content.Shared.Examine;
 using Content.Shared.Interaction;
+using Content.Shared.Stacks;
 
-namespace Content.Shared._Utopia.Telescience.Systems;
+namespace Content.Server._Utopia.Telescience.Systems;
 
 public sealed class TelescienceComputerSystem : EntitySystem
 {
@@ -14,6 +17,7 @@ public sealed class TelescienceComputerSystem : EntitySystem
         SubscribeLocalEvent<TelescienceComputerComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<TelescienceComputerComponent, NewLinkEvent>(OnNewLink);
         SubscribeLocalEvent<TelescienceComputerComponent, PortDisconnectedEvent>(OnPortDisconnected);
+        SubscribeLocalEvent<TelescienceComputerComponent, ExaminedEvent>(OnExamined);
 
         SubscribeLocalEvent<TelescienceComputerComponent, TelescienceSendMessage>(OnSendMessage);
         SubscribeLocalEvent<TelescienceComputerComponent, TelescienceRetrieveMessage>(OnRetrieveMessage);
@@ -28,14 +32,19 @@ public sealed class TelescienceComputerSystem : EntitySystem
         if (args.Handled)
             return;
 
-        if (!TryComp<TeleportCrystalComponent>(args.Used, out var crys)
-        || crys.CType == CrystalType.Redspace)
+        if (!HasComp<TeleportCrystalComponent>(args.Used))
             return;
 
-        args.Handled = true;
+        var amount = 1;
+        if (TryComp<StackComponent>(args.Used, out var stack))
+        {
+            amount = stack.Count;
+        }
 
         Del(args.Used);
-        TryAddCrystal(ent);
+        args.Handled = true;
+
+        TryAddCrystal(ent, amount);
     }
 
     private void OnNewLink(Entity<TelescienceComputerComponent> ent, ref NewLinkEvent arg)
@@ -128,9 +137,17 @@ public sealed class TelescienceComputerSystem : EntitySystem
         Dirty(ent);
     }
 
-    private bool TryAddCrystal(Entity<TelescienceComputerComponent> ent)
+    private void OnExamined(Entity<TelescienceComputerComponent> ent, ref ExaminedEvent args)
     {
-        ent.Comp.Crystals++;
+        args.PushMarkup(Loc.GetString("teleporter-computer-crystal-count", ("crystal", ent.Comp.Crystals)));
+    }
+
+    private bool TryAddCrystal(Entity<TelescienceComputerComponent> ent, int amount = 1)
+    {
+        if (amount <= 0)
+            return false;
+
+        ent.Comp.Crystals += amount;
         Dirty(ent);
 
         return true;

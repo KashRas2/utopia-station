@@ -14,8 +14,6 @@
       map: ["enum.PowerDeviceVisualLayers.Powered"]
     - state: teleporter-open
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
-    - state: teleporter-beam
-      map: ["enum.TelescienceTeleporterState.Teleport"]
       visible: false
   - type: Physics
     bodyType: Static

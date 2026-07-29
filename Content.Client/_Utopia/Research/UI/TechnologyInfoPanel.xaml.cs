@@ -92,6 +92,13 @@ public sealed partial class TechnologyInfoPanel : Control
         ResearchButton.OnPressed -= Bought;
     }
 
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+
+        ResearchButton.OnPressed -= Bought;
+    }
+
     private void Bought(BaseButton.ButtonEventArgs args)
     {
         BuyAction?.Invoke(Prototype);

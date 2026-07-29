@@ -7,3 +7,9 @@ teleporter-computer-button-send = Отправить
 teleporter-computer-button-retrieve = Забрать
 teleporter-computer-button-portal = Открыть портал
 teleporter-computer-button-closeportal = Закрыть портал
+teleporter-computer-crystal-count =
+    В телепад загружено: { $crystal } { $crystal ->
+        [one] кристалл
+        [few] кристалла
+       *[other] кристаллов
+    }.
