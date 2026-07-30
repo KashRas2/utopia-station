@@ -18,3 +18,10 @@
   icon: { sprite: /Textures/_Utopia/Objects/Materials/ore.rsi, state: bluespace }
   spawn: UtopiaBluespaceCrystalOre1
   maxCount: 30
+
+- type: stack
+  id: RedspaceCrystalOre
+  name: stack-redspacecrystal-ore
+  icon: { sprite: /Textures/_Utopia/Objects/Materials/ore.rsi, state: redspace }
+  spawn: UtopiaRedspaceCrystalOre1
+  maxCount: 30

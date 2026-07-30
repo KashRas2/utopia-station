@@ -22,5 +22,7 @@ stack-quad-ultra-micro-laser = квад-ультра микролазер
 stack-copper-ore = руда меди
 stack-lead-ore = руда свинца
 stack-bluespacecrystal-ore = блюспейс руда
+stack-redspacecrystal-ore = редспейс руда
 # Misc
 stack-bluespacecrystal = блюспейс кристалл
+stack-redspacecrystal = редспейс кристалл

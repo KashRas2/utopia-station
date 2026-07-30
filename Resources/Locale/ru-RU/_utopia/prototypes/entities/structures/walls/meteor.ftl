@@ -7,3 +7,6 @@ ent-UtopiaMeteorRockLead = { ent-MeteorRock }
 ent-UtopiaMeteorRockBluespace = { ent-MeteorRock }
     .desc = Рудная жила, богатая блюспейс рудой.
     .suffix = Блюспейс
+ent-UtopiaMeteorRockRedspace = { ent-MeteorRock }
+    .desc = Рудная жила, богатая редспейс рудой.
+    .suffix = Редспейс

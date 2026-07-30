@@ -18,3 +18,10 @@ ent-UtopiaBluespaceCrystalOre = блюспейс руда
 ent-UtopiaBluespaceCrystalOre1 = { ent-UtopiaBluespaceCrystalOre }
     .desc = { ent-OreBase.desc }
     .suffix = Один
+
+ent-UtopiaRedspaceCrystalOre = редспейс руда
+    .desc = { ent-OreBase.desc }
+    .suffix = Полный
+ent-UtopiaRedspaceCrystalOre1 = { ent-UtopiaRedspaceCrystalOre }
+    .desc = { ent-OreBase.desc }
+    .suffix = Один

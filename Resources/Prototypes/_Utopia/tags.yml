@@ -11,6 +11,12 @@
 - type: Tag
   id: UtopiaBluespaceOre
 
+- type: Tag
+  id: UtopiaRedspaceCrystal
+
+- type: Tag
+  id: UtopiaRedspaceOre
+
 # URT
 - type: Tag
   id: UtopiaSteelSheet

@@ -20,3 +20,12 @@
   completetime: 1
   materials:
     RawBluespaceCrystal: 1000
+
+- type: latheRecipe
+  id: MaterialRedspaceCrystal
+  result: UtopiaMaterialRedspaceCrystal1
+  applyMaterialDiscount: false
+  maxProductionAmount: 1
+  completetime: 1
+  materials:
+    RawRedspaceCrystal: 1000

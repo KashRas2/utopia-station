@@ -21,6 +21,15 @@
   stackEntity: UtopiaMaterialBluespaceCrystal1
   name: materials-bluespacecrystal
   unit: materials-unit-piece
-  icon: { sprite: _Utopia/Objects/Materials/crystal.rsi, state: crystal }
+  icon: { sprite: _Utopia/Objects/Materials/Crystal/bs_crystal.rsi, state: crystal }
   color: "#1d55c4"
+  price: 1
+
+- type: material
+  id: RedspaceCrystal
+  stackEntity: UtopiaMaterialRedspaceCrystal1
+  name: materials-redspacecrystal
+  unit: materials-unit-piece
+  icon: { sprite: _Utopia/Objects/Materials/Crystal/rs_crystal.rsi, state: crystal }
+  color: "#c81616"
   price: 1

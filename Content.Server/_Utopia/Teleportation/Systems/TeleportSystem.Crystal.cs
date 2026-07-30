@@ -5,6 +5,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Sprite;
 using Content.Shared.Stacks;
 using Content.Shared.Throwing;
+using Robust.Shared.Containers;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
 
@@ -16,6 +17,7 @@ public sealed class TeleportCrystalSystem : EntitySystem
     [Dependency] private readonly SharedScaleVisualsSystem _scaleVisuals = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly StackSystem _stack = default!;
+    [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
 
     public override void Initialize()
     {
@@ -57,6 +59,7 @@ public sealed class TeleportCrystalSystem : EntitySystem
                     {
                         _scaleVisuals.SetSpriteScale(target, scale);
                         _physics.ScaleFixtures(target, 1f / ent.Comp.SpecialValue);
+                        _containerSystem.AttachParentToContainerOrGrid((target, Transform(target)));
 
                         RemComp<ItemComponent>(target);
                         RemComp<RedspaceEffectComponent>(target);
