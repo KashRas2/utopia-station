@@ -14,6 +14,3 @@ public sealed partial class ComboComponent : Component
 
     public TimeSpan ResetTime = TimeSpan.FromSeconds(3);
 }
-
-[ByRefEvent]
-public record struct GetPerformedAttackTypesEvent(List<CombatAction>? AttackTypes = null);
