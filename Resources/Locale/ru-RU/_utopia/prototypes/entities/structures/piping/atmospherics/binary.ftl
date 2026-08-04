@@ -1,7 +1,7 @@
 ent-UtopiaBaseHeatExchangerPipe = радиатор
     .desc = Переносит тепло между трубой и окружающей средой.
-ent-HeatExchangingPipe = { ent-HeatExchangingPipe }
-    .desc = { ent-HeatExchangingPipe.desc }
+ent-HeatExchangingPipe = { ent-UtopiaBaseHeatExchangerPipe }
+    .desc = { ent-UtopiaBaseHeatExchangerPipe.desc }
     .suffix = Прямая
 ent-HeatExchangingPipeBend = { ent-HeatExchangingPipe }
     .desc = { ent-HeatExchangingPipe.desc }
