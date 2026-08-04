@@ -16,6 +16,12 @@
         amount: 2
         doAfter: 1
 
+    - to: heconnectorradiator
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+
     - to: hefourwayradiator
       steps:
       - material: Steel
@@ -48,6 +54,24 @@
 
   - node: hebendradiator
     entity: HeatExchangingPipeBend
+    edges:
+    - to: start
+      conditions:
+      - !type:EntityAnchored
+        anchored: false
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 1
+      - !type:DeleteEntity
+      steps:
+      - tool: Screwing
+        doAfter: 1
+      - tool: Welding
+        doAfter: 1
+
+  - node: heconnectorradiator
+    entity: HeatExchangingPipeConnector
     edges:
     - to: start
       conditions:
