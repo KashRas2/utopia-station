@@ -1,3 +1,33 @@
+- type: constructionGraph
+  id: HeatBinary
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: heradiator
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+
+    - to: hebendradiator
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+
+    - to: hefourwayradiator
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+
+    - to: hetjuncradiator
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+
   - node: heradiator
     entity: HeatExchangingPipe
     edges:

@@ -102,7 +102,7 @@
         nodeGroupID: Pipe
         pipeDirection: Longitudinal
   - type: Construction
-    graph: GasBinary
+    graph: HeatBinary
     node: heradiator
   - type: AtmosMonitoringConsoleDevice
     navMapBlip: Thermoregulator
@@ -131,7 +131,7 @@
           nodeGroupID: Pipe
           pipeDirection: SWBend
     - type: Construction
-      graph: GasBinary
+      graph: HeatBinary
       node: hebendradiator
 
 - type: entity
@@ -176,7 +176,7 @@
           nodeGroupID: Pipe
           pipeDirection: Fourway
     - type: Construction
-      graph: GasBinary
+      graph: HeatBinary
       node: hefourwayradiator
 
 - type: entity
@@ -203,5 +203,5 @@
           nodeGroupID: Pipe
           pipeDirection: TNorth
     - type: Construction
-      graph: GasBinary
+      graph: HeatBinary
       node: hetjuncradiator
