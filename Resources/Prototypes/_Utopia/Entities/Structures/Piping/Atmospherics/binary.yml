@@ -151,7 +151,6 @@
       map: [ "enum.PipeVisualLayers.Pipe" ]
     - state: heConnection
       map: [ "enum.SubfloorLayers.FirstLayer" ]
-        map: [ "enum.SubfloorLayers.FirstLayer" ]
     - type: NodeContainer
       nodes:
         pipe:
