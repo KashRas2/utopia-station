@@ -7,8 +7,6 @@ using Content.Shared.Maps;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Physics.Systems;
-using Robust.Shared.Map;
 
 namespace Content.Shared._CE.ZLevels.Core.EntitySystems;
 
@@ -38,30 +36,7 @@ public abstract partial class CESharedZLevelsSystem
         var hasGround = TryGetGround(uid, zPhys, out var groundHeight);
         zPhys.CurrentGroundHeight = groundHeight;
 
-        if (!hasGround)
-        {
-            if (zPhys.IsGrounded)
-            {
-                zPhys.IsGrounded = false;
-                DirtyField(uid, zPhys, nameof(CEZPhysicsComponent.IsGrounded));
-            }
-
-            if (zPhys.Velocity >= 0)
-                zPhys.Velocity = -1f;
-
-            HandleLevelChange(uid, zPhys);
-
-            if (Math.Abs(oldVelocity - zPhys.Velocity) > 0.01f)
-                DirtyField(uid, zPhys, nameof(CEZPhysicsComponent.Velocity));
-
-            if (Math.Abs(oldHeight - zPhys.LocalPosition) > 0.01f)
-                DirtyField(uid, zPhys, nameof(CEZPhysicsComponent.LocalPosition));
-
-            return;
-        }
-
         UpdateGrounded(uid, zPhys, hasGround, frameTime, out var landed);
-        HandleLevelChange(uid, zPhys);
 
         if (landed)
             HandleFalling(uid, zPhys);
@@ -139,9 +114,6 @@ public abstract partial class CESharedZLevelsSystem
 
     private void HandleFalling(EntityUid uid, CEZPhysicsComponent zPhys)
     {
-        if (zPhys.IsGrounded)
-            return;
-
         if (MathF.Abs(zPhys.Velocity) >= ImpactVelocityLimit)
         {
             _queuedLandings.Add(uid, -zPhys.Velocity);
@@ -181,8 +153,6 @@ public abstract partial class CESharedZLevelsSystem
                 return;
             }
 
-            zPhys.LocalPosition += 1;
-
             if (zPhys.CurrentStickyGround)
                 return;
 
@@ -194,13 +164,14 @@ public abstract partial class CESharedZLevelsSystem
             RaiseLocalEvent(uid, new CEZLevelFallMapEvent());
             return;
         }
-
         else if (zPhys.LocalPosition >= 1)
         {
             if (HasTileAbove(uid))
             {
                 if (MathF.Abs(zPhys.Velocity) >= ImpactVelocityLimit)
+                {
                     _queuedLandings.Add(uid, zPhys.Velocity);
+                }
 
                 zPhys.LocalPosition = 1;
                 SetZVelocity((uid, zPhys), -zPhys.Velocity * zPhys.Bounciness);
@@ -208,7 +179,9 @@ public abstract partial class CESharedZLevelsSystem
             else
             {
                 if (TryMoveUp(uid))
+                {
                     zPhys.LocalPosition -= 1;
+                }
             }
         }
     }
