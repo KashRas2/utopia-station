@@ -238,7 +238,7 @@ public sealed partial class CEZLevelOpeningCache : EntitySystem
             var localSourcePosition = Vector2.Transform(sourcePosition, gridInvWorldMatrix);
             var sourceInsideOpening = IsExistingOpeningTile(
                 grid,
-                new Vector2i((int) MathF.Floor(localSourcePosition.X), (int) MathF.Floor(localSourcePosition.Y)),
+                new Vector2i((int)MathF.Floor(localSourcePosition.X), (int)MathF.Floor(localSourcePosition.Y)),
                 map,
                 tileDefinition);
 
@@ -329,7 +329,7 @@ public sealed partial class CEZLevelOpeningCache : EntitySystem
             var localSourcePosition = Vector2.Transform(sourcePosition, gridInvWorldMatrix);
             var sourceInsideOpening = IsExistingOpeningTile(
                 grid,
-                new Vector2i((int) MathF.Floor(localSourcePosition.X), (int) MathF.Floor(localSourcePosition.Y)),
+                new Vector2i((int)MathF.Floor(localSourcePosition.X), (int)MathF.Floor(localSourcePosition.Y)),
                 map,
                 tileDefinition);
 
@@ -377,7 +377,7 @@ public sealed partial class CEZLevelOpeningCache : EntitySystem
         if (tile.IsEmpty)
             return true;
 
-        var tileDef = (ContentTileDefinition) tileDefinition[tile.TypeId];
+        var tileDef = (ContentTileDefinition)tileDefinition[tile.TypeId];
         return tileDef.Transparent;
     }
 

@@ -56,16 +56,13 @@ public sealed partial class CEZPhysicsComponent : Component
     public float Bounciness = 0.3f;
 
     [DataField, AutoNetworkedField]
-    public float GravityMultiplier = 1f;
+    public float GravityMultiplier = 7.5f;
 
     [ViewVariables, AutoNetworkedField]
     public bool IsGrounded = true;
 
     [DataField, AutoNetworkedField]
     public bool IgnoreHighGround = false;
-
-    [DataField]
-    public bool VelocityRaiseEvent;
 
     // Visuals
 
