@@ -6,6 +6,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._CE.ZLevels.Core.Components;
+using Content.Shared._Utopia.ZLevels.Components;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Gravity;
@@ -174,5 +175,41 @@ public abstract partial class CESharedZLevelsSystem : EntitySystem
         }
 
         return result;
+    }
+
+    [PublicAPI]
+    public HashSet<EntityUid> GetTargetGrids(EntityUid parentUid)
+    {
+        var grids = new HashSet<EntityUid> { parentUid };
+        if (!TryComp<GridMotionLinkComponent>(parentUid, out var motionLink))
+            return grids;
+
+        var targetGroupId = motionLink.GroupId;
+
+        if (!TryComp(parentUid, out TransformComponent? parentXform) || parentXform.MapUid == null)
+            return grids;
+
+        if (!TryGetZNetwork(parentXform.MapUid.Value, out var net) || net == null)
+            return grids;
+
+        var validMaps = new HashSet<EntityUid>();
+        foreach (var level in net.Value.Comp.ZLevels)
+        {
+            if (level.Value is { Valid: true } map)
+            {
+                validMaps.Add(map);
+            }
+        }
+
+        var query = EntityQueryEnumerator<MapGridComponent, TransformComponent, GridMotionLinkComponent>();
+        while (query.MoveNext(out var gridUid, out var _, out var gridXform, out var linkComp))
+        {
+            if (linkComp.GroupId == targetGroupId && gridXform.MapUid != null && validMaps.Contains(gridXform.MapUid.Value))
+            {
+                grids.Add(gridUid);
+            }
+        }
+
+        return grids;
     }
 }
