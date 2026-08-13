@@ -7,8 +7,6 @@ using Content.Shared.Maps;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Collision.Shapes;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Physics.Systems;
-using Robust.Shared.Map;
 
 namespace Content.Shared._CE.ZLevels.Core.EntitySystems;
 
@@ -19,12 +17,15 @@ public abstract partial class CESharedZLevelsSystem
     private void UpdateMovement(EntityUid uid, CEZPhysicsComponent zPhys, TransformComponent xform,
         PhysicsComponent physics, float frameTime)
     {
+        if (zPhys.IgnoreHighGround)
+            return;
+
         var oldVelocity = zPhys.Velocity;
         var oldHeight = zPhys.LocalPosition;
 
         var hasGravity = IsGravityEnabled(uid);
 
-        if (hasGravity)
+        if (hasGravity && physics.BodyStatus == BodyStatus.OnGround)
         {
             var velocityEv = new CEGetZVelocityEvent((uid, zPhys));
             RaiseLocalEvent(uid, velocityEv);
@@ -33,32 +34,9 @@ public abstract partial class CESharedZLevelsSystem
         }
 
         zPhys.LocalPosition += zPhys.Velocity * frameTime;
-        zPhys.Velocity = Math.Clamp(zPhys.Velocity, -ZVelocityLimit, ZVelocityLimit);
 
         var hasGround = TryGetGround(uid, zPhys, out var groundHeight);
         zPhys.CurrentGroundHeight = groundHeight;
-
-        if (!hasGround)
-        {
-            if (zPhys.IsGrounded)
-            {
-                zPhys.IsGrounded = false;
-                DirtyField(uid, zPhys, nameof(CEZPhysicsComponent.IsGrounded));
-            }
-
-            if (zPhys.Velocity >= 0)
-                zPhys.Velocity = -1f;
-
-            HandleLevelChange(uid, zPhys);
-
-            if (Math.Abs(oldVelocity - zPhys.Velocity) > 0.01f)
-                DirtyField(uid, zPhys, nameof(CEZPhysicsComponent.Velocity));
-
-            if (Math.Abs(oldHeight - zPhys.LocalPosition) > 0.01f)
-                DirtyField(uid, zPhys, nameof(CEZPhysicsComponent.LocalPosition));
-
-            return;
-        }
 
         UpdateGrounded(uid, zPhys, hasGround, frameTime, out var landed);
         HandleLevelChange(uid, zPhys);
@@ -82,7 +60,7 @@ public abstract partial class CESharedZLevelsSystem
 
         var xform = Transform(uid);
 
-        if (!GridQuery.HasComp(xform.GridUid) && IsSpaceTile(uid))
+        if (!GridQuery.HasComp(xform.GridUid) || IsSpaceTile(uid))
             return false;
 
         ground = ComputeGroundHeightInternal((uid, zPhys), out _);
@@ -93,35 +71,19 @@ public abstract partial class CESharedZLevelsSystem
     {
         landed = false;
 
-        if (hasGround)
-        {
-            if (zPhys.Velocity >= 0)
-            {
-                zPhys.Velocity = -1f;
-            }
-
-            if (IsGravityEnabled(uid))
-            {
-                zPhys.Velocity -= ZGravityForce * zPhys.GravityMultiplier * frameTime;
-            }
-
-            HandleLevelChange(uid, zPhys);
-        }
-        else
+        if (!hasGround)
         {
             if (zPhys.IsGrounded)
             {
                 zPhys.IsGrounded = false;
                 DirtyField(uid, zPhys, nameof(CEZPhysicsComponent.IsGrounded));
-
-                return;
             }
+
+            HandleLevelChange(uid, zPhys);
         }
 
         var distanceToGround = zPhys.LocalPosition - zPhys.CurrentGroundHeight;
-
-        var currentlyGrounded = (distanceToGround <= 0.05f || zPhys.CurrentStickyGround)
-            && distanceToGround <= MaxStepHeight;
+        var currentlyGrounded = distanceToGround <= MaxStepHeight || zPhys.CurrentStickyGround;
 
         if (currentlyGrounded)
         {
@@ -139,9 +101,6 @@ public abstract partial class CESharedZLevelsSystem
 
     private void HandleFalling(EntityUid uid, CEZPhysicsComponent zPhys)
     {
-        if (zPhys.IsGrounded)
-            return;
-
         if (MathF.Abs(zPhys.Velocity) >= ImpactVelocityLimit)
         {
             _queuedLandings.Add(uid, -zPhys.Velocity);
@@ -164,9 +123,6 @@ public abstract partial class CESharedZLevelsSystem
 
     private void HandleLevelChange(EntityUid uid, CEZPhysicsComponent zPhys)
     {
-        if (zPhys.IgnoreHighGround)
-            return;
-
         var xform = Transform(uid);
 
         if (zPhys.LocalPosition < 0)
@@ -181,8 +137,6 @@ public abstract partial class CESharedZLevelsSystem
                 return;
             }
 
-            zPhys.LocalPosition += 1;
-
             if (zPhys.CurrentStickyGround)
                 return;
 
@@ -194,13 +148,14 @@ public abstract partial class CESharedZLevelsSystem
             RaiseLocalEvent(uid, new CEZLevelFallMapEvent());
             return;
         }
-
         else if (zPhys.LocalPosition >= 1)
         {
             if (HasTileAbove(uid))
             {
                 if (MathF.Abs(zPhys.Velocity) >= ImpactVelocityLimit)
+                {
                     _queuedLandings.Add(uid, zPhys.Velocity);
+                }
 
                 zPhys.LocalPosition = 1;
                 SetZVelocity((uid, zPhys), -zPhys.Velocity * zPhys.Bounciness);
@@ -208,7 +163,9 @@ public abstract partial class CESharedZLevelsSystem
             else
             {
                 if (TryMoveUp(uid))
+                {
                     zPhys.LocalPosition -= 1;
+                }
             }
         }
     }
@@ -229,8 +186,8 @@ public abstract partial class CESharedZLevelsSystem
 
     private bool IsGravityEnabled(EntityUid uid)
     {
-        if (HasComp<GravityAffectedComponent>(uid))
-            return !_gravity.IsWeightless((uid, Comp<GravityAffectedComponent>(uid)));
+        if (TryComp<GravityAffectedComponent>(uid, out var grav))
+            return !_gravity.IsWeightless((uid, grav));
 
         return true;
     }

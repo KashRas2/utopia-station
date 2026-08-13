@@ -23,4 +23,13 @@
   unit: materials-unit-chunk
   icon: { sprite: _Utopia/Objects/Materials/ore.rsi, state: bluespace }
   color: "#121d65"
-  price: 0
+  price: 0.5
+
+- type: material
+  id: RawRedspaceCrystal
+  stackEntity: UtopiaRedspaceCrystalOre1
+  name: materials-raw-redspacecrystal
+  unit: materials-unit-chunk
+  icon: { sprite: _Utopia/Objects/Materials/ore.rsi, state: redspace }
+  color: "#79152e"
+  price: 0.5

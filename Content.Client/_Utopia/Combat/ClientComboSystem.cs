@@ -9,10 +9,16 @@ public sealed class ClientComboSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<ComboComponent, GetPerformedAttackTypesEvent>(OnGetAttackTypes);
+        SubscribeLocalEvent<ComboWeaponComponent, GetPerformedAttackTypesEvent>(OnGetWAttackTypes);
     }
 
     private void OnGetAttackTypes(Entity<ComboComponent> ent, ref GetPerformedAttackTypesEvent args)
     {
         args.AttackTypes = ent.Comp.CurrestActions;
+    }
+
+    private void OnGetWAttackTypes(Entity<ComboWeaponComponent> ent, ref GetPerformedAttackTypesEvent args)
+    {
+        args.WAttackTypes = ent.Comp.CurrestActions;
     }
 }

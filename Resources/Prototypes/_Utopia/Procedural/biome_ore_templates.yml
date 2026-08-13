@@ -39,3 +39,17 @@
   minGroupSize: 1
   maxGroupSize: 2
   radius: 3
+
+- type: biomeMarkerLayer
+  id: OreRedspace
+  entityMask:
+    AsteroidRock: UtopiaAsteroidRockRedspace
+    WallRock: UtopiaWallRockRedspace
+    WallRockBasalt: UtopiaWallRockBasaltRedspace
+    WallRockChromite: UtopiaWallRockChromiteRedspace
+    WallRockSand: UtopiaWallRockSandRedspace
+    WallRockSnow: UtopiaWallRockSnowRedspace
+  maxCount: 6
+  minGroupSize: 1
+  maxGroupSize: 2
+  radius: 3

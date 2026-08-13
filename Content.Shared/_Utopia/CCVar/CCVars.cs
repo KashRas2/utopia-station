@@ -28,7 +28,7 @@ public sealed class UCCVars
     #region ZLevels
     public static readonly CVarDef<bool> FallToBackroomsEnabled =
         CVarDef.Create("fall_to_backrooms.enabled", false, CVar.SERVER | CVar.REPLICATED | CVar.ARCHIVE);
-        
+
     public static readonly CVarDef<bool>
         CEZProjectedLightingEnabled = CVarDef.Create("zlevels.ce_projected_lighting_enabled", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
@@ -55,6 +55,21 @@ public sealed class UCCVars
     /// <summary>Energy floor below which a projected light is discarded as imperceptible.</summary>
     public static readonly CVarDef<float>
         CEZProjectedLightMinEnergy = CVarDef.Create("zlevels.ce_projected_light_min_energy", 0.1f, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    /// If true, audio playing on a Z-network map is also projected to adjacent Z layers through
+    /// floor/ceiling openings. Adds ~one PlayStatic call per audible adjacent layer per
+    /// audio entity. Toggle off to disable cross-Z hearing.
+    /// </summary>
+    public static readonly CVarDef<bool>
+        CEZLevelsCrossZAudio = CVarDef.Create("zlevels.ce_cross_z_audio", true, CVar.SERVERONLY);
+
+    /// <summary>
+    /// Debug-only: log every decision gate in the cross-Z audio projection pipeline. Use to
+    /// figure out why a given sound isn't reaching a listener on an adjacent level.
+    /// </summary>
+    public static readonly CVarDef<bool>
+        CEZLevelsCrossZAudioDebug = CVarDef.Create("zlevels.ce_cross_z_audio_debug", false, CVar.SERVERONLY);
 
     /// <summary>Max world distance a cross-Z shot may travel. Cross-Z is intentionally close-quarters. Default 4.</summary>
     public static readonly CVarDef<float>

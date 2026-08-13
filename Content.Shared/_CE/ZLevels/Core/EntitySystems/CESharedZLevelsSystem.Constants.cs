@@ -15,15 +15,10 @@ public abstract partial class CESharedZLevelsSystem
     /// <summary>
     /// The maximum height at which a player will automatically climb higher when stepping on a highground entity.
     /// </summary>
-    private const float MaxStepHeight = 0.5f;
+    private const float MaxStepHeight = 0.05f;
 
     /// <summary>
     /// The minimum speed required to trigger LandEvent events.
     /// </summary>
-    private const float ImpactVelocityLimit = 3.5f;
-
-    /// <summary>
-    /// Distance to ground above which an entity is considered airborne (synced to BodyStatus.InAir).
-    /// </summary>
-    public const float AirborneHeightThreshold = 0.15f;
+    private const float ImpactVelocityLimit = 1.5f;
 }

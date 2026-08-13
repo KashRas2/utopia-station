@@ -93,7 +93,7 @@ namespace Content.Client.Hands
             // Utopia-Tweak : Combat
             if (_player.LocalEntity != null && _cfg.GetCVar(UCCVars.CombatShowIcons))
             {
-                var comboEv = new GetPerformedAttackTypesEvent(null);
+                var comboEv = new GetPerformedAttackTypesEvent(null, null);
                 _entMan.EventBus.RaiseLocalEvent(_player.LocalEntity.Value, ref comboEv);
 
                 if (comboEv.AttackTypes is { Count: > 0 })

@@ -72,3 +72,28 @@
       - map: [ "enum.EdgeLayer.West" ]
         state: rock_asteroid_west
       - state: rock_bluespace
+
+- type: entity
+  id: UtopiaMeteorRockRedspace
+  parent: MeteorRock
+  description: An ore vein rich with redspace ore.
+  suffix: Redspace
+  components:
+  - type: OreVein
+    oreChance: 1.0
+    currentOre: UtopiaOreRedspace
+  - type: Icon
+    sprite: Structures/Walls/rock.rsi
+  - type: Sprite
+    sprite: Structures/Walls/rock.rsi
+    layers:
+      - state: rock_asteroid
+      - map: [ "enum.EdgeLayer.South" ]
+        state: rock_asteroid_south
+      - map: [ "enum.EdgeLayer.East" ]
+        state: rock_asteroid_east
+      - map: [ "enum.EdgeLayer.North" ]
+        state: rock_asteroid_north
+      - map: [ "enum.EdgeLayer.West" ]
+        state: rock_asteroid_west
+      - state: rock_redspace

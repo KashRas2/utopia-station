@@ -10,5 +10,6 @@
     prototype: UtopiaMachineTelescience
     requirements:
       Manipulator: 4
+      Capacitor: 2
     stackRequirements:
       BluespaceCrystal: 2

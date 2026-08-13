@@ -1,11 +1,14 @@
+using System.Linq;
 using Content.Server.Anomaly.Components;
 using Content.Server.Power.EntitySystems;
+using Content.Shared._CE.ZLevels.Core.EntitySystems;
 using Content.Shared.Anomaly;
 using Content.Shared.CCVar;
 using Content.Shared.Materials;
 using Content.Shared.Radio;
 using Robust.Shared.Audio;
 using Content.Shared.Physics;
+using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
@@ -22,6 +25,7 @@ public sealed partial class AnomalySystem
 {
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly CESharedZLevelsSystem _zLevels = default!; // Utopia-Tweak : ZLevels
 
     private void InitializeGenerator()
     {
@@ -88,7 +92,7 @@ public sealed partial class AnomalySystem
 
         var xform = Transform(grid);
 
-        var targetCoords = xform.Coordinates;
+        EntityCoordinates? targetCoords = null; // Utopia-Tweak : ZLevels
         var gridBounds = gridComp.LocalAABB.Scale(_configuration.GetCVar(CCVars.AnomalyGenerationGridBoundsScale));
 
         for (var i = 0; i < 25; i++)
@@ -150,7 +154,12 @@ public sealed partial class AnomalySystem
             break;
         }
 
-        Spawn(toSpawn, targetCoords);
+        // Utopia-Tweak : ZLevels
+        if (targetCoords is not { } coords)
+            return;
+
+        Spawn(toSpawn, coords);
+        // Utopia-Tweak : ZLevels
     }
 
     private void OnGeneratingStartup(EntityUid uid, GeneratingAnomalyGeneratorComponent component, ComponentStartup args)
@@ -167,7 +176,9 @@ public sealed partial class AnomalySystem
         {
             if (xform.GridUid == null)
                 return;
-            grid = xform.GridUid.Value;
+
+            var mlGrids = _zLevels.GetTargetGrids(xform.GridUid.Value); // Utopia-Tweak : ZLevels
+            grid = mlGrids.ElementAt(_random.Next(mlGrids.Count)); // Utopia-Tweak : ZLevels
         }
 
         SpawnOnRandomGridLocation(grid, component.SpawnerPrototype);

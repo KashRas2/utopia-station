@@ -4,17 +4,12 @@
  */
 
 using System.Linq;
-using System.Numerics;
+using JetBrains.Annotations;
 using Content.Shared._CE.ZLevels.Core.Components;
 using Content.Shared.Chasm;
-using Content.Shared.Damage;
-using Content.Shared.Damage.Components;
-using Content.Shared.Damage.Prototypes;
 using Content.Shared.Throwing;
-using JetBrains.Annotations;
 using Robust.Shared.Audio;
 using Robust.Shared.Map;
-using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
 
 namespace Content.Shared._CE.ZLevels.Core.EntitySystems;
@@ -30,17 +25,21 @@ public abstract partial class CESharedZLevelsSystem
 
         SubscribeLocalEvent<CEZPhysicsComponent, CEGetZVelocityEvent>(OnGetVelocity);
         SubscribeLocalEvent<CEZPhysicsComponent, CEZLevelMapMoveEvent>(OnZPhysicsMove);
-        SubscribeLocalEvent<CEZPhysicsComponent, MoveEvent>(OnMoveEvent);
+        SubscribeLocalEvent<CEActiveZPhysicsComponent, ComponentInit>(OnActiveInit);
 
-        SubscribeLocalEvent<DamageableComponent, CEZLevelHitEvent>(OnFallDamage);
-        SubscribeLocalEvent<PhysicsComponent, CEZLevelHitEvent>(OnFallAreaImpact);
+        SubscribeLocalEvent<CEZPhysicsComponent, MoveEvent>(OnMoveEvent);
+    }
+
+    private void OnActiveInit(Entity<CEActiveZPhysicsComponent> ent, ref ComponentInit args)
+    {
+        if (!ZPhyzQuery.TryComp(ent, out var zComp))
+            return;
+
+        CacheMovement((ent, zComp));
     }
 
     private void CacheMovement(Entity<CEZPhysicsComponent> ent)
     {
-        if (ent.Comp.IgnoreHighGround)
-            return;
-
         ent.Comp.CurrentGroundHeight = ComputeGroundHeightInternal((ent, ent), out var sticky);
         ent.Comp.CurrentStickyGround = sticky;
     }
@@ -63,39 +62,6 @@ public abstract partial class CESharedZLevelsSystem
         args.VelocityDelta -= ZGravityForce * ent.Comp.GravityMultiplier;
     }
 
-    private void OnFallDamage(Entity<DamageableComponent> ent, ref CEZLevelHitEvent args) //TODO unhardcode
-    {
-        var knockdownTime = MathF.Min(args.ImpactPower * 0.25f, 5f);
-        _stun.TryKnockdown(ent.Owner, TimeSpan.FromSeconds(knockdownTime));
-
-        var damageType = _proto.Index<DamageTypePrototype>("Blunt");
-        var damageAmount = args.ImpactPower * 2f;
-
-        _damage.TryChangeDamage(ent.Owner, new DamageSpecifier(damageType, damageAmount));
-    }
-
-    /// <summary>
-    /// Cause AoE damage in impact point
-    /// </summary>
-    private void OnFallAreaImpact(Entity<PhysicsComponent> ent, ref CEZLevelHitEvent args)
-    {
-        var entitiesAround = _lookup.GetEntitiesInRange(ent, 0.25f, LookupFlags.Uncontained);
-
-        foreach (var victim in entitiesAround)
-        {
-            if (victim == ent.Owner)
-                continue;
-
-            var knockdownTime = MathF.Min(args.ImpactPower * ent.Comp.Mass * 0.1f, 10f);
-            _stun.TryKnockdown(victim, TimeSpan.FromSeconds(knockdownTime));
-
-            var damageType = _proto.Index<DamageTypePrototype>("Blunt");
-            var damageAmount = args.ImpactPower * ent.Comp.Mass * 0.15f;
-
-            _damage.TryChangeDamage(victim, new DamageSpecifier(damageType, damageAmount));
-        }
-    }
-
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -105,18 +71,19 @@ public abstract partial class CESharedZLevelsSystem
         var query = EntityQueryEnumerator<CEZPhysicsComponent, CEActiveZPhysicsComponent, TransformComponent, PhysicsComponent>();
         while (query.MoveNext(out var uid, out var zPhys, out _, out var xform, out var physics))
         {
-            // Utopia-Tweak: Removed old logic
-            UpdateMovement(uid, zPhys, xform, physics, frameTime);
+            UpdateMovement(uid, zPhys, xform, physics, frameTime); // Utopia-Tweak: Removed old logic
         }
 
         // Utopia-Tweak-start: fix exception issue
-        for (var i = _queuedLandings.Count - 1; i >= 0; i--)
+        if (_queuedLandings.Count > 0)
         {
-            var landing = _queuedLandings.ElementAt(i);
-
-            RaiseLocalEvent(landing.Key, new CEZLevelHitEvent(landing.Value));
-            var land = new LandEvent(null, true);
-            RaiseLocalEvent(landing.Key, ref land);
+            var landings = _queuedLandings.ToList();
+            foreach (var landing in landings)
+            {
+                RaiseLocalEvent(landing.Key, new CEZLevelHitEvent(landing.Value));
+                var land = new LandEvent(null, true);
+                RaiseLocalEvent(landing.Key, ref land);
+            }
         }
         // Utopia-Tweak-end
     }
@@ -243,6 +210,8 @@ public abstract partial class CESharedZLevelsSystem
         if (!_mapQuery.TryComp(targetMap, out var targetMapComp))
             return false;
 
+        var beforeEv = new CEZLevelBeforeMapMoveEvent(offset, targetMap.Value.Comp.Depth);
+
         var worldRot = _transform.GetWorldRotation(ent);
 
         _transform.SetMapCoordinates(ent, new MapCoordinates(_transform.GetWorldPosition(ent), targetMapComp.MapId));
@@ -285,6 +254,21 @@ public abstract partial class CESharedZLevelsSystem
         return false;
     }
 }
+/// <summary>
+/// Is called on an entity right before it moves between z-levels.
+/// </summary>
+/// <param name="offset">How many levels were crossed. If negative, it means there was a downward movement. If positive, it means an upward movement.</param>
+[ByRefEvent]
+public struct CEZLevelBeforeMapMoveEvent(int offset, int level)
+{
+    /// <summary>
+    /// How many levels were crossed. If negative, it means there was a downward movement. If positive, it means an upward movement.
+    /// </summary>
+    public int Offset = offset;
+
+    public int CurrentZLevel = level;
+}
+
 /// <summary>
 /// Is called on an entity when it moves between z-levels.
 /// </summary>
