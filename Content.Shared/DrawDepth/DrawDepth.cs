@@ -117,21 +117,16 @@ namespace Content.Shared.DrawDepth
         // NOTE: There's a gap here for subfloor layers in mapping mode (need 6 layers in between)
 
         /// <summary>
-        ///     Visible atmos gas.
-        /// </summary>
-        Gasses = DrawDepthTag.Default + 17,
-
-        /// <summary>
         ///     Explosions, fire, melee swings. Whatever.
         /// </summary>
-        Effects = DrawDepthTag.Default + 18,
+        Effects = DrawDepthTag.Default + 11,
 
-        Ghosts = DrawDepthTag.Default + 19,
+        Ghosts = DrawDepthTag.Default + 12,
 
         /// <summary>
         ///    Use this selectively if it absolutely needs to be drawn above (almost) everything else. Examples include
         ///    the pointing arrow, the drag & drop ghost-entity, and some debug tools.
         /// </summary>
-        Overlays = DrawDepthTag.Default + 20,
+        Overlays = DrawDepthTag.Default + 13,
     }
 }
