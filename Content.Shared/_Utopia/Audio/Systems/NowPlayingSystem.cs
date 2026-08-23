@@ -5,7 +5,7 @@ using Content.Shared._Utopia.Audio.Events;
 
 namespace Content.Shared._Utopia.Audio.Systems;
 
-public abstract partial class NowPlayingSystem : EntitySystem
+public partial class NowPlayingSystem : EntitySystem
 {
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SharedAudioSystem _audio = default!;

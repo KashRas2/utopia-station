@@ -18,7 +18,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-BZ
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           BZ: 1871.71051 # BZ
@@ -63,7 +63,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-pluoxium
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Pluoxium: 1871.71051 # Pluoxium
@@ -108,7 +108,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-hydrogen
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Hydrogen: 1871.71051 # Hydrogen
@@ -153,7 +153,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-nitrium
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Nitrium: 1871.71051 # Nitrium
@@ -198,7 +198,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-healium
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Healium: 1871.71051 # Healium
@@ -243,7 +243,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-hyper-noblium
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Hyper-Noblium: 1871.71051 # Hyper-Noblium
@@ -288,7 +288,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-proto-nitrate
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Proto-Nitrate: 1871.71051 # Proto-Nitrate
@@ -333,7 +333,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-zauker
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Zauker: 1871.71051 # Zauker
@@ -378,7 +378,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-halon
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Halon: 1871.71051 # Halon
@@ -423,7 +423,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-helium
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Helium: 1871.71051 # Helium
@@ -468,7 +468,7 @@
     - type: MaxPressureVisuals
       integrityMask: mask-anti-noblium
     - type: GasCanister
-      gasMixture:
+      air:
         volume: 1000
         moles:
           Anti-Noblium: 1871.71051 # Anti-Noblium

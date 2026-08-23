@@ -47,6 +47,8 @@ public abstract partial class PullingSystem
     [Dependency] private SharedStaminaSystem _stamina = default!;
     [Dependency] private ThrowingSystem _throwing = default!;
 
+    public const string DamageType = "Blunt";
+
     private void InitializeGrab()
     {
         SubscribeLocalEvent<PullerComponent, GrabStageChangedEvent>(HandleGrabStageChanged);
@@ -235,7 +237,7 @@ public abstract partial class PullingSystem
         var stunTime = TimeSpan.FromSeconds(2);
 
         _audio.PlayPredicted(new SoundCollectionSpecifier("TrayHit"), uid, args.PuttingOnTable);
-        _damageable.TryChangeDamage(uid, new(ProtoMan.Index<DamageTypePrototype>("Blunt"), 17));
+        _damageable.TryChangeDamage(uid, new(ProtoMan.Index<DamageTypePrototype>(DamageType), 17));
 
         _stun.TryUpdateParalyzeDuration(uid, stunTime);
         TryStopPull(uid, comp);
@@ -343,7 +345,7 @@ public abstract partial class PullingSystem
         if (TryComp<PhysicsComponent>(args.Target, out var physics) && physics.BodyType == BodyType.Static)
         {
             var stunTime = TimeSpan.FromSeconds(1);
-            _damageable.TryChangeDamage(uid, new(ProtoMan.Index<DamageTypePrototype>("Blunt"), 8));
+            _damageable.TryChangeDamage(uid, new(ProtoMan.Index<DamageTypePrototype>(DamageType), 8));
             _stun.TryUpdateParalyzeDuration(uid, stunTime);
             _audio.PlayPredicted(new SoundCollectionSpecifier("MetalThud"), uid, uid);
         }

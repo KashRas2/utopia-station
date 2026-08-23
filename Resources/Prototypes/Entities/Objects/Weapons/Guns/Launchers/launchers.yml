@@ -18,7 +18,7 @@
     slots:
     - Back
   - type: StaticPrice
-    price: 500t
+    price: 500
   - type: Gun
     fireRate: 1
     projectileSpeed: 25 # Slower than a bullet, same speed as our old projectile limit.

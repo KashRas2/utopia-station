@@ -818,36 +818,6 @@
     energy: 0.5
 
 - type: geneticMutation
-  id: VulpkaninTailMutation
-  name: mutation-name-vulpkanin-tail-mutation
-  desc: mutation-desc-vulpkanin-tail-mutation
-  popupText: mutation-popup-vulpkanin-tail-mutation
-  instability: 5
-  researchPoints: 600
-  strictEntityWhitelist:
-    - BaseMobSpeciesOrganic
-  conflicts:
-    - ReptilianTailMutation
-  components:
-  - type: MutationTailSwap
-    newTailMarking: VulpTail
-
-- type: geneticMutation
-  id: ReptilianTailMutation
-  name: mutation-name-reptilian-tail-mutation
-  desc: mutation-desc-reptilian-tail-mutation
-  popupText: mutation-popup-reptilian-tail-mutation
-  instability: 5
-  researchPoints: 600
-  strictEntityWhitelist:
-    - BaseMobSpeciesOrganic
-  conflicts:
-    - VulpkaninTailMutation
-  components:
-  - type: MutationTailSwap
-    newTailMarking: LizardTailSmooth
-
-- type: geneticMutation
   id: SpiderWeb
   name: mutation-name-spider-web
   desc: mutation-desc-spider-web
@@ -949,18 +919,6 @@
   components:
   - type: MutationOpticEnergizer
     actionId: ActionOpticBlast
-
-- type: geneticMutation
-  id: TrichochromaticShift
-  name: mutation-name-trichochromatic-shift
-  desc: mutation-desc-trichochromatic-shift
-  popupText: mutation-popup-trichochromatic-shift
-  instability: 6
-  probabilityWeight: 9
-  researchPoints: 700
-  components:
-  - type: MutationTrichochromaticShift
-    actionId: ActionTrichochromaticShift
 
 - type: geneticMutation
   id: GeneticMonkeyMorph
