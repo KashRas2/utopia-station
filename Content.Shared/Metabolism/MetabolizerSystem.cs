@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Shared._Utopia.Genetics.Mutations.Components;
 using Content.Shared.Body.Events;
 using Content.Shared.Body;
 using Content.Shared.Chemistry.Components;
@@ -179,6 +180,18 @@ public sealed partial class MetabolizerSystem : EntitySystem
 
             // Remove $rate, as long as there's enough reagent there to actually remove that much
             var mostToRemove = FixedPoint2.Clamp(rate, 0, quantity);
+
+            // Utopia-Tweak : Genetics
+            var bodyUid = ent.Comp2?.Body ?? solutionOwner.Value;
+
+            if (TryComp<ChemicalResistanceComponent>(bodyUid, out var resistance) && resistance.Reagents.Contains(reagent.Prototype))
+            {
+                var removeAmount = FixedPoint2.Min(resistance.PurgeAmount, quantity);
+                solution.RemoveReagent(reagent, removeAmount);
+                reagents += 1;
+                continue;
+            }
+            // Utopia-Tweak : Genetics
 
             // we're done here entirely if this is true
             if (reagents >= ent.Comp1.MaxReagentsProcessable)

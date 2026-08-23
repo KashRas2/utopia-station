@@ -1,3 +1,4 @@
+using Content.Client._Utopia.Atmos;
 using Content.Client.Atmos.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
@@ -11,7 +12,9 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Robust.Shared.Maths;
 using System.Numerics;
+using Content.Shared.Atmos.EntitySystems;
 
 namespace Content.Client.Atmos.Overlays;
 
@@ -30,6 +33,8 @@ public sealed partial class GasTileFireOverlay : Overlay
     private readonly SharedTransformSystem _xformSys;
     private readonly SharedMapSystem _mapSystem = default!;
     private readonly ShaderInstance _shader;
+    private readonly GasVisualsSystem _gasVisuals; // Utopia-Tweak : Toxicology
+    private readonly SharedGasTileOverlaySystem _gasTileOverlaySystem;
 
     private readonly float[] _timer;
     private readonly float[][] _frameDelays;
@@ -37,9 +42,12 @@ public sealed partial class GasTileFireOverlay : Overlay
 
     // TODO combine textures into a single texture atlas.
     private readonly Texture[][] _frames;
+    private readonly string[] _gasIds; // Utopia-Tweak : Toxicology
 
     private const int FireStates = 3;
-    private const string FireRsiPath = "/Textures/Effects/fire.rsi";
+    private const string FireRsiPath = "/Textures/Effects/fire_greyscale.rsi"; // Utopia-Tweak : Toxicology
+
+    private readonly int _gasCount; // Utopia-Tweak : Toxicology
 
     public const int GasOverlayZIndex = (int)Shared.DrawDepth.DrawDepth.Effects; // Under ghosts, above mostly everything else
 
@@ -48,13 +56,17 @@ public sealed partial class GasTileFireOverlay : Overlay
         IoCManager.InjectDependencies(this);
         _xformSys = _entManager.System<SharedTransformSystem>();
         _mapSystem = _entManager.System<SharedMapSystem>();
+        _gasVisuals = _entManager.System<GasVisualsSystem>(); // Utopia-Tweak : Toxicology
+        _gasTileOverlaySystem = _entManager.System<SharedGasTileOverlaySystem>(); // Utopia-Tweak : Toxicology
         _shader = _protoMan.Index(UnshadedShader).Instance();
         ZIndex = GasOverlayZIndex;
 
+        _gasCount = _gasTileOverlaySystem.VisibleGasId.Length; // Utopia-Tweak : Toxicology
         _timer = new float[FireStates];
         _frameDelays = new float[FireStates][];
         _frameCounter = new int[FireStates];
         _frames = new Texture[FireStates][];
+        _gasIds = new string[_gasCount]; // Utopia-Tweak : Toxicology
 
         var fire = _resourceCache.GetResource<RSIResource>(FireRsiPath).RSI;
 

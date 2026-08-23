@@ -1,4 +1,7 @@
+using System.Globalization;
 using System.Linq;
+using Content.Shared._Utopia.Language;
+using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Database;
 using Content.Shared.IdentityManagement;
@@ -18,18 +21,35 @@ public sealed partial class ChatSystem
         ChatTransmitRange range,
         string? nameOverride,
         bool hideLog = false,
-        bool ignoreActionBlocker = false
+        bool ignoreActionBlocker = false,
+        LanguagePrototype? language = null // Utopia-Tweak : Language
         )
     {
-        if (!_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
-            return;
+        // Utopia-Tweak : Language
+        // if (!_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
+        //     return;
+        // Utopia-Tweak : Language
 
-        var message = TransformSpeech(source, originalMessage);
+        var message = originalMessage; // Utopia-Tweak : Language
 
         if (message.Length == 0)
             return;
 
         var speech = GetSpeechVerb(source, message);
+
+        // Utopia-Tweak : Language
+        if (language == null)
+            language = _language.GetCurrentLanguage(source);
+
+        if (!ignoreActionBlocker)
+        {
+            foreach (var item in language.Conditions.Where(x => !x.RaiseOnListener))
+            {
+                if (!item.Condition(source, null, EntityManager))
+                    return;
+            }
+        }
+        // Utopia-Tweak : Language
 
         // get the entity's apparent name (if no override provided).
         string name;
@@ -49,17 +69,24 @@ public sealed partial class ChatSystem
 
         name = FormattedMessage.EscapeText(name);
 
-        var wrappedMessage = Loc.GetString(speech.Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message",
-            ("entityName", name),
-            ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
-            ("fontType", speech.FontId),
-            ("fontSize", speech.FontSize),
-            ("message", FormattedMessage.EscapeText(message)));
+        // Utopia-Tweak : Language
+        var shouldPunctuate = _configurationManager.GetCVar(CCVars.ChatPunctuation);
+        // Capitalizing the word I only happens in English, so we check language here
+        var shouldCapitalizeTheWordI = !CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Parent.Name == "en"
+            || CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Name == "en";
 
-        SendInVoiceRange(ChatChannel.Local, message, wrappedMessage, source, range);
+        var sanitizedMessage = SanitizeInGameICMessage(source, FormattedMessage.EscapeText(message), out _);
+        language.LanguageType.Speak(source, sanitizedMessage, name, speech, range, EntityManager, out var success, out var resultMessage);
+        if (!success)
+            return;
 
-        var ev = new EntitySpokeEvent(source, message, null, null);
-        RaiseLocalEvent(source, ev, true);
+        if (language.LanguageType.RaiseEvent)
+        {
+            var ev = new EntitySpokeEvent(source, resultMessage, language, null, null);
+            RaiseLocalEvent(source, ev, true);
+        }
+        // Utopia-Tweak : Language
+
 
         // To avoid logging any messages sent by entities that are not players, like vendors, cloning, etc.
         // Also doesn't log if hideLog is true.
@@ -91,17 +118,34 @@ public sealed partial class ChatSystem
         RadioChannelPrototype? channel,
         string? nameOverride,
         bool hideLog = false,
-        bool ignoreActionBlocker = false
+        bool ignoreActionBlocker = false,
+        LanguagePrototype? language = null // Utopia-Tweak : Language
         )
     {
-        if (!_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
-            return;
+        // Utopia-Tweak : Language
+        // if (!_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
+        //     return;
+        // Utopia-Tweak : Language
 
         var message = TransformSpeech(source, FormattedMessage.RemoveMarkupOrThrow(originalMessage));
         if (message.Length == 0)
             return;
 
         var obfuscatedMessage = ObfuscateMessageReadability(message, 0.2f);
+
+        // Utopia-Tweak : Language
+        if (language == null)
+            language = _language.GetCurrentLanguage(source);
+
+        if (!ignoreActionBlocker)
+        {
+            foreach (var item in language.Conditions.Where(x => !x.RaiseOnListener))
+            {
+                if (!item.Condition(source, null, EntityManager))
+                    return;
+            }
+        }
+        // Utopia-Tweak : Language
 
         // get the entity's name by visual identity (if no override provided).
         string nameIdentity = FormattedMessage.EscapeText(nameOverride ?? Identity.Name(source, EntityManager));
@@ -117,43 +161,26 @@ public sealed partial class ChatSystem
             RaiseLocalEvent(source, nameEv);
             name = nameEv.VoiceName;
         }
+
+        // Utopia-Tweak : Language
+        bool shouldPunctuate = _configurationManager.GetCVar(CCVars.ChatPunctuation);
+        bool shouldCapitalizeTheWordI = (!CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Parent.Name == "en")
+            || (CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Name == "en");
+
         name = FormattedMessage.EscapeText(name);
+        var sanitizedMessage = SanitizeInGameICMessage(source, FormattedMessage.EscapeText(message), out _);
+        language.LanguageType.Whisper(source, sanitizedMessage, name, nameIdentity, range, EntityManager, out var success, out var resultMessage, out var resultObfMessage);
+        if (!success)
+            return;
 
-        var wrappedMessage = Loc.GetString("chat-manager-entity-whisper-wrap-message",
-            ("entityName", name), ("message", FormattedMessage.EscapeText(message)));
-
-        var wrappedobfuscatedMessage = Loc.GetString("chat-manager-entity-whisper-wrap-message",
-            ("entityName", nameIdentity), ("message", FormattedMessage.EscapeText(obfuscatedMessage)));
-
-        var wrappedUnknownMessage = Loc.GetString("chat-manager-entity-whisper-unknown-wrap-message",
-            ("message", FormattedMessage.EscapeText(obfuscatedMessage)));
-
-
-        foreach (var (session, data) in GetRecipients(source, WhisperMuffledRange))
+        if (language.LanguageType.RaiseEvent)
         {
-            EntityUid listener;
-
-            if (session.AttachedEntity is not { Valid: true } playerEntity)
-                continue;
-            listener = session.AttachedEntity.Value;
-
-            if (MessageRangeCheck(session, data, range) != MessageRangeCheckResult.Full)
-                continue; // Won't get logged to chat, and ghosts are too far away to see the pop-up, so we just won't send it to them.
-
-            if (data.Range <= WhisperClearRange || data.Observer)
-                _chatManager.ChatMessageToOne(ChatChannel.Whisper, message, wrappedMessage, source, false, session.Channel);
-            //If listener is too far, they only hear fragments of the message
-            else if (_examineSystem.InRangeUnOccluded(source, listener, WhisperMuffledRange))
-                _chatManager.ChatMessageToOne(ChatChannel.Whisper, obfuscatedMessage, wrappedobfuscatedMessage, source, false, session.Channel);
-            //If listener is too far and has no line of sight, they can't identify the whisperer's identity
-            else
-                _chatManager.ChatMessageToOne(ChatChannel.Whisper, obfuscatedMessage, wrappedUnknownMessage, source, false, session.Channel);
+            var ev = new EntitySpokeEvent(source, resultMessage, language, channel, resultObfMessage, true);
+            RaiseLocalEvent(source, ev, true);
         }
+        // Utopia-Tweak : Language
 
-        _replay.RecordServerMessage(new ChatMessage(ChatChannel.Whisper, message, wrappedMessage, GetNetEntity(source), null, MessageRangeHideChatForReplay(range)));
-
-        var ev = new EntitySpokeEvent(source, message, channel, obfuscatedMessage);
-        RaiseLocalEvent(source, ev, true);
+        _replay.RecordServerMessage(new ChatMessage(ChatChannel.Whisper, message, resultObfMessage, GetNetEntity(source), null, MessageRangeHideChatForReplay(range))); // Utopia-Tweak : Language
         if (!hideLog)
             if (originalMessage == message)
             {
@@ -172,6 +199,7 @@ public sealed partial class ChatSystem
                     $"Whisper from {source}, original: {originalMessage}, transformed: {message}.");
             }
     }
+
 
     protected override void SendEntityEmote(
         EntityUid source,
@@ -201,7 +229,7 @@ public sealed partial class ChatSystem
             !TryEmoteChatInput(source, action))
             return;
 
-        SendInVoiceRange(ChatChannel.Emotes, action, wrappedMessage, source, range, author);
+        SendInVoiceRange(ChatChannel.Emotes, action, wrappedMessage, wrappedMessage, source, range, author, ignoreLanguage: true); // Utopia-Tweak : Language
         if (!hideLog)
             if (name != Name(source))
                 _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Emote from {source} as {name}: {action}");
@@ -228,15 +256,12 @@ public sealed partial class ChatSystem
             ("entityName", name),
             ("message", FormattedMessage.EscapeText(message)));
 
-        SendInVoiceRange(ChatChannel.LOOC, message, wrappedMessage, source, hideChat ? ChatTransmitRange.HideChat : ChatTransmitRange.Normal, player.UserId);
+        SendInVoiceRange(ChatChannel.LOOC, message, wrappedMessage, wrappedMessage, source, hideChat ? ChatTransmitRange.HideChat : ChatTransmitRange.Normal, player.UserId, ignoreLanguage: true); // Utopia-Tweak : Language
         _adminLogger.Add(LogType.Chat, LogImpact.Low, $"LOOC from {source}: {message}");
     }
 
     private void SendDeadChat(EntityUid source, ICommonSession player, string message, bool hideChat)
     {
-        if (!_adminManager.IsAdmin(player) && !_deadChatEnabled)
-            return;
-
         var clients = GetDeadChatClients();
         var playerName = Name(source);
         string wrappedMessage;

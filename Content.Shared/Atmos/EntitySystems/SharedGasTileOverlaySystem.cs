@@ -118,6 +118,9 @@ public abstract partial class SharedGasTileOverlaySystem : EntitySystem
 }
 
 /// <summary>
+///     Struct for networking gas temperatures to all clients using a single struct(byte) per tile.
+/// </summary>
+/// <remarks>
 ///     <para>
 ///         This struct compresses the gas temperature into a 1-byte value (0-255).
 ///         It clamps the temperature to a maximum of 1000K and divides it by 4, creating a range of 0-250.

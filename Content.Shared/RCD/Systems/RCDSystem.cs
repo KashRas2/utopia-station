@@ -409,6 +409,11 @@ public sealed partial class RCDSystem : EntitySystem
 
     public bool IsRCDOperationStillValid(EntityUid uid, RCDComponent component, EntityUid gridUid, MapGridComponent mapGrid, TileRef tile, Vector2i position, EntityUid? target, EntityUid user, bool popMsgs = true)
     {
+        return IsRCDOperationStillValid(uid, component, gridUid, mapGrid, tile, position, component.ConstructionDirection, target, user, popMsgs);
+    }
+
+    public bool IsRCDOperationStillValid(EntityUid uid, RCDComponent component, EntityUid gridUid, MapGridComponent mapGrid, TileRef tile, Vector2i position, Direction direction, EntityUid? target, EntityUid user, bool popMsgs = true)
+    {
         // Utopia-Tweak : RPD
         UpdateCachedPrototype(uid, component);
         var prototype = component.CachedPrototype;
@@ -702,7 +707,7 @@ public sealed partial class RCDSystem : EntitySystem
 
                 if (component.IsRpd && prototype.HasLayers)
                 {
-                    if (_protoManager.TryIndex<EntityPrototype>(proto, out var entityProto) &&
+                    if (ProtoMan.TryIndex<EntityPrototype>(proto, out var entityProto) &&
                         entityProto.TryGetComponent<AtmosPipeLayersComponent>(out var atmosPipeLayers, _entityManager.ComponentFactory) &&
                         _pipeLayersSystem.TryGetAlternativePrototype(atmosPipeLayers, _currentLayer, out var newProtoId))
                     {
@@ -720,7 +725,7 @@ public sealed partial class RCDSystem : EntitySystem
 
                 if (component.IsRpd)
                 {
-                    if (_protoManager.TryIndex<EntityPrototype>(proto, out var pipeProto) &&
+                    if (ProtoMan.TryIndex<EntityPrototype>(proto, out var pipeProto) &&
                         pipeProto.TryGetComponent<NodeContainerComponent>(out var nodeContainer, _entityManager.ComponentFactory))
                     {
                         foreach (var node in nodeContainer.Nodes.Values)

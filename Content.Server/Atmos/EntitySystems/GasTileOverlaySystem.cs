@@ -190,13 +190,16 @@ namespace Content.Server.Atmos.EntitySystems
 
                 opacity = (byte) (ContentHelpers.RoundToLevels(
                     MathHelper.Clamp01((moles - gas.GasMolesVisible) /
-                                    (gas.GasMolesVisibleMax - gas.GasMolesVisible)) * 255, byte.MaxValue,
+                                       (gas.GasMolesVisibleMax - gas.GasMolesVisible)) * 255, byte.MaxValue,
                     _thresholds) * 255 / (_thresholds - 1));
             }
 
             return data;
         }
 
+        /// <summary>
+        ///     Updates the visuals for a tile on some grid chunk. Returns true if the visuals have changed.
+        /// </summary>
         private bool UpdateChunkTile(GridAtmosphereComponent gridAtmosphere, GasOverlayChunk chunk, Vector2i index)
         {
             ref var oldData = ref chunk.TileData[chunk.GetDataIndex(index)];
@@ -210,7 +213,6 @@ namespace Content.Server.Atmos.EntitySystems
                 return true;
             }
 
-            byte tempByte = tile.Air != null ? GasOverlayData.GetTemperatureByte(tile.Air.Temperature) : (byte)0;
             var changed = false;
 
             ThermalByte newByteTemp = new();

@@ -179,7 +179,6 @@ namespace Content.Shared.Preferences
             _languages = languages; // Utopia-Tweak : Language
             Bark = bark; // Utopia-Tweak : Barks
 
-
             var hasHighPrority = false;
             foreach (var (key, value) in _jobPriorities)
             {

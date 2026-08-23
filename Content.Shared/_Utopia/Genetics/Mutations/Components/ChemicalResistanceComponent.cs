@@ -2,7 +2,7 @@ using Content.Shared.Chemistry.Reagent;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server._Utopia.Genetics.Mutations.Components;
+namespace Content.Shared._Utopia.Genetics.Mutations.Components;
 
 [RegisterComponent]
 public sealed partial class ChemicalResistanceComponent : Component
