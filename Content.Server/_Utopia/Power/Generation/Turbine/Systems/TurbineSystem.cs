@@ -19,7 +19,7 @@ using Robust.Shared.Random;
 
 namespace Content.Server.Power.Turbines;
 
-public sealed class TurbineSystem : EntitySystem
+public sealed partial class TurbineSystem : EntitySystem
 {
     private const string NodeNameTurbine = "turbine";
     private const float UpdateInterval = 1f;

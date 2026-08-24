@@ -238,7 +238,6 @@ public sealed partial class CargoSystem
                 var totalprice = 0;
                 foreach (var (_, sellComponent, value) in goodsmy)
                 {
-                    Dictionary<ProtoId<CargoAccountPrototype>, double> distribution;
                     totalprice += (int)Math.Round(value);
                 }
                 _stack.SpawnAtPosition(totalprice, stackPrototype, xform.Coordinates);
