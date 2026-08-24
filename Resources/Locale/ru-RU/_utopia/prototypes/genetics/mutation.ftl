@@ -11,9 +11,6 @@ mutation-desc-pirate-accent = Субъект говорит как прокля�
 mutation-name-german-accent = Изменение лобной извилины типа G
 mutation-desc-german-accent = Субъект говорит с сильным немецким акцентом.
 
-mutation-name-italian-accent = Изменение лобной извилины типа I
-mutation-desc-italian-accent = Субъект говорит с драматическим итальянским акцентом.
-
 mutation-name-french-accent = Изменение лобной извилины типа FR
 mutation-desc-french-accent = Субъект говорит с изысканным французским акцентом.
 

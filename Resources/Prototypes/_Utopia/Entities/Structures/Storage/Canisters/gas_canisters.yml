@@ -246,7 +246,7 @@
       air:
         volume: 1000
         moles:
-          Hyper-Noblium: 1871.71051 # Hyper-Noblium
+          HyperNoblium: 1871.71051 # Hyper-Noblium
         temperature: 293.15
     - type: Destructible
       thresholds:
@@ -291,7 +291,7 @@
       air:
         volume: 1000
         moles:
-          Proto-Nitrate: 1871.71051 # Proto-Nitrate
+          ProtoNitrate: 1871.71051 # Proto-Nitrate
         temperature: 293.15
     - type: Destructible
       thresholds:
@@ -471,7 +471,7 @@
       air:
         volume: 1000
         moles:
-          Anti-Noblium: 1871.71051 # Anti-Noblium
+          AntiNoblium: 1871.71051 # Anti-Noblium
         temperature: 293.15
     - type: Destructible
       thresholds:

@@ -35,18 +35,6 @@
   - type: GermanAccent
 
 - type: geneticMutation
-  id: ItalianAccent
-  name: mutation-name-italian-accent
-  desc: mutation-desc-italian-accent
-  instability: 0
-  conflicts:
-    - CowboyAccent
-    - LiarAccent
-  components:
-  - type: ReplacementAccent
-    accent: italian
-
-- type: geneticMutation
   id: FrenchAccent
   name: mutation-name-french-accent
   desc: mutation-desc-french-accent

@@ -320,15 +320,15 @@
     minTargetPower: 4000
     optimalPower: 8000
     maxTargetPower: 8000
+    # 7.5 minutes at full tank.
+    optimalBurnRate: 0.11111111
+    # Shallow curve that allows you to just barely eek out 12 minutes at lowest.
+    fuelEfficiencyConstant: 0.3
   # Utopia-Tweak : PACMAN-updt
   - type: GeneratorOverheat
     explodeChance: 0
     operatingTemperature: 348.15
   # Utopia-Tweak : PACMAN-updt
-    # 7.5 minutes at full tank.
-    optimalBurnRate: 0.11111111
-    # Shallow curve that allows you to just barely eek out 12 minutes at lowest.
-    fuelEfficiencyConstant: 0.3
   - type: ChemicalFuelGeneratorAdapter
     solution: tank
     reagents:
