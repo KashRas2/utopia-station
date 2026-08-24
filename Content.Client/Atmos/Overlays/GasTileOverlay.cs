@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Client._Utopia.Atmos;
 using Content.Client.Atmos.Components;
 using Content.Client.Atmos.EntitySystems;
 using Content.Shared.Atmos;
@@ -16,11 +17,10 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Robust.Shared.Maths;
-using Content.Client._Utopia.Atmos;
 
 namespace Content.Client.Atmos.Overlays
 {
-    public sealed class GasTileOverlay : Overlay
+    public sealed partial class GasTileOverlay : Overlay
     {
         private static readonly ProtoId<ShaderPrototype> UnshadedShader = "unshaded";
 
