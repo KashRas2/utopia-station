@@ -65,6 +65,7 @@
     normalState: fire
   - type: Damageable
     damageModifierSet: Wood
+  - type: Injurable
   - type: Destructible
     thresholds:
     - trigger:
@@ -73,6 +74,13 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+  - type: Edible
+    delay: 1
+    forceFeedDelay: 1
+  - type: FlavorProfile
+    flavors:
+    - paper
+  - type: BadFood
   - type: SolutionContainerManager
     solutions:
       food:
