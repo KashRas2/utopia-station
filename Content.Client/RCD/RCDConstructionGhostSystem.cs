@@ -26,7 +26,6 @@ public sealed partial class RCDConstructionGhostSystem : EntitySystem
 
     // Utopia-Tweak : RPD
     private bool _useMirrorPrototype = false;
-    public event EventHandler? FlipConstructionPrototype;
     // Utopia-Tweak : RPD
     private Direction _placementDirection = default;
 

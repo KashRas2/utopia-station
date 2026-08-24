@@ -26,8 +26,8 @@ namespace Content.Client.Hands
         [Dependency] private IEntityManager _entMan = default!;
 
         // Utopia-Tweak : Combat
-        [Dependency] private readonly IPlayerManager _player = default!;
-        [Dependency] private readonly IResourceCache _resourceCache = default!;
+        [Dependency] private IPlayerManager _player = default!;
+        [Dependency] private IResourceCache _resourceCache = default!;
         // Utopia-Tweak : Combat
 
         private static readonly ResPath ComboAttackRsi =

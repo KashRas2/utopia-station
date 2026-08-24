@@ -46,7 +46,7 @@ public sealed partial class GeneticAnalyzerSystem : SharedGeneticAnalyzerSystem
 
         var discoveredIds = _mutationDiscovery.GetGridDiscovered(ent.Owner);
 
-        var printed = EntityManager.SpawnEntity(ent.Comp.ReportEntity, Transform(ent).Coordinates);
+        var printed = Spawn(ent.Comp.ReportEntity, Transform(ent).Coordinates);
 
         _handsSystem.PickupOrDrop(args.Actor, printed, checkActionBlocker: false);
 

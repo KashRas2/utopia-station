@@ -84,33 +84,33 @@ public sealed class NowPlayingPopup : PanelContainer
         switch (_state)
         {
             case PopupState.SlideIn:
-            {
-                var progress = Math.Clamp(_stateTime / SlideInDuration, 0f, 1f);
-                if (progress >= 1f)
-                    TransitionTo(PopupState.Hold);
-
-                return MathHelper.Lerp(-HiddenOffset, 0f, EaseOutCubic(progress));
-            }
-
-            case PopupState.Hold:
-            {
-                if (_stateTime >= HoldDuration)
-                    TransitionTo(PopupState.SlideOut);
-
-                return 0f;
-            }
-
-            case PopupState.SlideOut:
-            {
-                var progress = Math.Clamp(_stateTime / SlideOutDuration, 0f, 1f);
-                if (progress >= 1f)
                 {
-                    TransitionTo(PopupState.Done);
-                    DeferOrphan();
+                    var progress = Math.Clamp(_stateTime / SlideInDuration, 0f, 1f);
+                    if (progress >= 1f)
+                        TransitionTo(PopupState.Hold);
+
+                    return MathHelper.Lerp(-HiddenOffset, 0f, EaseOutCubic(progress));
                 }
 
-                return MathHelper.Lerp(0f, -HiddenOffset, EaseInCubic(progress));
-            }
+            case PopupState.Hold:
+                {
+                    if (_stateTime >= HoldDuration)
+                        TransitionTo(PopupState.SlideOut);
+
+                    return 0f;
+                }
+
+            case PopupState.SlideOut:
+                {
+                    var progress = Math.Clamp(_stateTime / SlideOutDuration, 0f, 1f);
+                    if (progress >= 1f)
+                    {
+                        TransitionTo(PopupState.Done);
+                        DeferOrphan();
+                    }
+
+                    return MathHelper.Lerp(0f, -HiddenOffset, EaseInCubic(progress));
+                }
 
             default:
                 return -HiddenOffset;
