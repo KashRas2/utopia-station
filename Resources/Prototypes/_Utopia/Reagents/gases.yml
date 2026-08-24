@@ -183,9 +183,13 @@
         ignoreResistances: true
         damage:
           types:
+            Blunt: -0.5
+            Slash: -0.5
+            Piercing: -0.5
+            Heat: -1
+            Shock: -1
             Asphyxiation: -0.5
             Poison: -0.5
-            Brute: -1.5
             Burn: -2
 
 - type: reagent
