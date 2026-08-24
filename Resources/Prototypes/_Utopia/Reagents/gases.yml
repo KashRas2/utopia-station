@@ -190,7 +190,6 @@
             Shock: -1
             Asphyxiation: -0.5
             Poison: -0.5
-            Burn: -2
 
 - type: reagent
   id: Hyper-Noblium
