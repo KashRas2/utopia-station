@@ -25,6 +25,16 @@ entity-condition-guidebook-group-damage =
             }
     }
 
+entity-condition-guidebook-total-hunger =
+    { $max ->
+        [2147483648] цель имеет по крайней мере { NATURALFIXED($min, 2) } общего голода
+       *[other]
+            { $min ->
+                [0] цель имеет не более { NATURALFIXED($max, 2) } общего голода
+               *[other] цель имеет между  { NATURALFIXED($min, 2) } и { NATURALFIXED($max, 2) } общего голода
+            }
+    }
+
 entity-condition-guidebook-total-satiation =
     { $max ->
         [2147483648] цель имеет по крайней мере { NATURALFIXED($min, 2) } общего { $type }

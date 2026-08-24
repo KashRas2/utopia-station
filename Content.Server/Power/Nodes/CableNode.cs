@@ -7,7 +7,9 @@ using Robust.Shared.Map.Components;
 namespace Content.Server.Power.Nodes
 {
     [DataDefinition]
-    public abstract partial class CableNode : Node // Utopia-Tweak : ZLevels
+#pragma warning disable RA0003 // Utopia-Tweak : ZLevels
+    public partial class CableNode : Node
+#pragma warning restore RA0003 // Utopia-Tweak : ZLevels
     {
         public override IEnumerable<Node> GetReachableNodes(
             Entity<TransformComponent> xform,
