@@ -1,3 +1,4 @@
+using Content.Server._Utopia.Audio.Systems;
 using Content.Server.AlertLevel;
 using Content.Server.Audio;
 using Content.Server.Chat.Systems;
@@ -22,7 +23,6 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
 using Robust.Shared.Timing;
-using Content.Shared._Utopia.Audio.Systems;
 
 namespace Content.Server.Nuke;
 
@@ -46,7 +46,7 @@ public sealed partial class NukeSystem : EntitySystem
     [Dependency] private AppearanceSystem _appearance = default!;
     [Dependency] private TurfSystem _turf = default!;
     [Dependency] private IGameTiming _timing = default!;
-    [Dependency] private NowPlayingSystem _nowPlay = default!; // Utopia-Tweak : NowPlaying
+    [Dependency] private NowPlayingServerSystem _nowPlay = default!; // Utopia-Tweak : NowPlaying
 
     /// <summary>
     ///     Used to calculate when the nuke song should start playing for maximum kino with the nuke sfx
