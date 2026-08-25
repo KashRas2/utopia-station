@@ -17,7 +17,6 @@ public sealed class PowerStatePrototypeTest : GameTest
     /// depending on the current power state.
     /// </summary>
     [Test]
-    [Ignore("Untill we patch it")] // Utopia-Tweak : Bad Fix
     public async Task AssertApcPowerMatchesPowerState()
     {
         var pair = Pair;

@@ -13,7 +13,7 @@
   - type: Transform
     anchored: true
   - type: ApcPowerReceiver
-    powerLoad: 500
+    powerLoad: 50
   - type: PowerState
     idlePowerDraw: 50
     workingPowerDraw: 500
