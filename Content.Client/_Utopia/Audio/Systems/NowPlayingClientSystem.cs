@@ -9,11 +9,11 @@ using Content.Client._Utopia.Audio.UI;
 
 namespace Content.Client._Utopia.Audio.Systems;
 
-public sealed class NowPlayingClientSystem : NowPlayingSystem
+public sealed partial class NowPlayingClientSystem : NowPlayingSystem
 {
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
-    [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
+    [Dependency] private IResourceCache _resourceCache = default!;
+    [Dependency] private IPrototypeManager _prototype = default!;
+    [Dependency] private IUserInterfaceManager _uiManager = default!;
 
     protected override void OnNowPlaying(NowPlayingMessage msg)
     {

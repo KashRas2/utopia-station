@@ -4,10 +4,11 @@ using Robust.Shared.Player;
 using Content.Shared._Utopia.Audio.Events;
 
 namespace Content.Shared._Utopia.Audio.Systems;
-public class NowPlayingSystem : EntitySystem
+
+public abstract partial class NowPlayingSystem : EntitySystem
 {
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
 
     public override void Initialize()
     {
