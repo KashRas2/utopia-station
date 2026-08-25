@@ -74,20 +74,6 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-  - type: Edible
-    delay: 1
-    forceFeedDelay: 1
-  - type: FlavorProfile
-    flavors:
-    - paper
-  - type: BadFood
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 1
-        reagents:
-        - ReagentId: Fiber
-          Quantity: 1
   - type: Currency
     price:
       SpaceCash: 1
