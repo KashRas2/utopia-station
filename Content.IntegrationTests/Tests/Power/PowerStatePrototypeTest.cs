@@ -27,12 +27,21 @@ public sealed class PowerStatePrototypeTest : GameTest
 
         await server.WaitAssertion(() =>
         {
+            var prototypes = protoMan.EnumeratePrototypes<EntityPrototype>()
+                .Where(p => !p.Abstract)
+                .Where(p => !pair.IsTestPrototype(p))
+                .ToList();
+
+            var total = prototypes.Count;
+            var current = 0;
+
             Assert.Multiple(delegate
             {
-                foreach (var prototype in protoMan.EnumeratePrototypes<EntityPrototype>()
-                             .Where(p => !p.Abstract)
-                             .Where(p => !pair.IsTestPrototype(p)))
+                foreach (var prototype in prototypes)
                 {
+                    current++;
+                    Console.WriteLine($"[{current}/{total}] {prototype.ID}");
+
                     if (!prototype.TryComp<PowerStateComponent>(out var powerStateComp, entMan.ComponentFactory))
                         continue;
 
