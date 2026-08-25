@@ -59,7 +59,9 @@
   - type: LitOnPowered
   - type: ApcPowerReceiver
     powerLoad: 200
-    priority: Low
+  - type: PowerState
+    idlePowerDraw: 50
+    workingPowerDraw: 200
   - type: ExtensionCableReceiver
   - type: EmitSoundOnUIOpen
     sound:
