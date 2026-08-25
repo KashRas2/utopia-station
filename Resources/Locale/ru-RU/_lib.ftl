@@ -43,4 +43,5 @@ zzzz-fmt-energy-watt-hours = { TOSTRING($divided, "F1") } { $places ->
 }
 
 # Used internally by the PLAYTIME() function.
-zzzz-fmt-playtime = { $hours }ч { $minutes }м
+zzzz-fmt-playtime = { $hours }ч.
+zzzz-fmt-playtime-minutes = { $minutes }м.
