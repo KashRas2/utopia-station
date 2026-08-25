@@ -6,7 +6,7 @@
   - type: Label
     localizedLabel: reagent-name-mutadone
   - type: Solution
-    solutions:
+    solution:
         reagents:
         - ReagentId: Mutadone
           Quantity: 30
