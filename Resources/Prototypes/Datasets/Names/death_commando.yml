@@ -1,8 +1,8 @@
 ﻿- type: localizedDataset
   id: NamesDeathCommandoFirst
   values:
-    prefix: names-death-commando-first-dataset-
-    count: 62
+    prefix: names-death-commando-dataset-
+    count: 158 # Corvax-MRP-Edit
 
 - type: localizedDataset
   id: NamesDeathCommandoLast
