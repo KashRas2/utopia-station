@@ -59,7 +59,7 @@
   # Utopia-Tweak-start: Z-levels
   - type: CEZPhysics
   - type: CEZLevelHighGround
-    fixtureId: fix1
+  - type: CEZGridConnector
   # Utopia-Tweak-end
 
 - type: entity
