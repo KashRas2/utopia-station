@@ -1,3 +1,4 @@
+using Content.Shared._Utopia.Fluids;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
@@ -119,6 +120,11 @@ public sealed partial class VomitSystem : EntitySystem
             // Makes a vomit solution the size of 90% of the chemicals removed from the chemstream
             solution.AddReagent(new ReagentId(VomitPrototype, _bloodstream.GetEntityBloodData((uid, bloodStream))), vomitAmount);
         }
+
+        // Utopia-Tweak : Stains
+        var stainEv = new SpilledOnEvent(uid, solution.Clone());
+        RaiseLocalEvent(uid, stainEv);
+        // Utopia-Tweak : Stains
 
         if (_puddle.TrySpillAt(uid, solution, out var puddle, false))
         {

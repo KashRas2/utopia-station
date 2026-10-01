@@ -22,6 +22,19 @@
     tags:
     - ClothMade
     - WhitelistChameleon
+  # Utopia-Tweak : Stains
+  - type: Appearance
+  - type: Stainable
+    clothingVisuals:
+      head:
+      - sprite: /Textures/_Utopia/Effects/blood.rsi
+        state: helmetblood
+    iconVisuals:
+    - sprite: /Textures/_Utopia/Effects/blood.rsi
+      state: helmetbloodicon
+  - type: StainBlocker
+    slots: [MASK]
+  # Utopia-Tweak : Stains
 
 - type: entity
   abstract: true
@@ -274,3 +287,14 @@
     - Hair
     - HeadTop
     - HeadSide
+  # Utopia-Tweak : Stains
+  - type: Appearance
+  - type: Stainable
+    clothingVisuals:
+      head:
+      - sprite: /Textures/_Utopia/Effects/blood.rsi
+        state: helmetblood
+    iconVisuals:
+    - sprite: /Textures/_Utopia/Effects/blood.rsi
+      state: helmetbloodicon
+  # Utopia-Tweak : Stains

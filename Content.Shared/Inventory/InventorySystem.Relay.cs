@@ -1,4 +1,5 @@
 using Content.Shared._Utopia.Grab;
+using Content.Shared._Utopia.Fluids;
 using Content.Shared.Armor;
 using Content.Shared.Atmos;
 using Content.Shared.Chat;
@@ -69,6 +70,7 @@ public partial class InventorySystem
         SubscribeLocalEvent<InventoryComponent, BeforeEmoteEvent>(RelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, StoodEvent>(RelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, DownedEvent>(RelayInventoryEvent);
+        SubscribeLocalEvent<InventoryComponent, SpilledOnEvent>(RelayInventoryEvent); // Utopia-Tweak : Stains
 
         // by-ref events
         SubscribeLocalEvent<InventoryComponent, AccentGetEvent>(RefRelayInventoryEvent);
@@ -202,6 +204,14 @@ public sealed class InventoryRelayedEvent<TEvent> : EntityEventArgs
         Args = args;
         Owner = owner;
     }
+
+    // Utopia-Tweak : Stains
+    public InventoryRelayedEvent(TEvent args)
+    {
+        Args = args;
+        Owner = EntityUid.Invalid;
+    }
+    // Utopia-Tweak : Stains
 }
 
 public interface IClothingSlots

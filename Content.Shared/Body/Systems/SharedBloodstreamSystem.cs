@@ -1,3 +1,4 @@
+using Content.Shared._Utopia.Fluids;
 using Content.Shared.Alert;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Events;
@@ -13,6 +14,7 @@ using Content.Shared.Fluids;
 using Content.Shared.Forensics.Components;
 using Content.Shared.Gibbing;
 using Content.Shared.HealthExaminable;
+using Content.Shared.Inventory;
 using Content.Shared.Metabolism;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
@@ -41,6 +43,7 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
     [Dependency] private MobStateSystem _mobStateSystem = default!;
     [Dependency] private DamageableSystem _damageableSystem = default!;
     [Dependency] private MetabolizerSystem _metabolizer = default!;
+    [Dependency] private EntityLookupSystem _lookup = default!; // Utopia-Tweak : Stains
 
     public override void Initialize()
     {
@@ -484,6 +487,23 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
 
         if (tempSolution.Volume > ent.Comp.BleedPuddleThreshold)
         {
+            // Utopia-Tweak : Stains
+            var stainEv = new SpilledOnEvent(ent.Owner, tempSolution);
+            RaiseLocalEvent(ent.Owner, stainEv);
+
+            var xform = Transform(ent.Owner);
+            foreach (var neighbor in _lookup.GetEntitiesInRange(xform.Coordinates, 1.5f))
+            {
+                if (neighbor == ent.Owner || !HasComp<InventoryComponent>(neighbor))
+                    continue;
+
+                RaiseLocalEvent(neighbor, new SpilledOnEvent(ent.Owner, tempSolution));
+
+                if (tempSolution.Volume <= 0)
+                    break;
+            }
+            // Utopia-Tweak : Stains
+
             _puddle.TrySpillAt(ent.Owner, tempSolution, out _, sound: false);
 
             tempSolution.RemoveAllSolution();
@@ -542,6 +562,23 @@ public abstract partial class SharedBloodstreamSystem : EntitySystem
             tempSol.AddSolution(tempSolution, ProtoMan);
             SolutionContainer.RemoveAllSolution(ent.Comp.TemporarySolution.Value);
         }
+
+        // Utopia-Tweak : Stains
+        var stainEv = new SpilledOnEvent(ent.Owner, tempSol);
+        RaiseLocalEvent(ent.Owner, stainEv);
+
+        var xform = Transform(ent.Owner);
+        foreach (var neighbor in _lookup.GetEntitiesInRange(xform.Coordinates, 1.5f))
+        {
+            if (neighbor == ent.Owner || !HasComp<InventoryComponent>(neighbor))
+                continue;
+
+            RaiseLocalEvent(neighbor, new SpilledOnEvent(ent.Owner, tempSol));
+
+            if (tempSol.Volume <= 0)
+                break;
+        }
+        // Utopia-Tweak : Stains
 
         _puddle.TrySpillAt(ent, tempSol, out _);
     }
