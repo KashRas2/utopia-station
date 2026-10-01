@@ -23,6 +23,18 @@
     walkModifier: 0.9
     sprintModifier: 0.9
   - type: HeldSpeedModifier
+  # Utopia-Tweak : Stains
+  - type: Stainable
+    clothingVisuals:
+      outerClothing:
+      - sprite: /Textures/_Utopia/Effects/blood.rsi
+        state: suitblood
+    iconVisuals:
+    - sprite: /Textures/_Utopia/Effects/blood.rsi
+      state: suitbloodicon
+  - type: StainBlocker
+    slots: [INNERCLOTHING, FEET, GLOVES]
+  # Utopia-Tweak : Stains
 
 - type: entity
   abstract: true
@@ -47,6 +59,16 @@
         type: StorageBoundUserInterface
   - type: StaticPrice
     price: 70
+  # Utopia-Tweak : Stains
+  - type: Stainable
+    clothingVisuals:
+      outerClothing:
+      - sprite: /Textures/_Utopia/Effects/blood.rsi
+        state: coatblood
+    iconVisuals:
+    - sprite: /Textures/_Utopia/Effects/blood.rsi
+      state: coatbloodicon
+  # Utopia-Tweak : Stains
 
 - type: entity
   abstract: true
@@ -80,6 +102,16 @@
     - state: icon-open
       map: ["foldedLayer"]
       visible: false
+  # Utopia-Tweak : Stains
+  - type: Stainable
+    clothingVisuals:
+      outerClothing:
+      - sprite: /Textures/_Utopia/Effects/blood.rsi
+        state: outerclothing
+    iconVisuals:
+    - sprite: /Textures/_Utopia/Effects/blood.rsi
+      state: outerclothing
+  # Utopia-Tweak : Stains
 
 - type: entity
   abstract: true

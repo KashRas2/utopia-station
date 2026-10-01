@@ -1,3 +1,4 @@
+using Content.Shared._Utopia.Fluids;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -161,6 +162,14 @@ public abstract partial class SharedPuddleSystem
                 continue;
 
             var splitSolution = _solutionContainerSystem.SplitSolution(soln.Value, totalSplit / hitCount);
+
+            // Utopia-Tweak : Stains
+            if (splitSolution.Volume > 0)
+            {
+                var stainEv = new SpilledOnEvent(entity.Owner, splitSolution.Clone());
+                RaiseLocalEvent(hit, stainEv);
+            }
+            // Utopia-Tweak : Stains
 
             AdminLogger.Add(LogType.MeleeHit,
                 $"{ToPrettyString(args.User):actor} "

@@ -23,6 +23,16 @@
         Heat: 0.80
   - type: ExplosionResistance
     damageCoefficient: 0.90
+  # Utopia-Tweak : Stains
+  - type: Stainable
+    clothingVisuals:
+      outerClothing:
+      - sprite: /Textures/_Utopia/Effects/blood.rsi
+        state: armorblood
+    iconVisuals:
+    - sprite: /Textures/_Utopia/Effects/blood.rsi
+      state: armorbloodicon
+  # Utopia-Tweak : Stains
 
 #Standard armor vest, allowed for security only
 - type: entity
