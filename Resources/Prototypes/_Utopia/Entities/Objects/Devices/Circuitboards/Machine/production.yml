@@ -18,7 +18,7 @@
   description: A machine printed circuit board for an washing machine.
   components:
   - type: MachineBoard
-    prototype: WashingMachine
+    prototype: UtopiaWashingMachine
     requirements:
       Manipulator: 1
     stackRequirements:
