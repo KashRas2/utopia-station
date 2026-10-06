@@ -1,7 +1,9 @@
+using Content.Shared._Utopia.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Random.Helpers;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Configuration;
 using Robust.Shared.Network;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -29,7 +31,7 @@ public sealed partial class SpeechSoundSystem : EntitySystem
 
         var sound = GetSpeechSound(ent, args.Message);
         ent.Comp.LastTimeSoundPlayed = currentTime;
-        if (_net.IsServer) // TODO: replace this call with PlayPredicted when chat is predicted.
+        if (!IoCManager.Resolve<IConfigurationManager>().GetCVar(UCCVars.BarksEnabled) && _net.IsServer) // Utopia-Tweak : Barks
             _audio.PlayPvs(sound, ent);
     }
 

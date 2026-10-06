@@ -30,6 +30,7 @@ public sealed class VendingMachineBoundUserInterface(EntityUid owner, Enum uiKey
     public void Refresh()
     {
         var enabled = EntMan.TryGetComponent(Owner, out VendingMachineEjectComponent? eject) && !eject.Ejecting;
+        var bendy = EntMan.GetComponent<VendingMachineComponent>(Owner); // Utopia-Tweak : Economy
 
         var system = EntMan.System<VendingMachineSystem>();
         _cachedInventory = system.GetAllInventory(Owner);
@@ -55,6 +56,7 @@ public sealed class VendingMachineBoundUserInterface(EntityUid owner, Enum uiKey
     public void UpdateAmounts()
     {
         var enabled = EntMan.TryGetComponent(Owner, out VendingMachineEjectComponent? eject) && !eject.Ejecting;
+        var bendy = EntMan.GetComponent<VendingMachineComponent>(Owner); // Utopia-Tweak : Economy
 
         var system = EntMan.System<VendingMachineSystem>();
         _cachedInventory = system.GetAllInventory(Owner);

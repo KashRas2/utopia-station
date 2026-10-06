@@ -20,7 +20,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
     [Dependency] protected IGameTiming Timing = default!;
     [Dependency] protected SharedAudioSystem Audio = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private SharedPowerReceiverSystem _receiver = default!;
+    [Dependency] protected SharedPowerReceiverSystem Receiver = default!;
     [Dependency] protected SharedPopupSystem Popup = default!;
     [Dependency] protected SharedUserInterfaceSystem UISystem = default!;
     [Dependency] protected IRobustRandom Randomizer = default!;

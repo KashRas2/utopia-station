@@ -285,7 +285,7 @@ namespace Content.Server.Singularity.EntitySystems
         // Utopia-Tweak : Machine Part
         private void OnRefreshParts(EntityUid uid, EmitterComponent component, RefreshPartsEvent args)
         {
-            if (component.IsOn)
+            if (_powerState.GetWorkingState(uid))
             {
                 SwitchOff(uid, component);
             }

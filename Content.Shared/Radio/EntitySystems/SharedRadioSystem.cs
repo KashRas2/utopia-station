@@ -1,3 +1,4 @@
+using Content.Shared._Utopia.Language;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 
@@ -34,7 +35,8 @@ public abstract partial class SharedRadioSystem : EntitySystem
         string message,
         RadioChannelPrototype channel,
         EntityUid radioSource,
-        bool escapeMarkup = true)
+        bool escapeMarkup = true,
+        LanguagePrototype? languageOverride = null) // Utopia-Tweak : Language
     {
 
     }

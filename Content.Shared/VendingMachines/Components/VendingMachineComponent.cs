@@ -1,4 +1,6 @@
 using Content.Shared.Actions;
+using Content.Shared.Stacks;
+using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
@@ -44,6 +46,33 @@ public sealed partial class VendingMachineComponent : Component
     /// </summary>
     [DataField]
     public EntityUid? RestockStream;
+
+    // Utopia-Tweak : Economy
+    #region Economy
+    [DataField]
+    public double PriceMultiplier = 0.75;
+
+    [DataField]
+    public ProtoId<StackPrototype> CreditStackPrototype = "Credit";
+
+    [DataField]
+    public string CurrencyType = "SpaceCash";
+
+    [DataField]
+    public SoundSpecifier SoundInsertCurrency =
+        new SoundPathSpecifier("/Audio/_Utopia/Machines/polaroid2.ogg");
+
+    [DataField]
+    public SoundSpecifier SoundWithdrawCurrency =
+        new SoundPathSpecifier("/Audio/_Utopia/Machines/polaroid1.ogg");
+
+    [ViewVariables]
+    public int Credits;
+
+    [DataField]
+    public bool AllForFree;
+    #endregion
+    // Utopia-Tweak : Economy
 }
 
 public sealed partial class VendingMachineSelfDispenseEvent : InstantActionEvent;

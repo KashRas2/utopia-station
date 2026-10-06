@@ -1,6 +1,7 @@
 using Content.Shared.Botany.Components;
 using Content.Shared.Botany.Items.Components;
 using Content.Shared.Botany.Traits.Components;
+using Content.Shared.Construction.Components;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.Power.EntitySystems;
@@ -60,4 +61,19 @@ public sealed partial class SeedExtractorSystem : EntitySystem
                 _botany.SpawnSeedPacket(plantData, produce.PlantProtoId.Value, snapshot, coords, args.User);
         }
     }
+
+    // Utopia-Tweak : Machine Parts
+    [SubscribeLocalEvent]
+    private void OnRefreshParts(Entity<SeedExtractorComponent> ent, ref RefreshPartsEvent args)
+    {
+        var manipulatorQuality = args.PartTiers[ent.Comp.MachinePartSeedAmount];
+        ent.Comp.SeedAmountMultiplier = MathF.Pow(ent.Comp.PartTierSeedAmountMultiplier, manipulatorQuality - 1);
+    }
+
+    [SubscribeLocalEvent]
+    private void OnUpgradeExamine(Entity<SeedExtractorComponent> ent, ref UpgradeExamineEvent args)
+    {
+        args.AddPercentageUpgrade("seed-extractor-component-upgrade-seed-amount", ent.Comp.SeedAmountMultiplier);
+    }
+    // Utopia-Tweak : Machine Parts
 }

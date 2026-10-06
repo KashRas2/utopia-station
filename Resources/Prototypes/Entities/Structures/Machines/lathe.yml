@@ -283,7 +283,6 @@
     - ShuttleBoards
     # Utopia-Tweak : Research
     - MedicalBoardsDynamic
-    - BluespaceBoardsDynamic
     # Utopia-Tweak : Research
   - type: EmagLatheRecipes
     emagDynamicPacks:

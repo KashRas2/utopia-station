@@ -16,7 +16,7 @@ public abstract partial class SharedVendingMachineSystem
 
     private void OnInventoryEjectMessage(Entity<VendingMachineComponent> entity, ref VendingMachineEjectMessage args)
     {
-        if (!_receiver.IsPowered(entity.Owner) || Deleted(entity))
+        if (!Receiver.IsPowered(entity.Owner) || Deleted(entity))
             return;
 
         if (args.Actor is not { Valid: true } actor)
@@ -28,7 +28,7 @@ public abstract partial class SharedVendingMachineSystem
     [SubscribeLocalEvent]
     private void OnEmpPulse(Entity<VendingMachineComponent> ent, ref EmpPulseEvent args)
     {
-        if (ent.Comp.Broken || !_receiver.IsPowered(ent.Owner))
+        if (ent.Comp.Broken || !Receiver.IsPowered(ent.Owner))
             return;
 
         if (!TryComp<VendingMachineEjectComponent>(ent.Owner, out var eject))
@@ -132,7 +132,7 @@ public abstract partial class SharedVendingMachineSystem
         if (!Resolve(uid, ref ejectComponent))
             return;
 
-        if (ejectComponent.Ejecting || vendComponent.Broken || !_receiver.IsPowered(uid))
+        if (ejectComponent.Ejecting || vendComponent.Broken || !Receiver.IsPowered(uid))
         {
             return;
         }
@@ -196,7 +196,7 @@ public abstract partial class SharedVendingMachineSystem
     /// <param name="type">The type of inventory the item is from</param>
     /// <param name="itemId">The prototype ID of the item</param>
     /// <param name="component"></param>
-    public void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
+    public virtual void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
     {
         if (!IsAuthorized(uid, sender, component))
             return;
