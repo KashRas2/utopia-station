@@ -233,6 +233,7 @@
   components:
   - type: VendingMachine
     pack: AmmoVendInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: CondimentVendAds
   - type: SpeakOnUIClosed
@@ -256,6 +257,7 @@
   components:
   - type: VendingMachine
     pack: BoozeOMatInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     denyState: deny-unshaded
     loopDenyAnimation: false
@@ -320,10 +322,10 @@
   components:
   - type: VendingMachine
     pack: PTechInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/cart.rsi
     layers:
@@ -349,9 +351,9 @@
   components:
   - type: VendingMachine
     pack: ChefvendInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: ChefvendAds
   - type: SpeakOnUIClosed
@@ -381,10 +383,10 @@
   components:
   - type: VendingMachine
     pack: CigaretteMachineInventory
+    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: CigaretteMachineAds
   - type: SpeakOnUIClosed
@@ -467,6 +469,7 @@
   - type: VendingMachine
     pack: HotDrinksMachineInventory
     initialStockQuality: 0.33
+    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 5
     soundVend: /Audio/Machines/machine_vend_hot_drink.ogg
@@ -505,6 +508,7 @@
   - type: VendingMachine
     pack: RobustSoftdrinksInventory
     initialStockQuality: 0.33
+    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 1.9
   - type: VendingMachineVisuals
@@ -647,6 +651,7 @@
   - type: VendingMachine
     pack: ShamblersJuiceInventory
     initialStockQuality: 0.33
+    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 1.9
   - type: VendingMachineVisuals
@@ -678,6 +683,7 @@
   - type: VendingMachine
     pack: PwrGameInventory
     initialStockQuality: 0.33
+    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 1.9
   - type: VendingMachineVisuals
@@ -711,6 +717,7 @@
   - type: VendingMachine
     pack: DrGibbInventory
     initialStockQuality: 0.33
+    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 1.9
   - type: VendingMachineVisuals
@@ -776,9 +783,9 @@
   components:
   - type: VendingMachine
     pack: DinnerwareInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: DinnerwareAds
   - type: SpeakOnUIClosed
@@ -808,6 +815,7 @@
   components:
   - type: VendingMachine
     pack: MagiVendInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: MagiVendAds
   - type: SpeakOnUIClosed
@@ -864,10 +872,10 @@
   components:
   - type: VendingMachine
     pack: EngiVendInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/engivend.rsi
     layers:
@@ -894,6 +902,7 @@
   components:
   - type: VendingMachine
     pack: NanoMedCivilianInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 0.6
   - type: VendingMachineVisuals
@@ -930,9 +939,9 @@
   components:
   - type: VendingMachine
     pack: NanoMedPlusInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     offState: off
-    allForFree: true # Utopia-Tweak : Economy
   - type: Sprite
     layers:
     - state: "off"
@@ -953,10 +962,10 @@
   components:
   - type: VendingMachine
     pack: NutriMaxInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: NutriMaxAds
   - type: SpeakOnUIClosed
@@ -986,10 +995,10 @@
   components:
   - type: VendingMachine
     pack: SecTechInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: SecTechAds
   - type: SpeakOnUIClosed
@@ -1024,10 +1033,10 @@
   components:
   - type: VendingMachine
     pack: MegaSeedServitorInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: MegaSeedAds
   - type: SpeakOnUIClosed
@@ -1064,6 +1073,7 @@
   - type: VendingMachine
     pack: GetmoreChocolateCorpInventory
     initialStockQuality: 0.33
+    priceMultiplier: 1.5 # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
@@ -1202,6 +1212,7 @@
   - type: VendingMachine
     pack: BodaInventory
     initialStockQuality: 0.33
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
@@ -1267,10 +1278,10 @@
   components:
   - type: VendingMachine
     pack: VendomatInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: VendomatAds
   - type: SpeakOnUIClosed
@@ -1298,10 +1309,10 @@
   components:
   - type: VendingMachine
     pack: RoboticsInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
-    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: VendomatAds
   - type: SpeakOnUIClosed
@@ -1884,6 +1895,7 @@
   components:
   - type: VendingMachine
     pack: SyndieDrobeInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: SyndieDrobeAds
   - type: SpeakOnUIClosed
@@ -1990,6 +2002,7 @@
   components:
   - type: VendingMachine
     pack: CentDrobeInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: Sprite
     sprite: Structures/Machines/VendingMachines/centdrobe.rsi
     layers:
@@ -2052,6 +2065,7 @@
   components:
   - type: VendingMachine
     pack: PrideDrobeInventory
+    priceMultiplier: 100 # Utopia-Tweak : Economy
   - type: DatasetVocalizer
     dataset: PrideDrobeAds
   - type: SpeakOnUIClosed
@@ -2111,6 +2125,7 @@
   components:
   - type: VendingMachine
     pack: ChemVendInventory
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 2
   - type: VendingMachineVisuals
@@ -2141,6 +2156,7 @@
   components:
   - type: VendingMachine
     pack: ChemVendInventorySyndicate
+    allForFree: true # Utopia-Tweak : Economy
   - type: VendingMachineEject
     ejectDelay: 2
   - type: VendingMachineVisuals

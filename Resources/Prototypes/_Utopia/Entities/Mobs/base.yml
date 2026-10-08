@@ -27,17 +27,14 @@
       Flammable: [Touch]
       Extinguish: [Touch]
       Acidic: [Touch, Ingestion]
-  - type: Internals
   - type: MovementSpeedModifier
     baseWalkSpeed : 4
     baseSprintSpeed : 4
   - type: StatusEffects
     allowed:
     - Electrocution
-    - TemporaryBlindness
     - Pacified
     - Flashed
-    - RadiationProtection
     - Adrenaline
   - type: Buckle
   - type: StandingState
@@ -55,6 +52,8 @@
   - MobCombat
   - MobBloodstream
   - MobFlammable
+  - BaseMobAnimal
+  - BaseHungerThirstSlowdown
   id: SimpleSpaceNoCollisionMobBase # Mob without barotrauma, freezing and asphyxiation (for space carps!?)
   suffix: AI
   components:
@@ -83,6 +82,7 @@
   - MobRespirator
   - MobAtmosStandard
   - SimpleSpaceNoCollisionMobBase
+  - BaseHungerThirstSlowdown
   id: SimpleNoCollisionMobBase # for air breathers
   suffix: AI
   abstract: true
@@ -93,7 +93,6 @@
         prototype: SimpleMobBaseHunger
       Thirst:
         prototype: SimpleMobBaseThirst
-    baseDecayRate: 0.04
   - type: StatusEffects
     allowed:
     - Electrocution
