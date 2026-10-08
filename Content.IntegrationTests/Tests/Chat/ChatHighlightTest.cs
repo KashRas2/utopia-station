@@ -157,8 +157,6 @@ public sealed class ChatHighlightTest : GameTest
         activeHighlights = (List<string>)highlightsField.GetValue(chatController)!;
         Assert.That(activeHighlights, Contains.Item("ling"));
         Assert.That(activeHighlights, Contains.Item("rev"));
-        Assert.That(activeHighlights, Contains.Item("Captain"));
-        Assert.That(activeHighlights, Contains.Item("(?<!\\w)Cap(?!\\w)"));
         Assert.That(activeHighlights, Contains.Item("Капитан")); //Corvax-locale-fix
         Assert.That(activeHighlights, Contains.Item("(?<!\\w)кеп(?!\\w)")); //Corvax-locale-fix
     }

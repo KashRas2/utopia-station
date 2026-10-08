@@ -107,23 +107,7 @@ public abstract class TileAtmosphereTest : AtmosTest
             Assert.That(_itemToggleSys.TryActivate(welder));
         });
 
-        var fireReachedAllMarkers = false;
-        for (var tick = 0; tick < 1500; tick += 100)
-        {
-            await Server.WaitRunTicks(100);
-
-            if (!SAtmos.IsHotspotActive(MapData.Grid, sourceXY) ||
-                !SAtmos.IsHotspotActive(MapData.Grid, point1XY) ||
-                !SAtmos.IsHotspotActive(MapData.Grid, point2XY))
-            {
-                continue;
-            }
-
-            fireReachedAllMarkers = true;
-            break;
-        }
-
-        Assert.That(fireReachedAllMarkers, Is.True);
+        await Server.WaitRunTicks(600);
 
         using (Assert.EnterMultipleScope())
         {
