@@ -17,9 +17,10 @@ public abstract partial class SharedRadioSystem : EntitySystem
         string message,
         ProtoId<RadioChannelPrototype> channel,
         EntityUid radioSource,
-        bool escapeMarkup = true)
+        bool escapeMarkup = true,
+        LanguagePrototype? language = null) // Utopia-Tweak : Language
     {
-        SendRadioMessage(messageSource, message, ProtoMan.Index(channel), radioSource, escapeMarkup: escapeMarkup);
+        SendRadioMessage(messageSource, message, ProtoMan.Index(channel), radioSource, escapeMarkup: escapeMarkup, languageOverride: language); // Utopia-Tweak : Language
     }
 
     /// <summary>

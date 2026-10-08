@@ -84,14 +84,6 @@ public sealed partial class RadioSystem : SharedRadioSystem
         _netMan.ServerSendMessage(msg, actor.PlayerSession.Channel);
     }
 
-    /// <summary>
-    /// Send radio message to all active radio listeners
-    /// </summary>
-    public void SendRadioMessage(EntityUid messageSource, string message, ProtoId<RadioChannelPrototype> channel, EntityUid radioSource, bool escapeMarkup = true, LanguagePrototype? language = null) // Utopia-Tweak : Language
-    {
-        SendRadioMessage(messageSource, message, ProtoMan.Index(channel), radioSource, escapeMarkup: escapeMarkup);
-    }
-
     /// <inheritdoc/>
     public override void SendRadioMessage(EntityUid messageSource, string message, RadioChannelPrototype channel, EntityUid radioSource, bool escapeMarkup = true, LanguagePrototype? languageOverride = null) // Utopia-Tweak : Language
     {
