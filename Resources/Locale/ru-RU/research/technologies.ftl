@@ -2,7 +2,7 @@ research-discipline-none = Отсутствует
 research-discipline-industrial = Промышленность
 research-discipline-arsenal = Арсенал
 research-discipline-experimental = Экспериментальное
-research-discipline-civilian-services = Обслуживание
+research-discipline-civilian-services = Обслуживание персонала
 
 research-technology-fulton = Фултоны
 research-technology-salvage-equipment = Снаряжение для утилизации
