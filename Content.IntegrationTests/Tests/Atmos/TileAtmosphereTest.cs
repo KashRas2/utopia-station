@@ -81,8 +81,8 @@ public abstract class TileAtmosphereTest : AtmosTest
             Assert.That(GetMarker(markers, "point2", out point2));
 
             Assert.That(_xformSys.TryGetGridTilePosition(source, out sourceXY, MapData.Grid));
-            Assert.That(_xformSys.TryGetGridTilePosition(point1, out point1XY, MapData.Grid));
-            Assert.That(_xformSys.TryGetGridTilePosition(point2, out point2XY, MapData.Grid));
+            Assert.That(_xformSys.TryGetGridTilePosition(source, out point1XY, MapData.Grid));
+            Assert.That(_xformSys.TryGetGridTilePosition(source, out point2XY, MapData.Grid));
         }
 
         Assert.That(GetGridMoles(RelevantAtmos), Is.Zero);
