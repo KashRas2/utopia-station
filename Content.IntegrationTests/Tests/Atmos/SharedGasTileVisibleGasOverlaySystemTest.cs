@@ -23,10 +23,11 @@ public sealed partial class SharedGasTileOverlayTest
             mixture.Clear();
             mixture.AdjustMoles(Gas.WaterVapor, 100f);
             mixture.AdjustMoles(Gas.Oxygen, 100f);
+            SAtmos.InvalidateVisuals(ProcessEnt.Owner, tileIndices);
         });
 
+        await Server.WaitRunTicks(10);
         await RunUntilSynced();
-        await Pair.RunTicksSync(10);
 
         await Client.WaitPost(() =>
         {
