@@ -1,4 +1,4 @@
-ent-UtopiaSalaryConsoleCircuitboard = консоль заработных плат(консольная плата)
+ent-UtopiaSalaryConsoleCircuitboard = консоль заработных плат (консольная плата)
     .desc = Консольная плата для консоли заработных плат.
 
 ent-UtopiaEconomicRecordsConsoleCircuitboard = консоль экономических записей (консольная плата)
@@ -7,5 +7,5 @@ ent-UtopiaEconomicRecordsConsoleCircuitboard = консоль экономиче
 ent-UtopiaDnaManipulatorConsoleCircuitboard = консоль управления ДНК (консольная плата)
     .desc = Консольная плата для консоли управления ДНК.
 
-ent-UtopiaTelescienceComputerCircuitboard = консоль управления телепадом (консольная плата)
-    .desc = консольная плата для консоли управления телепадом.
+ent-UtopiaComputerShiftScheduleCircuitboard = консоль расписания смены (консольная плата)
+    .desc = консольная плата для консоли расписания смены.

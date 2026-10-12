@@ -5,7 +5,7 @@
   description: A computer printed circuit board for the salary console.
   components:
     - type: Sprite
-      state: cpuboard
+      state: cpu_command
     - type: ComputerBoard
       prototype: UtopiaSalaryConsole
 
@@ -16,7 +16,7 @@
   description: A computer printed circuit board for the economic records console.
   components:
     - type: Sprite
-      state: cpuboard
+      state: cpu_command
     - type: ComputerBoard
       prototype: UtopiaEconomicRecordsConsole
 
@@ -30,3 +30,15 @@
       state: cpu_medical
     - type: ComputerBoard
       prototype: UtopiaComputerDnaManipulator
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: UtopiaComputerShiftScheduleCircuitboard
+  name: dna scanner console board
+  description: A computer printed circuit board for the shift schedule console.
+  components:
+    - type: Sprite
+      state: cpu_command
+    - type: ComputerBoard
+      prototype: UtopiaComputerShiftSchedule
+

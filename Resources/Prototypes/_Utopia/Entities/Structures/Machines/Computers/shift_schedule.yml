@@ -1,0 +1,39 @@
+- type: entity
+  parent: BaseComputerAiAccess
+  id: UtopiaComputerShiftSchedule
+  name: shift schedule console
+  description: A console for setting timed announcements during the schift.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+  - type: AccessReader
+    access: [["Command"]]
+  - type: ShiftScheduleConsole
+  - type: ActivatableUI
+    key: enum.ShiftScheduleConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ShiftScheduleConsoleUiKey.Key:
+        type: ShiftScheduleConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: ItemSlots
+    slots:
+      card:
+        whitelist:
+          tags:
+          - UtopiaShiftScheduleCard
+  - type: ContainerContainer
+    containers:
+      card: !type:ContainerSlot
+      board: !type:Container
