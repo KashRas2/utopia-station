@@ -2,5 +2,3 @@
   id: CommandBoardsStatic
   recipes:
   - SalaryConsoleCircuitboard
-  - EconomicRecordsConsoleCircuitboard
-  - ComputerShiftScheduleCircuitboard
