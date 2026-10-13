@@ -169,6 +169,8 @@
   name: shift schedule console
   description: A console for setting timed announcements during the schift.
   components:
+  - type: Computer
+    board: UtopiaComputerShiftScheduleCircuitboard
   - type: Sprite
     layers:
     - map: ["computerLayerBody"]
