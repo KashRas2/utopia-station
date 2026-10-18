@@ -64,4 +64,13 @@ public sealed class UCCVars
     // Combat
     public static readonly CVarDef<bool> CombatShowIcons =
         CVarDef.Create("combat.show_icons", false, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    // Sponsors
+
+    /// <summary>
+    ///     URL of the sponsors server API.
+    /// </summary>
+    public static readonly CVarDef<string> SponsorsApiUrl =
+        CVarDef.Create("sponsor.api_url", "", CVar.SERVERONLY);
+
 }
