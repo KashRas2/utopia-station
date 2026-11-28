@@ -8,7 +8,7 @@
       department: Medical
       time: 5h
     - !type:DepartmentTimeRequirement
-      department: Research
+      department: Science
       time: 10h
   startingGear: GeneticistGear
   icon: "JobIconGeneticist"
